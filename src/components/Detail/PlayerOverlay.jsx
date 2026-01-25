@@ -88,6 +88,7 @@ const PlayerOverlay = () => {
         addToHistory(detailItem, season, epNum);
     };
 
+    // Close mobile menu on outside click
     useEffect(() => {
         const closeMenu = (e) => {
             if (!e.target.closest('.pill-wrapper') && !e.target.closest('.episode-search')) {
@@ -104,6 +105,7 @@ const PlayerOverlay = () => {
     const type = isTv ? 'tv' : 'movie';
     const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
 
+    // Filter Episodes Logic (Works for both sidebar and mobile menu)
     const filteredEpisodes = episodeList.filter(ep => {
         if (!epSearch) return true;
         const q = epSearch.toLowerCase();
@@ -115,58 +117,148 @@ const PlayerOverlay = () => {
     });
 
     return (
-        <div id="player-overlay" className="player-overlay" style={{ display: 'flex' }}>
+        <div id="player-overlay" className="player-overlay">
             
-            {/* --- HEADER: Left=Title/Info, Right=Close --- */}
+            {/* --- TOP HEADER (Visible on Mobile Only usually, mostly hidden on Desktop by CSS) --- */}
             <div className="player-header">
-                
-                {/* RESTORED TITLE SECTION */}
-                <div className="player-header-info">
-                    <span style={{ 
-                        color: '#fff', 
-                        fontSize: '1.1rem', 
-                        fontWeight: '700', 
-                        whiteSpace: 'nowrap', 
-                        overflow: 'hidden', 
-                        textOverflow: 'ellipsis',
-                        display: 'block'
-                    }}>
+                {/* Title Section (Mobile Only via CSS) */}
+                <div className="player-header-info mobile-only-item">
+                    <span style={{ color: '#fff', fontSize: '1.1rem', fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block'}}>
                         {detailItem.title || detailItem.name}
                     </span>
                     {isTv && (
-                        <span style={{ 
-                            color: 'var(--accent-color)', 
-                            fontSize: '0.8rem', 
-                            fontWeight: '600',
-                            marginTop: '2px',
-                            display: 'block'
-                        }}>
+                        <span style={{ color: 'var(--accent-color)', fontSize: '0.8rem', fontWeight: '600', marginTop: '2px', display: 'block'}}>
                             Season {season} - Episode {episode}
                         </span>
                     )}
                 </div>
 
-                {/* Close Button */}
+                {/* Close Button (Always Visible) */}
                 <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
                     <i className="fa-solid fa-xmark"></i> 
                 </button>
             </div>
 
-            {/* --- VIDEO --- */}
-            <div className="iframe-wrapper">
-                <iframe 
-                    id="overlay-video" 
-                    src={src} 
-                    allowFullScreen 
-                    title="Player"
-                    sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox" : undefined}
-                ></iframe>
+            {/* --- MAIN SPLIT LAYOUT --- */}
+            <div className="player-layout-container">
+                
+                {/* LEFT: VIDEO PLAYER */}
+                <div className="video-area">
+                    <div className="iframe-wrapper">
+                        <iframe 
+                            id="overlay-video" 
+                            src={src} 
+                            allowFullScreen 
+                            title="Player"
+                            sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox" : undefined}
+                        ></iframe>
+                    </div>
+                </div>
+
+                {/* RIGHT: SIDEBAR (Desktop Only) */}
+                <div className="player-sidebar desktop-only-item">
+                    <div className="sidebar-content">
+                        {/* Info Block */}
+                        <div className="sidebar-info-block">
+                            <h2>{detailItem.title || detailItem.name}</h2>
+                            <div className="sidebar-meta">
+                                <span>{detailItem.release_date?.split('-')[0] || detailItem.first_air_date?.split('-')[0] || 'N/A'}</span>
+                                <span className="dot"></span>
+                                <span>{detailItem.original_language?.toUpperCase()}</span>
+                                <span className="dot"></span>
+                                <span>{isTv ? 'TV Series' : 'Movie'}</span>
+                            </div>
+                            
+                            {/* Action Buttons (Visual Only) */}
+                            <div className="sidebar-actions">
+                                <button className="action-btn">
+                                    <i className="fa-regular fa-heart"></i>
+                                    <span>Favorite</span>
+                                </button>
+                                <button className="action-btn">
+                                    <i className="fa-solid fa-share-nodes"></i>
+                                    <span>Share</span>
+                                </button>
+                                <button className="action-btn">
+                                    <i className="fa-solid fa-triangle-exclamation"></i>
+                                    <span>Report</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="sidebar-divider"></div>
+
+                        {/* Controls: Server & Season */}
+                        <div className="sidebar-controls">
+                            <div className="control-group">
+                                <label>Select Server</label>
+                                <select 
+                                    className="sidebar-select"
+                                    value={serverIdx} 
+                                    onChange={(e) => setServerIndex(parseInt(e.target.value))}
+                                >
+                                    {servers.map((s, i) => (
+                                        <option key={i} value={i}>{s.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {isTv && (
+                                <div className="control-group">
+                                    <label>Select Season</label>
+                                    <select 
+                                        className="sidebar-select"
+                                        value={season} 
+                                        onChange={(e) => handleSeasonChange(parseInt(e.target.value))}
+                                    >
+                                        {seasonsData.map(s => (
+                                            <option key={s.id} value={s.season_number}>Season {s.season_number}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Episode Grid (KISSKH Style) */}
+                        {isTv && (
+                            <div className="sidebar-episodes-section">
+                                <div className="ep-section-header">
+                                    <h3>Episodes</h3>
+                                    <span className="ep-total">Total {episodeList.length}</span>
+                                </div>
+                                
+                                <input 
+                                    type="text" 
+                                    className="sidebar-search-input"
+                                    placeholder="Search Episode..." 
+                                    value={epSearch} 
+                                    onChange={(e) => setEpSearch(e.target.value)}
+                                />
+
+                                <div className="sidebar-ep-grid">
+                                    {filteredEpisodes.length === 0 ? (
+                                        <div className="no-ep-msg">No episode found</div>
+                                    ) : (
+                                        filteredEpisodes.map(ep => (
+                                            <button 
+                                                key={ep.id} 
+                                                className={`ep-grid-btn ${episode === ep.episode_number ? 'active' : ''}`}
+                                                onClick={() => handleEpisodeChange(ep.episode_number)}
+                                                title={ep.name}
+                                            >
+                                                {ep.episode_number}
+                                            </button>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
-            {/* --- CONTROLS --- */}
-            <div className="player-controls-bar stacked">
-                
-                {/* Row 1: Server + Season */}
+            {/* --- MOBILE CONTROLS (Hidden on Desktop) --- */}
+            <div className="player-controls-bar stacked mobile-only-item">
                 <div className="row-server">
                     <div className="pill-wrapper">
                         <div className={`pill-dropdown ${activePill === 'server' ? 'open' : ''}`} onClick={(e) => { e.stopPropagation(); setActivePill(activePill === 'server' ? null : 'server'); }}>
@@ -206,7 +298,6 @@ const PlayerOverlay = () => {
                     )}
                 </div>
 
-                {/* Row 2: Search + Episode */}
                 {isTv && (
                     <div className="row-nav">
                         <input
