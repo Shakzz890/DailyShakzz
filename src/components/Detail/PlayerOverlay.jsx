@@ -1,32 +1,15 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useGlobal } from "../../context/GlobalContext";
 import { fetchData } from "../../api/tmdb";
 
-/* =======================
-   SERVERS CONFIG
-======================= */
 const servers = [
-  { name: "Server 1", forceSandbox: false, getUrl: (id, type, s, e) =>
-    `https://vidsrc.cc/v2/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
-
-  { name: "Server 2", forceSandbox: false, getUrl: (id, type, s, e) =>
-    `https://zxcstream.xyz/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
-
-  { name: "Server 3", forceSandbox: true, getUrl: (id, type, s, e) =>
-    type === "movie"
-      ? `https://fmovies4u.com/embed/movie/${id}`
-      : `https://fmovies4u.com/embed/tv/${id}/${s}/${e}` },
-
-  { name: "Server 4", forceSandbox: false, getUrl: (id, type, s, e) =>
-    `https://vidsrc.cx/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
-
-  { name: "Server 5 (Ads)", forceSandbox: true, getUrl: (id, type, s, e) =>
-    `https://mapple.uk/watch/${type}/${id}${type === "tv" ? `-${s}-${e}` : ""}` },
+  { name: "Server 1", forceSandbox: false, getUrl: (id, type, s, e) => `https://vidsrc.cc/v2/embed/${type}/${id}${type === "tv" ? `/${s}/${e}?autoPlay=false&poster=true` : "?autoPlay=false&poster=true"}` },
+  { name: "Server 2", forceSandbox: false, getUrl: (id, type, s, e) => `https://zxcstream.xyz/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
+  { name: "Server 3", forceSandbox: true, getUrl: (id, type, s, e) => type === "movie" ? `https://fmovies4u.com/embed/movie/${id}` : `https://fmovies4u.com/embed/tv/${id}/${s}/${e}` },
+  { name: "Server 4", forceSandbox: false, getUrl: (id, type, s, e) => `https://vidsrc.cx/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
+  { name: "Server 5 (Ads)", forceSandbox: true, getUrl: (id, type, s, e) => `https://mapple.uk/watch/${type}/${id}${type === "tv" ? `-${s}-${e}` : ""}` },
 ];
 
-/* =======================
-   PLAYER OVERLAY
-======================= */
 export default function PlayerOverlay() {
   const { isPlayerOpen, setIsPlayerOpen, detailItem, addToHistory } = useGlobal();
 
@@ -38,97 +21,102 @@ export default function PlayerOverlay() {
   const [episode, setEpisode] = useState(1);
   const [seasons, setSeasons] = useState([]);
   const [episodes, setEpisodes] = useState([]);
-  
-  // Search State
   const [epSearch, setEpSearch] = useState("");
+  
+  // New State for Description Toggle
+  const [showDesc, setShowDesc] = useState(false);
 
-  /* =======================
-     SANDBOX SYSTEM
-  ======================= */
-  const sandboxKey = useMemo(() => {
-    if (!detailItem) return null;
-    return `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}`;
-  }, [detailItem, season, episode, serverIdx]);
-
+  // --- SANDBOX LOGIC ---
+  const sandboxKey = useMemo(() => detailItem ? `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}` : null, [detailItem, season, episode, serverIdx]);
   const [sandbox, setSandbox] = useState(true);
   const [iframeKey, setIframeKey] = useState(0);
 
   useEffect(() => {
-    if (!sandboxKey) return;
-    const saved = localStorage.getItem(sandboxKey);
-    if (saved !== null) setSandbox(JSON.parse(saved));
+    if (sandboxKey) {
+      const saved = localStorage.getItem(sandboxKey);
+      if (saved !== null) setSandbox(JSON.parse(saved));
+    }
   }, [sandboxKey]);
 
   useEffect(() => {
-    if (!sandboxKey) return;
-    localStorage.setItem(sandboxKey, JSON.stringify(sandbox));
+    if (sandboxKey) localStorage.setItem(sandboxKey, JSON.stringify(sandbox));
   }, [sandbox, sandboxKey]);
 
   useEffect(() => {
-    if (servers[serverIdx]?.forceSandbox) {
-      setSandbox(true);
-    }
+    if (servers[serverIdx]?.forceSandbox) setSandbox(true);
   }, [serverIdx]);
 
   useEffect(() => {
-    setIframeKey(k => k + 1);
+    setIframeKey(prev => prev + 1);
   }, [sandbox]);
 
-  /* =======================
-     DATA FETCH
-  ======================= */
+  // --- DATA FETCHING ---
   useEffect(() => {
-    if (!isPlayerOpen || !detailItem || !isTv) return;
+    if (!isPlayerOpen || !detailItem) return;
+    
+    let startSeason = 1;
+    let startEpisode = 1;
 
-    fetchData(`/tv/${detailItem.id}`).then(d => {
-      setSeasons(d.seasons?.filter(s => s.season_number > 0) || []);
-    });
-  }, [isPlayerOpen, detailItem, isTv]);
+    if (detailItem.badge_label && detailItem.badge_label.includes(':')) {
+        const match = detailItem.badge_label.match(/S(\d+):E(\d+)/);
+        if (match) {
+            startSeason = parseInt(match[1]);
+            startEpisode = parseInt(match[2]);
+        }
+    }
+    setSeason(startSeason);
+    setEpisode(startEpisode);
+    setShowDesc(false); // Reset description on new open
 
-  useEffect(() => {
-    if (!isTv || !detailItem) return;
+    if (isTv) {
+      fetchData(`/tv/${detailItem.id}`).then(d => {
+        setSeasons(d.seasons?.filter(s => s.season_number > 0) || []);
+      });
+      fetchData(`/tv/${detailItem.id}/season/${startSeason}`).then(d => {
+        setEpisodes(d.episodes || []);
+        addToHistory(detailItem, startSeason, startEpisode);
+      });
+    } else {
+        addToHistory(detailItem, null, null);
+    }
+  }, [isPlayerOpen, detailItem]);
 
-    fetchData(`/tv/${detailItem.id}/season/${season}`).then(d => {
-      setEpisodes(d.episodes || []);
-      addToHistory(detailItem, season, episode);
-    });
-  }, [season, episode]);
+  const handleSeasonChange = async (newSeason) => {
+    setSeason(newSeason);
+    setEpisode(1);
+    const d = await fetchData(`/tv/${detailItem.id}/season/${newSeason}`);
+    setEpisodes(d.episodes || []);
+    addToHistory(detailItem, newSeason, 1);
+  };
+
+  const handleEpisodeChange = (newEp) => {
+    setEpisode(newEp);
+    addToHistory(detailItem, season, newEp);
+  };
 
   if (!isPlayerOpen || !detailItem) return null;
 
   const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
-
-  // Filter Logic
+  
   const filteredEpisodes = episodes.filter(ep => 
-    ep.episode_number.toString().includes(epSearch) || 
+    !epSearch || 
+    ep.episode_number.toString() === epSearch || 
     (ep.name && ep.name.toLowerCase().includes(epSearch.toLowerCase()))
   );
 
-  /* =======================
-     RENDER
-  ======================= */
   return (
     <div className="player-overlay">
-      {/* HEADER */}
+      {/* HEADER (Float on top) */}
       <div className="player-header">
-        <div className="player-header-info mobile-only-item">
-          <strong>{detailItem.title || detailItem.name}</strong>
-          {isTv && (
-            <span style={{ fontSize: "0.8rem", color: "var(--accent-color)" }}>
-              Season {season} • Episode {episode}
-            </span>
-          )}
-        </div>
-
         <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
           <i className="fa-solid fa-xmark" />
         </button>
       </div>
 
-      {/* LAYOUT CONTAINER */}
+      {/* MAIN LAYOUT */}
       <div className="player-layout-container">
         
-        {/* LEFT: VIDEO AREA */}
+        {/* LEFT: VIDEO */}
         <div className="video-area">
           <div className="iframe-wrapper">
             <iframe
@@ -136,11 +124,7 @@ export default function PlayerOverlay() {
               id="overlay-video"
               src={src}
               allowFullScreen
-              sandbox={
-                sandbox
-                  ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox"
-                  : undefined
-              }
+              sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox" : undefined}
             />
           </div>
         </div>
@@ -149,8 +133,48 @@ export default function PlayerOverlay() {
         <aside className="player-sidebar">
           <div className="sidebar-content">
             <h2>{detailItem.title || detailItem.name}</h2>
+            <div className="sidebar-meta">
+                <span>{detailItem.release_date?.split('-')[0] || detailItem.first_air_date?.split('-')[0] || 'N/A'}</span>
+                <span className="dot"></span>
+                <span>{isTv ? 'TV Series' : 'Movie'}</span>
+                <span className="dot"></span>
+                <span>{detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'N/A'} <i className="fas fa-star" style={{color:'gold', fontSize:'0.7rem'}}></i></span>
+            </div>
 
-            {/* SERVER SELECTOR */}
+            {/* ACTION BUTTONS (Visual) */}
+            <div className="sidebar-actions">
+                <button className="action-btn">
+                    <i className="fa-regular fa-heart"></i>
+                    <span>Favorite</span>
+                </button>
+                <button className="action-btn">
+                    <i className="fa-solid fa-share-nodes"></i>
+                    <span>Share</span>
+                </button>
+                <button className="action-btn">
+                    <i className="fa-solid fa-triangle-exclamation"></i>
+                    <span>Report</span>
+                </button>
+            </div>
+
+            {/* --- DESCRIPTION DROPDOWN --- */}
+            <div className="description-container">
+                <div className="desc-header" onClick={() => setShowDesc(!showDesc)}>
+                    <span>Description</span>
+                    <i className={`fas fa-chevron-down ${showDesc ? 'rotate' : ''}`}></i>
+                </div>
+                
+                <div className={`desc-content ${showDesc ? 'open' : ''}`}>
+                    <p className="overview-text">{detailItem.overview || "No synopsis available."}</p>
+                    {detailItem.genres && (
+                        <div className="genre-tags">
+                            {detailItem.genres.map(g => <span key={g.id} className="genre-tag">{g.name}</span>)}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* 1. SERVER SELECTOR */}
             <div className="control-group">
               <label>Select Server</label>
               <select
@@ -159,14 +183,12 @@ export default function PlayerOverlay() {
                 onChange={e => setServerIdx(+e.target.value)}
               >
                 {servers.map((s, i) => (
-                  <option key={i} value={i}>
-                    {s.name}
-                  </option>
+                  <option key={i} value={i}>{s.name}</option>
                 ))}
               </select>
             </div>
 
-            {/* RESTORED: SEASON & SEARCH (Only for TV) */}
+            {/* 2. SEASON & SEARCH (Restored!) */}
             {isTv && (
               <>
                 <div className="control-group">
@@ -174,11 +196,11 @@ export default function PlayerOverlay() {
                   <select
                     className="sidebar-select"
                     value={season}
-                    onChange={e => setSeason(+e.target.value)}
+                    onChange={e => handleSeasonChange(+e.target.value)}
                   >
                     {seasons.map(s => (
                       <option key={s.id} value={s.season_number}>
-                        Season {s.season_number} ({s.episode_count} eps)
+                        Season {s.season_number}
                       </option>
                     ))}
                   </select>
@@ -188,27 +210,27 @@ export default function PlayerOverlay() {
                   <label>Search Episode</label>
                   <input 
                     type="text" 
-                    className="sidebar-search-input"
-                    placeholder="Type episode number or title..."
+                    className="sidebar-search-input" 
+                    placeholder="Episode number..."
                     value={epSearch}
                     onChange={(e) => setEpSearch(e.target.value)}
                   />
                 </div>
 
-                {/* EPISODE GRID */}
+                {/* 3. EPISODE GRID */}
                 <div className="ep-section-header">
                     <span>Episodes ({filteredEpisodes.length})</span>
                 </div>
                 
                 <div className="sidebar-ep-grid">
                   {filteredEpisodes.length === 0 ? (
-                    <div style={{color:'#666', fontSize:'0.9rem', gridColumn:'1/-1'}}>No episodes found</div>
+                    <div style={{color:'#666', fontSize:'0.9rem', gridColumn:'1/-1', textAlign:'center', padding:'20px'}}>No episodes found</div>
                   ) : (
                     filteredEpisodes.map(ep => (
                       <button
                         key={ep.id}
                         className={`ep-grid-btn ${episode === ep.episode_number ? "active" : ""}`}
-                        onClick={() => setEpisode(ep.episode_number)}
+                        onClick={() => handleEpisodeChange(ep.episode_number)}
                         title={ep.name}
                       >
                         {ep.episode_number}
@@ -218,11 +240,11 @@ export default function PlayerOverlay() {
                 </div>
               </>
             )}
-            
-            {/* SANDBOX TOGGLE (Moved to bottom of sidebar) */}
+
+            {/* Sandbox Toggle Footer */}
             <div className="sidebar-divider"></div>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:'10px'}}>
-                <span style={{fontSize:'0.85rem', color:'#aaa'}}>Ad-Block (Sandbox)</span>
+            <div className="sandbox-toggle-row">
+                <span>Ad-Block (Sandbox)</span>
                 <label className="switch" style={{transform:'scale(0.8)'}}>
                   <input
                     type="checkbox"
@@ -237,8 +259,6 @@ export default function PlayerOverlay() {
           </div>
         </aside>
       </div>
-      
-      {/* BOTTOM SHEET REMOVED COMPLETELY */}
     </div>
   );
 }
