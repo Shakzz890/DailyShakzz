@@ -38,12 +38,13 @@ export default function PlayerOverlay() {
   const [episode, setEpisode] = useState(1);
   const [seasons, setSeasons] = useState([]);
   const [episodes, setEpisodes] = useState([]);
-  const [activePill, setActivePill] = useState(null);
+  
+  // Search State
+  const [epSearch, setEpSearch] = useState("");
 
   /* =======================
      SANDBOX SYSTEM
   ======================= */
-
   const sandboxKey = useMemo(() => {
     if (!detailItem) return null;
     return `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}`;
@@ -52,27 +53,23 @@ export default function PlayerOverlay() {
   const [sandbox, setSandbox] = useState(true);
   const [iframeKey, setIframeKey] = useState(0);
 
-  /* Load sandbox memory */
   useEffect(() => {
     if (!sandboxKey) return;
     const saved = localStorage.getItem(sandboxKey);
     if (saved !== null) setSandbox(JSON.parse(saved));
   }, [sandboxKey]);
 
-  /* Persist sandbox per episode */
   useEffect(() => {
     if (!sandboxKey) return;
     localStorage.setItem(sandboxKey, JSON.stringify(sandbox));
   }, [sandbox, sandboxKey]);
 
-  /* Force sandbox ON for ad servers */
   useEffect(() => {
     if (servers[serverIdx]?.forceSandbox) {
       setSandbox(true);
     }
   }, [serverIdx]);
 
-  /* Reload iframe on sandbox change */
   useEffect(() => {
     setIframeKey(k => k + 1);
   }, [sandbox]);
@@ -101,6 +98,12 @@ export default function PlayerOverlay() {
 
   const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
 
+  // Filter Logic
+  const filteredEpisodes = episodes.filter(ep => 
+    ep.episode_number.toString().includes(epSearch) || 
+    (ep.name && ep.name.toLowerCase().includes(epSearch.toLowerCase()))
+  );
+
   /* =======================
      RENDER
   ======================= */
@@ -122,9 +125,10 @@ export default function PlayerOverlay() {
         </button>
       </div>
 
-      {/* LAYOUT */}
+      {/* LAYOUT CONTAINER */}
       <div className="player-layout-container">
-        {/* VIDEO */}
+        
+        {/* LEFT: VIDEO AREA */}
         <div className="video-area">
           <div className="iframe-wrapper">
             <iframe
@@ -141,17 +145,14 @@ export default function PlayerOverlay() {
           </div>
         </div>
 
-        {/* SIDEBAR (DESKTOP) */}
-        <aside className="player-sidebar desktop-only-item">
+        {/* RIGHT: SIDEBAR (Universal Controls) */}
+        <aside className="player-sidebar">
           <div className="sidebar-content">
             <h2>{detailItem.title || detailItem.name}</h2>
 
-            <p style={{ fontSize: "0.9rem", color: "#aaa", marginBottom: "15px" }}>
-              {detailItem.overview}
-            </p>
-
+            {/* SERVER SELECTOR */}
             <div className="control-group">
-              <label>Server</label>
+              <label>Select Server</label>
               <select
                 className="sidebar-select"
                 value={serverIdx}
@@ -165,51 +166,64 @@ export default function PlayerOverlay() {
               </select>
             </div>
 
+            {/* RESTORED: SEASON & SEARCH (Only for TV) */}
             {isTv && (
               <>
-                <label>Episodes</label>
+                <div className="control-group">
+                  <label>Select Season</label>
+                  <select
+                    className="sidebar-select"
+                    value={season}
+                    onChange={e => setSeason(+e.target.value)}
+                  >
+                    {seasons.map(s => (
+                      <option key={s.id} value={s.season_number}>
+                        Season {s.season_number} ({s.episode_count} eps)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="control-group">
+                  <label>Search Episode</label>
+                  <input 
+                    type="text" 
+                    className="sidebar-search-input"
+                    placeholder="Type episode number or title..."
+                    value={epSearch}
+                    onChange={(e) => setEpSearch(e.target.value)}
+                  />
+                </div>
+
+                {/* EPISODE GRID */}
+                <div className="ep-section-header">
+                    <span>Episodes ({filteredEpisodes.length})</span>
+                </div>
+                
                 <div className="sidebar-ep-grid">
-                  {episodes.map(ep => (
-                    <button
-                      key={ep.id}
-                      className={`ep-grid-btn ${
-                        episode === ep.episode_number ? "active" : ""
-                      }`}
-                      onClick={() => setEpisode(ep.episode_number)}
-                    >
-                      {ep.episode_number}
-                    </button>
-                  ))}
+                  {filteredEpisodes.length === 0 ? (
+                    <div style={{color:'#666', fontSize:'0.9rem', gridColumn:'1/-1'}}>No episodes found</div>
+                  ) : (
+                    filteredEpisodes.map(ep => (
+                      <button
+                        key={ep.id}
+                        className={`ep-grid-btn ${episode === ep.episode_number ? "active" : ""}`}
+                        onClick={() => setEpisode(ep.episode_number)}
+                        title={ep.name}
+                      >
+                        {ep.episode_number}
+                      </button>
+                    ))
+                  )}
                 </div>
               </>
             )}
-          </div>
-        </aside>
-      </div>
-
-      {/* MOBILE CONTROLS */}
-      <div className="player-controls-bar stacked mobile-only-item">
-        <div className="pill-wrapper">
-          <div
-            className={`pill-dropdown ${activePill === "server" ? "open" : ""}`}
-            onClick={() => setActivePill(activePill === "server" ? null : "server")}
-          >
-            <span>{servers[serverIdx].name}</span>
-            <i className="fa-solid fa-chevron-up" />
-          </div>
-
-          {activePill === "server" && (
-            <div className="pill-menu">
-              <div className="menu-header">
-                Sandbox
-                <span
-                  className="sandbox-badge"
-                  title="This server may show ads"
-                >
-                  Recommended ON
-                </span>
-
-                <label className="switch">
+            
+            {/* SANDBOX TOGGLE (Moved to bottom of sidebar) */}
+            <div className="sidebar-divider"></div>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:'10px'}}>
+                <span style={{fontSize:'0.85rem', color:'#aaa'}}>Ad-Block (Sandbox)</span>
+                <label className="switch" style={{transform:'scale(0.8)'}}>
                   <input
                     type="checkbox"
                     checked={sandbox}
@@ -218,25 +232,13 @@ export default function PlayerOverlay() {
                   />
                   <span className="slider" />
                 </label>
-              </div>
-
-              {servers.map((s, i) => (
-                <div
-                  key={i}
-                  className={`menu-option ${i === serverIdx ? "selected" : ""}`}
-                  onClick={() => {
-                    setServerIdx(i);
-                    setActivePill(null);
-                  }}
-                >
-                  {s.name}
-                </div>
-              ))}
             </div>
-          )}
-        </div>
+
+          </div>
+        </aside>
       </div>
+      
+      {/* BOTTOM SHEET REMOVED COMPLETELY */}
     </div>
   );
 }
-export default PlayerOverlay;
