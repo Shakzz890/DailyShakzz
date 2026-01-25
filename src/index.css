@@ -3295,337 +3295,227 @@ input:checked + .slider:before {
   z-index: 50;
   /* pointer-events: none;  <-- DO NOT DO THIS globally, or buttons won't work */
 }
+
 /* ========================================================
-   PLAYER OVERLAY – FINAL KISSKH LAYOUT
+   PLAYER LAYOUT & DESCRIPTION DROPDOWN
    ======================================================== */
 
-/* ======================
-   BASE OVERLAY
-   ====================== */
+/* --- 1. Base Layout (Mobile First) --- */
 .player-overlay {
+  display: flex !important;
+  flex-direction: column !important;
   position: fixed;
   inset: 0;
   background: #000;
   z-index: 90000 !important;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
   height: 100dvh;
-  overflow: hidden;
+  width: 100vw;
 }
 
-/* ======================
-   MAIN LAYOUT CONTAINER
-   ====================== */
 .player-layout-container {
-  flex: 1;
   display: flex;
-  flex-direction: column; /* mobile default */
+  flex-direction: column; /* Mobile: Video Top, Sidebar Bottom */
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto; /* Scroll whole page on mobile */
 }
 
-/* ======================
-   VIDEO AREA
-   ====================== */
+/* --- 2. Video Area --- */
 .video-area {
-  flex: 1;
+  width: 100%;
   background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  aspect-ratio: 16/9; 
+  flex-shrink: 0;
 }
 
-.iframe-wrapper,
+.iframe-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
 #overlay-video {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* ======================
-   SIDEBAR (HIDDEN ON MOBILE)
-   ====================== */
+/* --- 3. Sidebar (Controls) --- */
 .player-sidebar {
-  display: none;
-}
-
-/* ======================
-   HEADER (MOBILE)
-   ====================== */
-.player-header {
-  position: relative;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 0 15px;
-  background: #000;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: block;
+  width: 100%;
+  background: #181818;
   flex-shrink: 0;
+  min-height: 50vh; 
 }
 
-.close-player-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
+.sidebar-content {
+  padding: 20px;
+}
+
+.sidebar-content h2 {
   font-size: 1.2rem;
-  cursor: pointer;
-}
-
-/* ========================================================
-   DESKTOP LAYOUT (KISSKH STYLE)
-   ======================================================== */
-@media (min-width: 1024px) {
-
-  /* Split layout */
-  .player-layout-container {
-    flex-direction: row;
-  }
-
-  /* VIDEO LEFT */
-  .video-area {
-    flex: 1;
-    height: 100%;
-  }
-
-  /* SIDEBAR RIGHT */
-  .player-sidebar {
-    display: flex;
-    flex-direction: column;
-    width: 380px;
-    height: 100%;
-    background: #181818;
-    border-left: 1px solid rgba(255,255,255,0.1);
-    flex-shrink: 0;
-  }
-
-  .sidebar-content {
-    padding: 25px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  /* FLOATING CLOSE BUTTON */
-  .player-header {
-    position: absolute;
-    top: 0;
-    right: 380px; /* sidebar width */
-    background: transparent;
-    border: none;
-    pointer-events: none;
-    z-index: 100;
-  }
-
-  .close-player-btn {
-    pointer-events: auto;
-    background: rgba(0,0,0,0.6);
-    margin: 20px;
-  }
-}
-
-/* ========================================================
-   SIDEBAR CONTENT
-   ======================================================== */
-
-.sidebar-title {
-  font-size: 1.5rem;
-  font-weight: 700;
   color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   line-height: 1.2;
 }
 
 .sidebar-meta {
+  color: #aaa;
+  font-size: 0.8rem;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
-  color: #aaa;
-  margin-bottom: 20px;
 }
 
 .sidebar-meta .dot {
-  width: 4px;
-  height: 4px;
-  background: #555;
-  border-radius: 50%;
+  width: 4px; height: 4px; background: #555; border-radius: 50%;
 }
 
-/* ======================
-   SERVER / SEASON SELECTS
-   ====================== */
-.sidebar-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+/* --- DESCRIPTION ACCORDION --- */
+.description-container {
+    background: #252525;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
 }
 
-.sidebar-controls select {
-  width: 100%;
-  padding: 12px;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  cursor: pointer;
+.desc-header {
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #2a2a2a;
+    color: #eee;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
 }
 
-.sidebar-controls select:focus {
-  border-color: var(--accent-color);
+.desc-header:hover {
+    background: #333;
 }
 
-/* ======================
-   EPISODE SEARCH
-   ====================== */
-.sidebar-search-input {
-  width: 100%;
-  padding: 10px 14px;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.9rem;
-  margin-bottom: 12px;
+.desc-header i {
+    transition: transform 0.3s ease;
+    font-size: 0.8rem;
 }
 
-.sidebar-search-input:focus {
-  border-color: var(--accent-color);
+.desc-header i.rotate {
+    transform: rotate(180deg);
 }
 
-/* ======================
-   EPISODE GRID (5 COLS)
-   ====================== */
+.desc-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, padding 0.3s ease;
+    background: #222;
+}
+
+.desc-content.open {
+    max-height: 500px; /* Arbitrary large height */
+    padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.overview-text {
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.genre-tag {
+    background: rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #bbb;
+}
+
+/* --- ACTION BUTTONS --- */
+.sidebar-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.action-btn i { font-size: 1.1rem; }
+.action-btn:hover { color: var(--accent-color); }
+
+/* --- INPUTS & GRID --- */
+.control-group { margin-bottom: 15px; }
+.control-group label {
+  display: block; font-size: 0.75rem; color: #888; margin-bottom: 6px; font-weight: 600; text-transform: uppercase;
+}
+
+.sidebar-select, .sidebar-search-input {
+  width: 100%; padding: 12px 15px; background: #2a2a2a; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 0.95rem; outline: none;
+}
+.sidebar-select:focus, .sidebar-search-input:focus { border-color: var(--accent-color); }
+
+.ep-section-header { margin: 20px 0 10px 0; color: #fff; font-weight: 700; font-size: 1rem; }
+
 .sidebar-ep-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
 }
 
 .ep-grid-btn {
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 0;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.2s;
+  background: #333; color: #fff; border: none; border-radius: 6px; height: 40px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+}
+.ep-grid-btn:hover { background: #444; }
+.ep-grid-btn.active { background: #fff; color: #000; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+
+/* --- HEADER CLOSE BTN --- */
+.player-header {
+  position: absolute; top: 0; right: 0; width: 100%; height: 60px; z-index: 100; pointer-events: none; display: flex; justify-content: flex-end; padding: 15px;
+}
+.close-player-btn {
+  pointer-events: auto; width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 
-.ep-grid-btn:hover {
-  background: #444;
-}
+.sidebar-divider { height: 1px; background: #333; margin: 20px 0; }
+.sandbox-toggle-row { display: flex; justify-content: space-between; align-items: center; color: #ccc; font-size: 0.9rem; }
 
-.ep-grid-btn.active {
-  background: #e5e5e5;
-  color: #000;
-  font-weight: 800;
-}
-/* Desktop pill dropdown opens downward */
+/* --- 4. DESKTOP LAYOUT (Min-Width: 1024px) --- */
 @media (min-width: 1024px) {
-  .player-sidebar .pill-menu {
-    top: 100%;
-    bottom: auto;
-    margin-top: 10px;
-  }
-
-  .player-sidebar .pill-dropdown i {
-    transform: rotate(0deg);
-  }
-
-  .player-sidebar .pill-dropdown.open i {
-    transform: rotate(180deg);
-  }
-}
-/* ========================================================
-   PLAYER LAYOUT (UNIVERSAL SIDEBAR)
-   ======================================================== */
-
-/* Mobile: Stacked Layout */
-.player-layout-container {
-  display: flex;
-  flex-direction: column; /* Video top, Sidebar bottom */
-  width: 100%;
-  height: 100%;
-  overflow-y: auto; /* Allow scrolling the whole container on mobile */
-}
-
-/* Make Sidebar Visible on Mobile */
-.player-sidebar {
-  display: flex !important; /* Force show */
-  flex-direction: column;
-  width: 100%;
-  background: #181818;
-  padding: 20px;
-  flex-shrink: 0;
-}
-
-/* Sidebar Inputs */
-.sidebar-select, .sidebar-search-input {
-  width: 100%;
-  padding: 12px;
-  background: #2a2a2a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  outline: none;
-  margin-bottom: 5px;
-}
-
-.sidebar-search-input:focus, .sidebar-select:focus {
-  border-color: var(--accent-color);
-}
-
-.control-group {
-  margin-bottom: 15px;
-}
-
-.control-group label {
-  display: block;
-  font-size: 0.8rem;
-  color: #888;
-  margin-bottom: 5px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-/* Desktop: Side-by-Side Layout */
-@media (min-width: 1024px) {
-  .player-overlay {
-    overflow: hidden; /* Lock scroll on desktop */
-  }
-
-  .player-layout-container {
-    flex-direction: row; /* Video Left, Sidebar Right */
-    height: 100%;
-    overflow: hidden;
-  }
-
+  .player-overlay { overflow: hidden; }
+  .player-layout-container { flex-direction: row; height: 100%; overflow: hidden; }
+  
   .video-area {
-    flex: 1;
-    height: 100%;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 1; height: 100%; aspect-ratio: auto; position: relative; display: flex; align-items: center; justify-content: center;
   }
 
   .player-sidebar {
-    width: 350px; /* Fixed width sidebar */
-    height: 100%;
-    overflow-y: auto; /* Scroll inside sidebar only */
-    border-left: 1px solid rgba(255,255,255,0.1);
+    width: 350px; height: 100%; overflow-y: auto; border-left: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .player-header {
+    width: auto; right: 350px; top: 10px; right: 370px;
   }
 }
