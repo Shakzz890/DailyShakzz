@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useGlobal } from "../../context/GlobalContext";
 import { fetchData } from "../../api/tmdb";
 
@@ -23,7 +23,7 @@ export default function PlayerOverlay() {
   const [episodes, setEpisodes] = useState([]);
   const [epSearch, setEpSearch] = useState("");
   
-  // New State for Description Toggle
+  // Description Toggle
   const [showDesc, setShowDesc] = useState(false);
 
   // --- SANDBOX LOGIC ---
@@ -66,7 +66,7 @@ export default function PlayerOverlay() {
     }
     setSeason(startSeason);
     setEpisode(startEpisode);
-    setShowDesc(false); // Reset description on new open
+    setShowDesc(false);
 
     if (isTv) {
       fetchData(`/tv/${detailItem.id}`).then(d => {
@@ -139,22 +139,6 @@ export default function PlayerOverlay() {
                 <span>{isTv ? 'TV Series' : 'Movie'}</span>
                 <span className="dot"></span>
                 <span>{detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'N/A'} <i className="fas fa-star" style={{color:'gold', fontSize:'0.7rem'}}></i></span>
-            </div>
-
-            {/* ACTION BUTTONS (Visual) */}
-            <div className="sidebar-actions">
-                <button className="action-btn">
-                    <i className="fa-regular fa-heart"></i>
-                    <span>Favorite</span>
-                </button>
-                <button className="action-btn">
-                    <i className="fa-solid fa-share-nodes"></i>
-                    <span>Share</span>
-                </button>
-                <button className="action-btn">
-                    <i className="fa-solid fa-triangle-exclamation"></i>
-                    <span>Report</span>
-                </button>
             </div>
 
             {/* --- DESCRIPTION DROPDOWN --- */}
