@@ -2003,20 +2003,19 @@ img {
 }
 
 /* ========================================================
-   9. PLAYER OVERLAY (Universal Stacked Layout - Mobile & Desktop)
+   9. PLAYER OVERLAY (Fixed Stacked Layout)
    ======================================================== */
 .player-overlay {
   position: fixed; 
   inset: 0; 
   background: #000; 
-  z-index: 99999 !important; /* Higher than everything */
+  z-index: 90000 !important; 
   display: flex; 
-  flex-direction: column; /* Stack Top to Bottom */
+  flex-direction: column; 
   height: 100dvh; 
   width: 100vw;
 }
 
-/* --- 1. HEADER (Fixed Top) --- */
 .player-header {
   position: relative;
   width: 100%;
@@ -2031,7 +2030,6 @@ img {
   flex-shrink: 0; 
 }
 
-/* Header Text */
 .player-header-info {
   display: flex;
   flex-direction: column;
@@ -2041,7 +2039,6 @@ img {
   overflow: hidden;
 }
 
-/* Close Button */
 .close-player-btn {
   width: 40px;
   height: 40px;
@@ -2058,16 +2055,11 @@ img {
   flex-shrink: 0;
 }
 
-.close-player-btn:hover {
-  background: var(--accent-color);
-  color: #fff;
-}
+.close-player-btn:hover { background: var(--accent-color); color: #fff; }
 
-/* --- 2. VIDEO (Fills Middle) --- */
 .iframe-wrapper {
-  flex: 1; /* Grow to fill space */
+  flex: 1; 
   width: 100%;
-  position: relative;
   background: #000;
   display: flex;
   align-items: center;
@@ -2075,19 +2067,16 @@ img {
   overflow: hidden;
 }
 
-#overlay-video { 
-  width: 100%; 
-  height: 100%; 
-  border: none; 
-}
+#overlay-video { width: 100%; height: 100%; border: none; }
 
-/* --- 3. CONTROLS (Fixed Bottom) --- */
+/* CONTROLS - Forced Stacked */
 .player-controls-bar.stacked {
   position: relative;
   width: 100%;
-  padding: 20px 25px 30px 25px;
+  /* CRITICAL: Force vertical stack on ALL screens */
   display: flex !important;
-  flex-direction: column !important; /* Stack rows vertically */
+  flex-direction: column !important; 
+  padding: 20px 25px 30px 25px;
   gap: 15px;
   background: #000;
   border-top: 1px solid rgba(255,255,255,0.1);
@@ -2095,7 +2084,6 @@ img {
   flex-shrink: 0;
 }
 
-/* Control Rows */
 .row-server, .row-nav {
   display: flex; 
   flex-direction: row; 
@@ -2104,84 +2092,37 @@ img {
   justify-content: space-between;
 }
 
-/* Dropdowns & Inputs */
 .pill-wrapper { position: relative; flex: 1; }
 
 .pill-dropdown, .episode-search {
-  height: 50px; 
-  width: 100%; 
-  padding: 0 20px;
+  height: 50px; width: 100%; padding: 0 20px;
   background: rgba(30, 30, 30, 1);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50px;
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between;
-  cursor: pointer; 
-  color: #fff; 
-  font-weight: 600; 
-  font-size: 0.9rem;
-  outline: none;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; color: #fff; font-weight: 600; font-size: 0.9rem; outline: none;
 }
 
-.pill-dropdown.open, .episode-search:focus {
-  border-color: var(--accent-color);
-  background: #222;
-}
-
-.pill-dropdown i { 
-  margin-left: 10px; 
-  font-size: 0.8rem; 
-  color: #aaa; 
-  transition: transform 0.3s; 
-}
-
-.pill-dropdown.open i { 
-  transform: rotate(180deg); 
-  color: var(--accent-color); 
-}
-
+.pill-dropdown.open, .episode-search:focus { border-color: var(--accent-color); background: #222; }
+.pill-dropdown i { margin-left: 10px; font-size: 0.8rem; color: #aaa; transition: transform 0.3s; }
+.pill-dropdown.open i { transform: rotate(180deg); color: var(--accent-color); }
 .pill-label { width: 100%; display: flex; justify-content: space-between; align-items: center; }
 .pill-label span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Pop-up Menus (Always open UPWARDS) */
 .pill-menu {
-  position: absolute;
-  bottom: 120%; /* Open Up */
-  left: 0; 
-  width: 100%; 
-  min-width: 200px;
-  max-height: 300px; 
-  overflow-y: auto;
-  background: #151515;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95);
-  display: none; 
-  flex-direction: column; 
-  z-index: 100;
-  padding: 5px;
+  position: absolute; bottom: 120%; left: 0; 
+  width: 100%; min-width: 200px; max-height: 300px; overflow-y: auto;
+  background: #151515; border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95);
+  display: none; flex-direction: column; z-index: 100; padding: 5px;
 }
-
 .pill-wrapper .pill-dropdown.open + .pill-menu { display: flex; animation: fadeInUp 0.15s ease-out; }
 
-/* Menu Items */
-.menu-header {
-  padding: 10px 15px; font-size: 0.85rem; font-weight: 700; color: #aaa;
-  display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px;
-  position: sticky; top: 0; background: #151515; z-index: 5;
-}
-
-.menu-option {
-  padding: 12px 15px; font-size: 0.95rem; color: #eee;
-  cursor: pointer; border-radius: 8px; margin-bottom: 2px;
-  display: flex; justify-content: space-between; align-items: center;
-}
+.menu-header { padding: 10px 15px; font-size: 0.85rem; font-weight: 700; color: #aaa; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; position: sticky; top: 0; background: #151515; z-index: 5; }
+.menu-option { padding: 12px 15px; font-size: 0.95rem; color: #eee; cursor: pointer; border-radius: 8px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
 .menu-option:hover { background: rgba(255,255,255,0.1); }
 .menu-option.selected { background: var(--accent-color); color: #fff; font-weight: 700; }
 
-/* Switch Toggle */
 .switch { position: relative; width: 40px; height: 22px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; inset: 0; background: #333; border-radius: 20px; cursor: pointer; transition: .3s; }
@@ -2189,21 +2130,15 @@ img {
 input:checked + .slider { background: var(--accent-color); }
 input:checked + .slider:before { transform: translateX(18px); }
 
-/* --- FORCE DESKTOP TO RESPECT STACKED LAYOUT --- */
+/* --- DESKTOP SPECIFIC OVERRIDE --- */
+/* This forces the stack layout even on wide screens */
 @media (min-width: 1024px) {
   .player-controls-bar.stacked {
-    position: relative; /* Keep it at bottom */
-    flex-direction: column !important; /* Force Stack */
+    flex-direction: column !important; /* Force Column */
     width: 100%;
     max-width: 100%;
-    border-top: 1px solid rgba(255,255,255,0.1); /* Ensure border visible */
     background: #000;
-    padding: 20px 40px 30px 40px; /* Adjust padding for desktop */
-  }
-  
-  .pill-menu { 
-    bottom: 120%; /* Keep opening UPWARDS */
-    top: auto; 
+    padding: 20px 40px 30px 40px; 
   }
 }
 
@@ -3012,7 +2947,31 @@ input:checked + .slider:before { transform: translateX(18px); }
     max-width: 100% !important;
     margin: 0 !important;
     flex-shrink: 0 !important;
+    display: flex;
+    flex-direction: column;
 }
+
+/* --- IMAGE FILL FIX (Crucial for Recommendations) --- */
+.recommendations-grid .card-poster,
+#category-grid .card-poster,
+#search-results .card-poster {
+    width: 100% !important;
+    aspect-ratio: 2/3 !important; /* Forces the vertical rectangle shape */
+    position: relative;
+    overflow: hidden;
+    background: #1a1a1a;
+    border-radius: var(--border-radius);
+}
+
+.recommendations-grid .card-poster img,
+#category-grid .card-poster img,
+#search-results .card-poster img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Crops image to fill the box with no gaps */
+    display: block;
+}
+
 
 /* ========================================================
    15. USER ACTIONS (3-Dots Menu & Pin)
@@ -3459,29 +3418,4 @@ input:checked + .slider:before { transform: translateX(18px); }
   display: flex !important;
   opacity: 1 !important;
   visibility: visible !important;
-}
-
-/* 1. Force the grid card shape */
-.recommendations-grid .movie-card {
-    width: 100% !important;
-    display: flex;
-    flex-direction: column;
-}
-
-/* 2. Force the Poster Shape & Fill */
-.recommendations-grid .card-poster {
-    width: 100% !important;
-    aspect-ratio: 2/3 !important; /* Enforce Poster Shape */
-    position: relative;
-    overflow: hidden;
-    background: #1a1a1a;
-    border-radius: var(--border-radius);
-}
-
-/* 3. Force Image to COVER the area */
-.recommendations-grid .card-poster img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important; /* Crop to fill (No stretching, No gaps) */
-    display: block;
 }
