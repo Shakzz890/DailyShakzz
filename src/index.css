@@ -3532,3 +3532,19 @@ input:checked + .slider:before {
   color: #000;
   font-weight: 800;
 }
+/* Desktop pill dropdown opens downward */
+@media (min-width: 1024px) {
+  .player-sidebar .pill-menu {
+    top: 100%;
+    bottom: auto;
+    margin-top: 10px;
+  }
+
+  .player-sidebar .pill-dropdown i {
+    transform: rotate(0deg);
+  }
+
+  .player-sidebar .pill-dropdown.open i {
+    transform: rotate(180deg);
+  }
+}
