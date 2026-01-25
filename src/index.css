@@ -3,45 +3,28 @@
    ========================================================================== */
 
 /* ========================================================
-   1. CSS CUSTOM PROPERTIES (Variables)
+   1. CSS CUSTOM PROPERTIES
    ======================================================== */
 :root {
-  /* --- SHADOW MONARCH PALETTE --- */
-  
-  /* Primary Glow (System Purple) */
-  --accent-color: #a855f7; /* Lighter Purple for pop */
-  --accent-dark: #7e22ce;  /* Darker Purple for gradients */
-  
-  /* Backgrounds (Abyss Black) */
-  --bg-color: #050505;     /* Pure Deep Black */
-  --glass-border: rgba(168, 85, 247, 0.2); /* Purple tint border */
-  
-  /* Text */
+  --accent-color: #a855f7;
+  --accent-dark: #7e22ce;
+  --bg-color: #050505;
+  --glass-border: rgba(168, 85, 247, 0.2);
   --text-color: #f8fafc;
   --text-muted: #94a3b8;
-  
-  /* Gradients */
-  --accent-gradient: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); /* Purple to Blue shadow glow */
-  
-  /* UI Elements */
-  --rating-color: #46d369; /* Keep green for ratings */
-  
-  /* Layout */
+  --accent-gradient: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+  --rating-color: #46d369;
   --sidebar-width: 280px;
   --header-height: 70px;
   --border-radius: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 16px;
-  
-  /* Transitions */
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   --transition-fast: all 0.2s ease;
-  
-  /* Shadows (Purple Glow) */
   --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.4); /* "Arise" glow effect */
+  --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.4);
 }
 
 /* ========================================================
@@ -93,7 +76,6 @@ img {
   display: block;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   background: var(--bg-color);
@@ -118,8 +100,6 @@ img {
 /* ========================================================
    3. LAYOUT COMPONENTS
    ======================================================== */
-   
-/* Basic Hamburger Styling */
 .hamburger {
   font-size: 1.5rem;
   color: #fff;
@@ -137,12 +117,10 @@ img {
   text-shadow: 0 0 10px var(--accent-color);
 }
 
-/* Hide Desktop Menu by default (Mobile First) */
 .desktop-menu {
   display: none;
 }
 
-/* --- Navbar --- */
 .navbar {
   position: fixed;
   top: 0;
@@ -153,8 +131,7 @@ img {
   justify-content: space-between;
   align-items: center;
   padding: 0 4%;
-  /* FIX: Increased z-index to be higher than Search Modal (10005) */
-  z-index: 30000 !important; 
+  z-index: 30000 !important;
   background: linear-gradient(to bottom, rgba(5, 5, 5, 0.95) 0%, transparent 100%);
   transition: background 0.3s ease;
   box-shadow: none;
@@ -165,7 +142,6 @@ img {
   border-bottom: 1px solid var(--glass-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
 }
-
 
 .nav-left, .nav-right {
   display: flex;
@@ -222,7 +198,6 @@ img {
   object-fit: cover;
 }
 
-/* --- Sidebar --- */
 .sidebar {
   position: fixed;
   top: 0;
@@ -294,7 +269,6 @@ img {
   margin-top: auto;
 }
 
-/* --- Overlay --- */
 .overlay {
   position: fixed;
   top: 0;
@@ -310,7 +284,6 @@ img {
   display: block;
 }
 
-/* --- Bottom Navigation (Mobile) --- */
 .bottom-nav {
   display: none;
   position: fixed;
@@ -357,7 +330,6 @@ img {
   text-shadow: 0 0 10px var(--accent-color);
 }
 
-/* --- Footer --- */
 .footer {
   background: #000;
   color: #fff;
@@ -469,7 +441,6 @@ img {
   white-space: nowrap;
   user-select: none;
   margin: 20px 0;
-  /* Shadow Monarch Gradient Effect controlled in Home.jsx inline styles */
 }
 
 .footer-bottom {
@@ -484,76 +455,32 @@ img {
 }
 
 /* ========================================================
-   4. NEW GLOW EFFECTS & COMPONENTS
+   4. GLOW EFFECTS & COMPONENTS
    ======================================================== */
 .play-btn-primary, .slider-btn.btn-play-slide, .contact-btn {
-    box-shadow: var(--shadow-glow);
-    background: var(--accent-gradient) !important;
-    border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: var(--shadow-glow);
+  background: var(--accent-gradient) !important;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .play-btn-primary:hover, .slider-btn.btn-play-slide:hover, .contact-btn:hover {
-    filter: brightness(1.2);
-    transform: scale(1.05);
+  filter: brightness(1.2);
+  transform: scale(1.05);
 }
 
 .badge-overlay, .coming-badge, .slide-badge, .continue-ep-badge {
-    background: var(--accent-dark) !important;
-    box-shadow: 0 2px 10px rgba(126, 34, 206, 0.5);
+  background: var(--accent-dark) !important;
+  box-shadow: 0 2px 10px rgba(126, 34, 206, 0.5);
 }
 
 .nav-link.active::after {
-    background-color: var(--accent-color) !important;
-    box-shadow: 0 -2px 10px var(--accent-color);
+  background-color: var(--accent-color) !important;
+  box-shadow: 0 -2px 10px var(--accent-color);
 }
 
 /* ========================================================
-   5. FORCE LAYERING FIXES (CRITICAL FOR DETAIL VIEW)
+   5. VIEWS & CONTAINERS
    ======================================================== */
-
-/* 1. Ensure Search/Explore Modal is above the Navbar */
-.search-modal {
-  z-index: 20000 !important;
-}
-
-/* 2. Ensure Detail View is ABOVE Search Modal */
-#detail-view {
-  z-index: 70000 !important; 
-  display: none; /* Default hidden */
-  background: var(--bg-color); /* Ensure opaque background */
-}
-
-/* 3. Ensure Player Overlay is ABOVE Detail View (Highest) */
-.player-overlay {
-  z-index: 40000 !important;
-}
-
-/* 4. Ensure Detail View is visible when active (JS sets display:block) */
-#detail-view[style*="display: block"] {
-  display: block !important;
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* ========================================================
-   6. RESPONSIVE UTILITIES
-   ======================================================== */
-@media (min-width: 1024px) {
-  .hamburger { display: none !important; }
-  .desktop-menu { display: flex !important; align-items: center; gap: 30px; margin-left: 50px; }
-  .bottom-nav { display: none !important; }
-}
-
-@media (max-width: 1023px) {
-  .footer-top, .footer-nav-wrapper { flex-direction: column; align-items: center; text-align: center; gap: 30px; }
-  .social-row { justify-content: center; }
-  #detail-view { padding-bottom: 80px; } /* Space for mobile nav */
-}
-
-
-/* ========================================================
-   4. VIEWS & CONTAINERS
-   ======================================================== */
-
 #home-view {
   padding-bottom: 40px;
   overflow-y: auto;
@@ -572,13 +499,13 @@ img {
   position: fixed;
   inset: 0;
   background: #141414;
-  z-index: 9000;
+  z-index: 70000 !important;
   display: none;
   overflow-y: auto;
   animation: fadeIn 0.3s ease;
   scrollbar-width: auto;
   -ms-overflow-style: auto;
-  padding-bottom: 20px !important; 
+  padding-bottom: 20px !important;
 }
 
 #detail-view::-webkit-scrollbar {
@@ -601,8 +528,8 @@ img {
   width: 100%;
   min-height: 100vh;
   background: var(--bg-color);
-  position: relative; 
-  z-index: 10;
+  position: relative;
+  z-index: 55000 !important;
   padding-top: 80px;
 }
 
@@ -649,7 +576,7 @@ img {
   color: #000;
 }
 
-.category-content { 
+.category-content {
   flex: 1;
   overflow: visible;
   padding: 15px;
@@ -662,15 +589,12 @@ img {
   height: 100vh;
   overflow-y: auto;
   background: var(--bg-color);
-  padding-top: 80px;
-  padding-bottom: 90px;
+  padding-top: 70px;
 }
 
 /* ========================================================
-   5. HOME PAGE COMPONENTS
+   6. HOME PAGE COMPONENTS
    ======================================================== */
-
-/* --- Preloader --- */
 #preloader {
   position: fixed;
   inset: 0;
@@ -691,23 +615,17 @@ img {
   margin-bottom: 20px;
 }
 
-/* --- Preloader & Loading Spinners --- */
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border: 4px solid rgba(255, 255, 255, 0.1);
-  border-top: 4px solid var(--accent-color); /* This will now be Purple */
+  border-top: 4px solid var(--accent-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  
-  /* CENTER FIXES */
-  margin: 20px auto;       /* Auto margins center it horizontally */
-  display: block;          /* Ensures it behaves like a block */
-  grid-column: 1 / -1;     /* CRITICAL: Forces it to span ALL grid columns */
-  width: 50px;             /* Slightly larger for better visibility */
-  height: 50px;
+  margin: 20px auto;
+  display: block;
+  grid-column: 1 / -1;
 }
-
 
 .loader-content p {
   color: #888;
@@ -716,7 +634,6 @@ img {
   font-weight: 500;
 }
 
-/* --- Slider --- */
 .slider-viewport {
   position: relative;
   width: 100%;
@@ -751,7 +668,7 @@ img {
 
 .slide-content {
   position: absolute;
-  bottom: 40px; 
+  bottom: 40px;
   left: 5%;
   right: 5%;
   max-width: 800px;
@@ -787,7 +704,7 @@ img {
 .slide-meta {
   display: flex;
   align-items: center;
-  gap: 6px; 
+  gap: 6px;
   font-size: 1.1rem;
   color: #e0e0e0;
   margin-bottom: 20px;
@@ -807,7 +724,7 @@ img {
   font-size: 1rem;
   line-height: 1.6;
   color: #ccc;
-  margin-bottom: 50px; 
+  margin-bottom: 50px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -867,7 +784,6 @@ img {
   border-radius: 10px;
 }
 
-/* --- Slider Arrows --- */
 .slider-arrow {
   position: absolute;
   top: 50%;
@@ -910,7 +826,6 @@ img {
   right: 20px;
 }
 
-/* --- Content Rows --- */
 .row {
   padding: 20px;
 }
@@ -948,7 +863,6 @@ img {
   opacity: 1;
 }
 
-/* --- Movie Cards --- */
 .list {
   display: flex;
   gap: 12px;
@@ -1073,13 +987,13 @@ img {
 }
 
 /* ========================================================
-   6. LIVE TV VIEW (Fixed Mobile Overlap)
+   7. LIVE TV VIEW
    ======================================================== */
 #live-view {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 80px; 
+  padding-top: 80px;
   min-height: 100vh;
   background: var(--bg-color);
   animation: fadeIn 0.5s ease;
@@ -1319,7 +1233,7 @@ img {
 }
 
 /* ========================================================
-   7. DETAIL VIEW
+   8. DETAIL VIEW
    ======================================================== */
 .detail-backdrop-layer {
   position: absolute;
@@ -1382,7 +1296,7 @@ img {
   max-width: 1400px;
   margin: 0 auto;
   padding-top: 200px;
-  padding-bottom: 30px !important; 
+  padding-bottom: 30px !important;
   display: flex;
   flex-direction: column;
 }
@@ -1532,48 +1446,43 @@ img {
 
 .recommendations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px;
   width: 100%;
   margin-top: 10px;
   padding-bottom: 0 !important;
+  align-content: start;
+  justify-content: center;
 }
 
 /* ========================================================
-   8. SEARCH MODAL & FILTERS (CORRECTED LAYOUT)
+   9. SEARCH MODAL & FILTERS
    ======================================================== */
-
-/* In Section 8. SEARCH MODAL & FILTERS */
 .search-modal {
   display: none;
   flex-direction: column;
-  position: fixed; 
+  position: fixed;
   inset: 0;
   width: 100%;
   height: 100dvh;
   background-color: var(--bg-color);
-  z-index: 10005; /* This is lower than Navbar (30000) now */
-  
-  /* FIX: Add padding so the search bar starts BELOW the Navbar */
-  padding-top: var(--header-height); 
+  z-index: 20000 !important;
+  padding-top: var(--header-height);
 }
 
-
-/* 2. Header Container (Search Bar + Pills) */
-.search-header-row { 
-  display: flex; 
-  flex-direction: column !important; /* CRITICAL: Stacks items vertically */
-  gap: 12px; 
-  width: 100%; 
-  padding: 15px; 
-  padding-bottom: 0; 
+.search-header-row {
+  display: flex;
+  flex-direction: column !important;
+  gap: 12px;
+  width: 100%;
+  padding: 15px;
+  padding-bottom: 0;
   background: var(--bg-color);
   border-bottom: 1px solid rgba(255,255,255,0.1);
   flex-shrink: 0;
   z-index: 20;
 }
 
-/* Row 1: Input Wrapper */
 .search-input-row {
   display: flex;
   align-items: center;
@@ -1581,11 +1490,10 @@ img {
   width: 100%;
 }
 
-/* 3. Search Bar Input */
 .search-bar-wrapper {
   position: relative;
   flex: 1;
-  display: flex; 
+  display: flex;
   align-items: center;
 }
 
@@ -1600,13 +1508,34 @@ img {
   outline: none;
 }
 
-#search-input:focus { border-color: var(--accent-color); background: #222; }
+#search-input:focus {
+  border-color: var(--accent-color);
+  background: #222;
+}
 
-.search-modal-icon { position: absolute; left: 15px; color: #888; font-size: 1.1rem; pointer-events: none; }
-.search-clear-btn { position: absolute; right: 15px; color: #888; cursor: pointer; display: none; padding: 5px; }
-.search-back-btn { font-size: 1.2rem; color: #fff; cursor: pointer; }
+.search-modal-icon {
+  position: absolute;
+  left: 15px;
+  color: #888;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
 
-/* 4. Results Grid */
+.search-clear-btn {
+  position: absolute;
+  right: 15px;
+  color: #888;
+  cursor: pointer;
+  display: none;
+  padding: 5px;
+}
+
+.search-back-btn {
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+}
+
 .search-modal #search-results {
   flex: 1;
   overflow-y: auto;
@@ -1617,33 +1546,23 @@ img {
   padding-bottom: 80px;
 }
 
-/* ========================================================
-   UNIVERSAL PILL FIX (Apply this to Section 8 or Bottom of CSS)
-   ======================================================== */
-
-/* 1. Force Pills to be Visible GLOBALLY (Search Modal + Explore Page) */
 .header-pills-wrapper {
-  display: flex !important; /* CRITICAL: This ensures they never disappear */
+  display: flex !important;
   gap: 10px;
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
   width: 100%;
   align-items: center;
-  
-  /* ALIGNMENT: 5px top, 15px bottom space */
-  padding: 5px 0 15px 0; 
+  padding: 5px 0 15px 0;
   margin: 0;
-  
-  /* FLUSH LEFT: Removes indentation */
-  padding-left: 0 !important; 
+  padding-left: 0 !important;
 }
 
-.header-pills-wrapper::-webkit-scrollbar { 
-  display: none; 
+.header-pills-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
-/* 2. Pill Button Style */
 .header-pills-wrapper .filter-pill {
   padding: 8px 20px;
   font-size: 0.85rem;
@@ -1663,7 +1582,7 @@ img {
   border-color: var(--accent-color);
   box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
-/* Scrolling Fix: Results Container */
+
 .results-container {
   flex: 1;
   min-height: 0;
@@ -1674,9 +1593,9 @@ img {
 }
 
 #search-heading {
-  margin: 0 0 10px 15px; 
-  font-size: 1.1rem; 
-  color: #eee; 
+  margin: 0 0 10px 15px;
+  font-size: 1.1rem;
+  color: #eee;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -1687,37 +1606,13 @@ img {
   overflow-x: hidden;
   padding-bottom: 120px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(2, 1fr) !important;
   gap: 15px;
   padding-left: 15px;
   padding-right: 15px;
   align-content: start;
 }
 
-/* Search Modal (Overlay) */
-.search-modal {
-  display: none;
-  flex-direction: column;
-  position: fixed; 
-  inset: 0;
-  background-color: var(--bg-color);
-  z-index: 10005;
-}
-
-.search-header-row { 
-  display: flex; 
-  align-items: center; 
-  gap: 15px; 
-  width: 100%; 
-}
-
-.search-back-btn { 
-  font-size: 1.2rem; 
-  color: #fff; 
-  cursor: pointer; 
-}
-
-/* Category Modal */
 #categoryModal {
   position: fixed;
   top: 0;
@@ -1725,12 +1620,11 @@ img {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 20000 !important;
+  z-index: 65000 !important;
   display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(5px);
 }
 
@@ -1803,14 +1697,13 @@ img {
   transform: scale(0.98);
 }
 
-/* Info Modal */
 #info-modal {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
   background: var(--bg-color);
-  z-index: 5000;
+  z-index: 60000 !important;
   display: none;
   flex-direction: column;
   overflow: hidden;
@@ -1894,7 +1787,6 @@ img {
   border-radius: 10px;
 }
 
-/* FAQ & Contact Styles */
 .update-item, .faq-item {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2003,16 +1895,16 @@ img {
 }
 
 /* ========================================================
-   9. PLAYER OVERLAY (Fixed & Stacked)
+   10. PLAYER OVERLAY
    ======================================================== */
 .player-overlay {
-  position: fixed; 
-  inset: 0; 
-  background: #000; 
-  z-index: 90000 !important; 
-  display: flex; 
-  flex-direction: column; 
-  height: 100dvh; 
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 90000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100dvh;
   width: 100vw;
 }
 
@@ -2027,7 +1919,7 @@ img {
   justify-content: space-between;
   padding: 0 25px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 
 .player-header-info {
@@ -2055,10 +1947,14 @@ img {
   flex-shrink: 0;
 }
 
-.close-player-btn:hover { background: var(--accent-color); color: #fff; }
+.close-player-btn:hover {
+  background: var(--accent-color);
+  color: #fff;
+}
 
 .iframe-wrapper {
-  flex: 1; 
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
   width: 100%;
   background: #000;
   display: flex;
@@ -2067,99 +1963,193 @@ img {
   overflow: hidden;
 }
 
-#overlay-video { width: 100%; height: 100%; border: none; }
-
-/* CONTROLS - Forces menu to float outside */
-.player-controls-bar.stacked {
-  position: relative;
+#overlay-video {
   width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: contain;
+}
+
+.player-controls-bar.stacked {
+  position: relative !important;
+  width: 100% !important;
   display: flex !important;
-  flex-direction: column !important; 
+  flex-direction: column !important;
   padding: 20px 25px 30px 25px;
   gap: 15px;
   background: #000;
   border-top: 1px solid rgba(255,255,255,0.1);
   z-index: 50;
   flex-shrink: 0;
-  overflow: visible !important; /* CRITICAL FIX FOR CROPPING */
+  overflow: visible !important;
 }
 
 .row-server, .row-nav {
-  display: flex; 
-  flex-direction: row; 
-  gap: 15px; 
-  width: 100%; 
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  width: 100%;
   justify-content: space-between;
 }
 
-.pill-wrapper { 
-  position: relative; 
+.pill-wrapper {
+  position: relative;
   flex: 1;
-  overflow: visible !important; /* CRITICAL FIX */
+  overflow: visible !important;
 }
 
 .pill-dropdown, .episode-search {
-  height: 50px; width: 100%; padding: 0 20px;
+  height: 50px;
+  width: 100%;
+  padding: 0 20px;
   background: rgba(30, 30, 30, 1);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50px;
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer; color: #fff; font-weight: 600; font-size: 0.9rem; outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  outline: none;
 }
 
-.pill-dropdown.open, .episode-search:focus { border-color: var(--accent-color); background: #222; }
-.pill-dropdown i { margin-left: 10px; font-size: 0.8rem; color: #aaa; transition: transform 0.3s; }
-.pill-dropdown.open i { transform: rotate(180deg); color: var(--accent-color); }
-.pill-label { width: 100%; display: flex; justify-content: space-between; align-items: center; }
-.pill-label span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pill-dropdown.open, .episode-search:focus {
+  border-color: var(--accent-color);
+  background: #222;
+}
 
-/* Pop-up Menus (OPEN UPWARDS) */
+.pill-dropdown i {
+  margin-left: 10px;
+  font-size: 0.8rem;
+  color: #aaa;
+  transition: transform 0.3s;
+}
+
+.pill-dropdown.open i {
+  transform: rotate(180deg);
+  color: var(--accent-color);
+}
+
+.pill-label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pill-label span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .pill-menu {
   position: absolute;
-  bottom: 100%; /* Opens UP */
-  left: 0; 
-  width: 100%; 
+  bottom: 100%;
+  left: 0;
+  width: 100%;
   min-width: 200px;
-  max-height: 50vh; /* Limits height so it fits on screen */
+  max-height: 50vh;
   overflow-y: auto;
   background: #151515;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.95);
-  display: none; 
-  flex-direction: column; 
-  z-index: 10000; 
+  display: none;
+  flex-direction: column;
+  z-index: 10000;
   padding: 5px;
   margin-bottom: 10px;
 }
 
-.pill-wrapper .pill-dropdown.open + .pill-menu { display: flex; animation: fadeInUp 0.15s ease-out; }
+.pill-wrapper .pill-dropdown.open + .pill-menu {
+  display: flex;
+  animation: fadeInUp 0.15s ease-out;
+}
 
-.menu-header { padding: 10px 15px; font-size: 0.85rem; font-weight: 700; color: #aaa; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; position: sticky; top: 0; background: #151515; z-index: 5; }
-.menu-option { padding: 12px 15px; font-size: 0.95rem; color: #eee; cursor: pointer; border-radius: 8px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
-.menu-option:hover { background: rgba(255,255,255,0.1); }
-.menu-option.selected { background: var(--accent-color); color: #fff; font-weight: 700; }
+.menu-header {
+  padding: 10px 15px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #aaa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 5px;
+  position: sticky;
+  top: 0;
+  background: #151515;
+  z-index: 5;
+}
 
-.switch { position: relative; width: 40px; height: 22px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; inset: 0; background: #333; border-radius: 20px; cursor: pointer; transition: .3s; }
-.slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 2px; bottom: 2px; background: #fff; border-radius: 50%; transition: .3s; }
-input:checked + .slider { background: var(--accent-color); }
-input:checked + .slider:before { transform: translateX(18px); }
+.menu-option {
+  padding: 12px 15px;
+  font-size: 0.95rem;
+  color: #eee;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-/* --- DESKTOP SPECIFIC OVERRIDE --- */
-@media (min-width: 1024px) {
-  .player-controls-bar.stacked {
-    flex-direction: column !important; 
-    width: 100%;
-    max-width: 100%;
-    background: #000;
-    padding: 20px 40px 30px 40px; 
-  }
+.menu-option:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.menu-option.selected {
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 700;
+}
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #333;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background: #fff;
+  border-radius: 50%;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background: var(--accent-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
 }
 
 /* ========================================================
-   10. AUTHENTICATION
+   11. AUTHENTICATION
    ======================================================== */
 .auth-wrapper {
   position: relative;
@@ -2267,7 +2257,7 @@ input:checked + .slider:before { transform: translateX(18px); }
 }
 
 /* ========================================================
-   11. SKELETON LOADING
+   12. SKELETON LOADING
    ======================================================== */
 .skeleton {
   background: #222;
@@ -2290,18 +2280,12 @@ input:checked + .slider:before { transform: translateX(18px); }
 }
 
 @keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes skeleton-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .skeleton-slide {
@@ -2327,15 +2311,421 @@ input:checked + .slider:before { transform: translateX(18px); }
 }
 
 /* ========================================================
-   12. ANIMATIONS
+   13. USER ACTIONS & CARDS
+   ======================================================== */
+.continue-card, .movie-card, .history-card {
+  position: relative !important;
+}
+
+.card-menu-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 20;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card-context-menu {
+  position: absolute;
+  top: 40px;
+  right: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 5px;
+  display: none;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.9);
+  min-width: 140px;
+}
+
+.card-context-menu.show {
+  display: flex;
+}
+
+.ctx-item {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ctx-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.ctx-item.delete:hover {
+  background: rgba(229, 9, 20, 0.2);
+  color: #ef4444;
+}
+
+.pinned-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  color: var(--accent-color);
+  font-size: 1rem;
+  z-index: 15;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+  display: none;
+}
+
+.pinned-badge.visible {
+  display: block;
+}
+
+#continue-list {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 15px !important;
+  padding: 10px 15px 25px 0 !important;
+  scrollbar-width: none;
+}
+
+#continue-list::-webkit-scrollbar {
+  display: none;
+}
+
+.continue-card {
+  flex: 0 0 auto !important;
+  width: 260px !important;
+  min-width: 260px !important;
+  position: relative !important;
+  transition: transform 0.2s ease;
+}
+
+.continue-card:hover {
+  transform: translateY(-5px);
+}
+
+.continue-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #222;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.continue-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: opacity 0.3s;
+}
+
+.continue-card:hover img {
+  opacity: 1;
+}
+
+.continue-play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.continue-card:hover .continue-play-icon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.continue-menu-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s;
+}
+
+.continue-menu-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.continue-ep-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  z-index: 20;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.continue-time-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  z-index: 20;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.continue-progress-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+.continue-progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+.continue-info {
+  padding-top: 8px;
+}
+
+.continue-title {
+  font-size: 0.95rem;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #222;
+}
+
+.history-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.history-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.2);
+}
+
+.history-progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+}
+
+/* ========================================================
+   14. EXPLORE VIEW
+   ======================================================== */
+.explore-header-wrapper {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 5000;
+  background: #000 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.9);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 15px;
+  padding-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.explore-filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  margin: 0 !important;
+  padding: 0 !important;
+  padding-bottom: 5px !important;
+  scrollbar-width: none;
+}
+
+.filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-pill {
+  background: #222;
+  color: #aaa;
+  border: 1px solid #333;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.filter-pill.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+  font-weight: 700;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px;
+  padding: 15px;
+  padding-bottom: 100px;
+}
+
+.explore-grid .movie-card {
+  width: 100%;
+  min-width: 0;
+}
+
+.explore-grid .card-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: #222;
+  border-radius: var(--border-radius);
+}
+
+/* ========================================================
+   15. UNIVERSAL GRID FIX
+   ======================================================== */
+.landscape-grid,
+#category-grid,
+#search-results,
+.recommendations-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px !important;
+  width: 100% !important;
+  padding: 10px 15px 100px 15px !important;
+  box-sizing: border-box !important;
+  align-content: start;
+  justify-content: center;
+}
+
+#category-grid .movie-card,
+#category-grid .history-card,
+#search-results .movie-card,
+.landscape-grid .movie-card,
+.landscape-grid .history-card,
+.recommendations-grid .movie-card,
+.recommendations-grid .rec-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendations-grid .card-poster,
+#category-grid .card-poster,
+#search-results .card-poster {
+  width: 100% !important;
+  aspect-ratio: 2/3 !important;
+  position: relative;
+  overflow: hidden;
+  background: #1a1a1a;
+  border-radius: var(--border-radius);
+}
+
+.recommendations-grid .card-poster img,
+#category-grid .card-poster img,
+#search-results .card-poster img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
+}
+
+/* ========================================================
+   16. ANIMATIONS
    ======================================================== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeInUp {
@@ -2350,32 +2740,28 @@ input:checked + .slider:before { transform: translateX(18px); }
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* --- Desktop Layout (Screens 1024px and Wider) --- */
+/* ========================================================
+   17. MEDIA QUERIES
+   ======================================================== */
+
+/* Desktop (1024px and up) */
 @media (min-width: 1024px) {
+  .hamburger { display: none !important; }
+  .desktop-menu { display: flex !important; align-items: center; gap: 30px; margin-left: 50px; }
+  .bottom-nav { display: none !important; }
   
-  /* 1. HIDE MOBILE ELEMENTS */
-  .hamburger {
-    display: none !important;
-  }
-  
-  /* 2. LIVE TV LAYOUT (Side-by-Side) */
   #live-view {
-    display: flex; 
+    display: flex;
     flex-direction: row;
-    padding-top: 80px !important; 
+    padding-top: 80px !important;
     height: 100vh;
     overflow: hidden;
   }
 
-  /* Left Side: Video Player (70%) */
   .live-player-container {
     width: 70%;
     height: 100%;
@@ -2397,7 +2783,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     height: 100% !important;
   }
 
-  /* Right Side: Channel List (30%) */
   .channel-section {
     width: 30%;
     height: 100%;
@@ -2410,9 +2795,8 @@ input:checked + .slider:before { transform: translateX(18px); }
     flex-direction: column;
   }
 
-  /* 3. RESTORED SEARCH & DROPDOWN PLACEMENT */
   .search-container {
-    width: auto; 
+    width: auto;
     margin: 20px 20px 15px 20px;
     padding: 0;
     flex-shrink: 0;
@@ -2442,10 +2826,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     transform: translateY(-1px);
   }
 
-  .category-bar {
-    display: none;
-  }
-
   .channel-list-wrapper {
     flex: 1;
     overflow-y: auto;
@@ -2455,13 +2835,12 @@ input:checked + .slider:before { transform: translateX(18px); }
   .channel-list-wrapper::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .channel-list-wrapper::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 10px;
   }
 
-  /* 4. SHOW DESKTOP MENU */
   .desktop-menu {
     display: flex !important;
     align-items: center;
@@ -2506,7 +2885,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     box-shadow: 0 -2px 10px rgba(229, 9, 20, 0.5);
   }
 
-  /* 5. GENERAL DESKTOP ADJUSTMENTS */
   .list {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -2521,7 +2899,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     min-width: 0;
   }
 
-  /* Force 6 Columns for Search and Category Pages */
   #category-grid,
   #search-results {
     grid-template-columns: repeat(6, 1fr) !important;
@@ -2532,7 +2909,7 @@ input:checked + .slider:before { transform: translateX(18px); }
     align-content: start;
   }
 
-  #category-grid .movie-card, 
+  #category-grid .movie-card,
   #search-results .movie-card {
     width: 100%;
     min-width: 0;
@@ -2558,44 +2935,40 @@ input:checked + .slider:before { transform: translateX(18px); }
     bottom: 120%;
   }
 
-  /* Desktop Grid Overrides */
   .search-modal #search-results {
     grid-template-columns: repeat(6, 1fr);
     gap: 20px;
   }
 
-  /* Desktop Search Modal */
-  .search-modal { 
-    padding-bottom: 0; 
-    align-items: center; 
-  }
-  
-  .search-header-row, .explore-filters-container, .results-container {
-    max-width: 1600px; 
-    padding: 0 40px; 
-  }
-  
-  .filter-row { 
-    margin: 0; 
-    padding: 5px 0; 
-  }
-  
-  .search-back-btn { 
-    display: none; 
+  .search-modal {
+    padding-bottom: 0;
+    align-items: center;
   }
 
-  /* Desktop Explore Grid */
-  .explore-grid { 
-    grid-template-columns: repeat(6, 1fr); 
-    gap: 25px; 
+  .search-header-row, .explore-filters-container, .results-container {
+    max-width: 1600px;
+    padding: 0 40px;
+  }
+
+  .filter-row {
+    margin: 0;
+    padding: 5px 0;
+  }
+
+  .search-back-btn {
+    display: none;
+  }
+
+  .explore-grid {
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 25px;
     padding: 30px;
   }
-  
-  #explore-view { 
-    padding-bottom: 20px; 
+
+  #explore-view {
+    padding-bottom: 20px;
   }
 
-  /* Desktop Header Pills */
   #explore-view .header-pills-wrapper {
     display: flex !important;
     gap: 10px;
@@ -2643,9 +3016,46 @@ input:checked + .slider:before { transform: translateX(18px); }
     gap: 10px;
     margin-top: 5px;
   }
+
+  .landscape-grid,
+  #category-grid,
+  #search-results,
+  .recommendations-grid {
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 25px !important;
+    padding: 30px 40px 50px 40px !important;
+  }
+
+  #category-view {
+    padding-bottom: 0 !important;
+  }
+
+  .player-controls-bar.stacked {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+    width: 100% !important;
+    padding: 20px 40px 40px 40px !important;
+    align-items: center !important;
+  }
+
+  .row-server, .row-nav {
+    display: contents !important;
+  }
+
+  .pill-wrapper, .episode-search {
+    width: 100% !important;
+    margin: 0 !important;
+    flex: none !important;
+  }
+
+  .pill-dropdown, .episode-search {
+    height: 55px !important;
+    width: 100% !important;
+  }
 }
 
-/* --- Mobile & Tablet (1023px and below) --- */
+/* Mobile & Tablet (1023px and below) */
 @media (max-width: 1023px) {
   .navbar {
     padding: 0 5%;
@@ -2655,14 +3065,13 @@ input:checked + .slider:before { transform: translateX(18px); }
     font-size: 18px;
   }
 
-  /* Slider */
   .slider-viewport {
     height: 70vh;
     max-height: 600px;
   }
 
   .slide-content {
-    bottom: 30px; 
+    bottom: 30px;
     text-align: center;
     left: 20px;
     right: 20px;
@@ -2678,13 +3087,12 @@ input:checked + .slider:before { transform: translateX(18px); }
     font-size: 0.95rem;
     max-width: 90%;
   }
-  
+
   .slider-btn {
     padding: 10px 24px;
     font-size: 1rem;
   }
 
-  /* Cards */
   .movie-card {
     width: 120px;
   }
@@ -2694,7 +3102,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     padding-right: 15px;
   }
 
-  /* Detail View */
   .detail-hero-layout {
     flex-direction: column;
     align-items: center;
@@ -2723,7 +3130,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     text-align: center;
   }
 
-  /* Player Overlay */
   .player-overlay {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -2741,52 +3147,35 @@ input:checked + .slider:before { transform: translateX(18px); }
     height: 100% !important;
   }
 
-    .player-header {
-    /* Reset position so it stacks nicely in the flex column */
+  .player-header {
     position: relative !important;
-    top: 0 !important; 
+    top: 0 !important;
     right: 0 !important;
-    
-    /* Add padding to clear the phone's status bar/notch */
-    padding-top: 20px; 
+    padding-top: 20px;
     padding-bottom: 10px;
     height: auto !important;
-    min-height: 70px; /* Increased slightly for touch targets */
-    
-    /* Ensure background is solid so video doesn't show through */
+    min-height: 70px;
     background: #000;
   }
 
-  /* Adjust the text container to center vertically */
   .player-header-info {
     margin-right: 10px;
     justify-content: center;
   }
-  /* FIX END */
 
-  /* FIX START: Video Wrapper */
   .iframe-wrapper {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
     border-radius: 0 !important;
-    
-    /* Ensure the video fills the remaining space naturally */
-    flex: 1; 
-  }
-  
-  #overlay-video {
-    width: 100% !important;
-    height: 100% !important;
+    flex: 1;
   }
 
-  /* Category Grid */
   #category-grid {
     grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important;
     gap: 10px;
   }
 
-  /* Footer */
   .footer-top {
     flex-direction: column;
     align-items: center;
@@ -2817,7 +3206,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     text-align: center;
   }
 
-  /* Bottom Nav */
   .bottom-nav {
     display: flex;
   }
@@ -2830,7 +3218,6 @@ input:checked + .slider:before { transform: translateX(18px); }
     padding-bottom: 90px !important;
   }
 
-  /* Channel Section Mobile */
   .channel-button {
     padding: 15px 20px;
   }
@@ -2844,33 +3231,18 @@ input:checked + .slider:before { transform: translateX(18px); }
     font-size: 1rem;
   }
 
-  /* Mobile Explore Grid */
   .explore-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 15px;
     padding: 15px;
   }
 
-/* --- Touch Devices --- */
-@media (hover: none) {
-  .slider-arrow:hover {
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    transform: translateY(-50%);
+  #detail-view {
+    padding-bottom: 80px;
   }
 }
 
-/* --- TV/Smart TV Specific --- */
-@media (hover: hover) and (pointer: coarse) {
-  .slider-arrow:hover {
-    background: #fff;
-    color: #000;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-  }
-}
-
-/* --- Large Desktop (1400px and up) --- */
+/* Large Desktop (1400px and up) */
 @media (min-width: 1400px) {
   .slider-viewport {
     max-height: 650px;
@@ -2882,7 +3254,7 @@ input:checked + .slider:before { transform: translateX(18px); }
   }
 }
 
-/* --- Force Bottom Nav Hidden on Desktop --- */
+/* Force Bottom Nav Hidden on Desktop */
 @media (min-width: 1025px) {
   .bottom-nav {
     display: none !important;
@@ -2893,586 +3265,21 @@ input:checked + .slider:before { transform: translateX(18px); }
   }
 }
 
-/* ========================================================
-   14. UNIVERSAL GRID FIX (History, Search, Category)
-   ======================================================== */
-
-/* MOBILE DEFAULT: Strictly 2 Columns */
-.landscape-grid, 
-#category-grid, 
-#search-results,
-.recommendations-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; 
-    gap: 15px !important; 
-    width: 100% !important;
-    padding: 10px 15px 100px 15px !important; 
-    box-sizing: border-box !important;
-    align-content: start;
-    justify-content: center;
-}
-
-/* DESKTOP OVERRIDE: 6 Columns */
-@media (min-width: 1024px) {
-    #category-view {
-        padding-bottom: 0 !important;
-    }
-    
-    .landscape-grid, 
-    #category-grid, 
-    #search-results,
-    .recommendations-grid {
-        grid-template-columns: repeat(6, 1fr) !important; 
-        gap: 25px !important;
-        padding: 30px 40px 50px 40px !important;
-    }
-}
-
-/* CARD SIZING: Force full width in column */
-#category-grid .movie-card,
-#category-grid .history-card,
-#search-results .movie-card,
-.landscape-grid .movie-card,
-.landscape-grid .history-card,
-.recommendations-grid .movie-card,
-.recommendations-grid .rec-card {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    flex-shrink: 0 !important;
-    display: flex;
-    flex-direction: column;
-}
-
-/* --- IMAGE FILL FIX (Crucial for Recommendations) --- */
-.recommendations-grid .card-poster,
-#category-grid .card-poster,
-#search-results .card-poster {
-    width: 100% !important;
-    aspect-ratio: 2/3 !important; /* Forces the vertical rectangle shape */
-    position: relative;
-    overflow: hidden;
-    background: #1a1a1a;
-    border-radius: var(--border-radius);
-}
-
-.recommendations-grid .card-poster img,
-#category-grid .card-poster img,
-#search-results .card-poster img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important; /* Crops image to fill the box with no gaps */
-    display: block;
-}
-
-
-/* ========================================================
-   15. USER ACTIONS (3-Dots Menu & Pin)
-   ======================================================== */
-.continue-card, .movie-card, .history-card {
-    position: relative !important;
-}
-
-.card-menu-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 30px;
-    height: 30px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Touch Devices */
+@media (hover: none) {
+  .slider-arrow:hover {
+    background: rgba(0, 0, 0, 0.5);
     color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    z-index: 20;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.card-context-menu {
-    position: absolute;
-    top: 40px;
-    right: 8px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 5px;
-    display: none;
-    flex-direction: column;
-    z-index: 100;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.9);
-    min-width: 140px;
-}
-
-.card-context-menu.show { 
-  display: flex; 
-}
-
-.ctx-item {
-    padding: 10px 12px;
-    font-size: 0.85rem;
-    color: #ccc;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.ctx-item:hover { 
-  background: rgba(255, 255, 255, 0.1); 
-  color: #fff; 
-}
-
-.ctx-item.delete:hover { 
-  background: rgba(229, 9, 20, 0.2); 
-  color: #ef4444; 
-}
-
-.pinned-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    color: var(--accent-color);
-    font-size: 1rem;
-    z-index: 15;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-    display: none;
-}
-
-.pinned-badge.visible { 
-  display: block; 
-}
-
-/* ========================================================
-   16. CONTINUE WATCHING & BADGES
-   ======================================================== */
-#continue-list {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  gap: 15px !important;
-  padding: 10px 15px 25px 0 !important;
-  scrollbar-width: none;
-}
-
-#continue-list::-webkit-scrollbar { 
-  display: none; 
-}
-
-.continue-card {
-  flex: 0 0 auto !important;
-  width: 260px !important;
-  min-width: 260px !important;
-  position: relative !important;
-  transition: transform 0.2s ease;
-}
-
-.continue-card:hover { 
-  transform: translateY(-5px); 
-}
-
-.continue-image-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #222;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.continue-image-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.9;
-  transition: opacity 0.3s;
-}
-
-.continue-card:hover img { 
-  opacity: 1; 
-}
-
-.continue-play-icon {
-  position: absolute; 
-  top: 50%; 
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: 40px; 
-  height: 40px; 
-  border-radius: 50%;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  color: #fff; 
-  opacity: 0; 
-  transition: all 0.3s ease;
-}
-
-.continue-card:hover .continue-play-icon {
-  opacity: 1; 
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.continue-menu-btn {
-  position: absolute;
-  top: 8px; 
-  right: 8px;
-  width: 32px; 
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  color: #fff;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  cursor: pointer;
-  z-index: 50;
-  border: 1px solid rgba(255,255,255,0.1);
-  transition: background 0.2s;
-}
-
-.continue-menu-btn:hover { 
-  background: #fff; 
-  color: #000; 
-}
-
-.continue-ep-badge {
-  position: absolute; 
-  bottom: 8px; 
-  left: 8px;
-  background: var(--accent-color); 
-  color: #fff;
-  font-size: 0.7rem; 
-  font-weight: 700;
-  padding: 2px 6px; 
-  border-radius: 4px;
-  z-index: 20; 
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
-
-.continue-time-badge {
-  position: absolute; 
-  bottom: 8px; 
-  right: 8px;
-  background: rgba(0, 0, 0, 0.8); 
-  color: #fff;
-  font-size: 0.7rem; 
-  font-weight: 600;
-  padding: 2px 6px; 
-  border-radius: 4px;
-  z-index: 20; 
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-.continue-progress-bg {
-  position: absolute; 
-  bottom: 0; 
-  left: 0;
-  width: 100%; 
-  height: 3px; 
-  background: rgba(255,255,255,0.2);
-}
-
-.continue-progress-fill {
-  height: 100%; 
-  background: var(--accent-color);
-  box-shadow: 0 0 10px var(--accent-color);
-}
-
-.continue-info {
-  padding-top: 8px;
-}
-
-.continue-title {
-  font-size: 0.95rem; 
-  color: #fff; 
-  font-weight: 600;
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis;
-}
-
-/* ========================================================
-   17. HISTORY CARD STYLING (Landscape)
-   ======================================================== */
-.history-image-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9; 
-  border-radius: 8px;
-  overflow: hidden;
-  background: #222;
-}
-
-.history-image-wrapper img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-}
-
-.history-play-icon {
-  position: absolute; 
-  top: 50%; 
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: 35px; 
-  height: 35px; 
-  border-radius: 50%;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  color: #fff;
-}
-
-.history-progress-bar {
-  position: absolute; 
-  bottom: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 3px; 
-  background: rgba(255,255,255,0.2);
-}
-
-.history-progress-fill { 
-  height: 100%; 
-  background: var(--accent-color); 
-}
-/* ========================================================
-   18. EXPLORE & FILTERS (Unified Alignment Fix)
-   ======================================================== */
-
-#explore-view {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
-  overflow-y: auto;
-  background: var(--bg-color);
-  padding-top: 70px;
-}
-
-/* Explore Header */
-.explore-header-wrapper {
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 5000;
-  background: #000 !important; 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.9);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  
-  /* PARENT PADDING: Controls the edge for everything */
-  padding: 15px; 
-  padding-bottom: 5px;
-  
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* --- ROW 1: MAIN PILLS (Visible Everywhere) --- */
-.header-pills-wrapper {
-  display: flex !important; /* Force Visible */
-  gap: 10px;
-  overflow-x: auto;
-  width: 100%;
-  align-items: center;
-  
-  /* RESET ALIGNMENT: Strip padding so it hits the parent edge */
-  padding: 5px 0; 
-  margin: 0;
-  padding-left: 0 !important; 
-  
-  scrollbar-width: none;
-}
-
-.header-pills-wrapper::-webkit-scrollbar { display: none; }
-
-/* --- ROW 2 & 3: SECONDARY FILTERS --- */
-.explore-filters-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  
-  /* ALIGNMENT FIX: Removed 'padding: 0 15px' to match Row 1 */
-  padding: 0 !important; 
-  margin: 0 !important;
-}
-
-.filter-row {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  white-space: nowrap;
-  
-  /* ALIGNMENT FIX: Removed negative margins */
-  margin: 0 !important;
-  padding: 0 !important; 
-  padding-bottom: 5px !important;
-  
-  scrollbar-width: none; 
-}
-
-.filter-row::-webkit-scrollbar { display: none; }
-
-/* Grid Layout */
-.explore-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 15px;
-  padding: 15px;
-  padding-bottom: 100px;
-}
-
-/* Ensure images fill the grid cell */
-.explore-grid .movie-card { width: 100%; min-width: 0; }
-.explore-grid .card-poster { width: 100%; aspect-ratio: 2/3; background: #222; border-radius: var(--border-radius); }
-
-/* Secondary Filters (Region/Sort) */
-.explore-filters-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 10px;
-  width: 100%;
-  padding: 0 15px;
-  box-sizing: border-box;
-}
-
-.filter-row {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  white-space: nowrap;
-  margin: 0 -15px; 
-  padding: 5px 15px;
-  scrollbar-width: none; 
-}
-
-.filter-row::-webkit-scrollbar { 
-  display: none; 
-}
-
-.filter-pill {
-  background: #222;
-  color: #aaa;
-  border: 1px solid #333;
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.filter-pill.active {
-  background: #fff; 
-  color: #000; 
-  border-color: #fff; 
-  font-weight: 700;
-}
-/* ========================================================
-   BUG FIX: Z-INDEX LAYERING (Fixes Empty/Broken Modals)
-   ======================================================== */
-
-/* 1. Category View (The "See All" Page) */
-#category-view {
-  z-index: 55000 !important; /* Must be higher than Navbar (50000) */
-  position: fixed !important; /* Force it to overlay everything */
-  inset: 0;
-  background: var(--bg-color);
-  padding-top: 80px; /* Space for the header */
-  overflow-y: auto;
-}
-
-#info-modal {
-  z-index: 60000 !important; 
-  background: rgba(5, 5, 5, 0.95);
-  backdrop-filter: blur(10px);
-}
-
-#categoryModal {
-  z-index: 65000 !important; 
-}
-
-#category-view[style*="display: flex"],
-#info-modal[style*="display: flex"] {
-  display: flex !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-/* === PLAYER LAYOUT FIX (ALL SCREENS) === */
-.player-overlay {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100dvh;
-  width: 100vw;
-}
-
-.iframe-wrapper {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-}
-
-.player-controls-bar.stacked {
-  position: relative !important;
-  width: 100% !important;
-  max-width: none !important;
-  flex-direction: column !important;
-  background: #000 !important;
-  padding: 20px 40px 30px !important;
-}
-#overlay-video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-/* ========================================================
-   DESKTOP PLAYER CONTROLS FIX (4 Pills in 1 Row)
-   ======================================================== */
-@media (min-width: 1024px) {
-  
-  /* 1. Turn the main control bar into a 4-column Grid */
-  .player-controls-bar.stacked {
-    display: grid !important;
-    /* This creates exactly 4 columns of equal width */
-    grid-template-columns: repeat(4, 1fr) !important; 
-    gap: 20px !important;
-    width: 100% !important;
-    /* Adjust padding to sit nicely at the bottom */
-    padding: 20px 40px 40px 40px !important;
-    align-items: center !important;
+    transform: translateY(-50%);
   }
+}
 
-  /* 2. "Dissolve" the intermediate row containers 
-     This makes the Grid ignore .row-server and .row-nav 
-     so it can control the .pill-wrapper children directly */
-  .row-server, .row-nav {
-    display: contents !important;
-  }
-
-  /* 3. Force all pills to fill their grid cell */
-  .pill-wrapper, .episode-search {
-    width: 100% !important;
-    margin: 0 !important;
-    flex: none !important;
-  }
-
-  /* 4. Ensure they are exactly the same height */
-  .pill-dropdown, .episode-search {
-    height: 55px !important; /* Slightly taller for desktop */
-    width: 100% !important;
+/* TV/Smart TV Specific */
+@media (hover: hover) and (pointer: coarse) {
+  .slider-arrow:hover {
+    background: #fff;
+    color: #000;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
   }
 }
