@@ -24,6 +24,9 @@ const servers = [
     `https://mapple.uk/watch/${type}/${id}${type === "tv" ? `-${s}-${e}` : ""}` },
 ];
 
+/* =======================
+   PLAYER OVERLAY
+======================= */
 export default function PlayerOverlay() {
   const { isPlayerOpen, setIsPlayerOpen, detailItem, addToHistory } = useGlobal();
 
@@ -33,6 +36,7 @@ export default function PlayerOverlay() {
   const [serverIdx, setServerIdx] = useState(0);
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
+  const [seasons, setSeasons] = useState([]);
   const [episodes, setEpisodes] = useState([]);
   const [activePill, setActivePill] = useState(null);
 
@@ -79,16 +83,27 @@ export default function PlayerOverlay() {
   useEffect(() => {
     if (!isPlayerOpen || !detailItem || !isTv) return;
 
+    fetchData(`/tv/${detailItem.id}`).then(d => {
+      setSeasons(d.seasons?.filter(s => s.season_number > 0) || []);
+    });
+  }, [isPlayerOpen, detailItem, isTv]);
+
+  useEffect(() => {
+    if (!isTv || !detailItem) return;
+
     fetchData(`/tv/${detailItem.id}/season/${season}`).then(d => {
       setEpisodes(d.episodes || []);
       addToHistory(detailItem, season, episode);
     });
-  }, [isPlayerOpen, detailItem, season, episode]);
+  }, [season, episode]);
 
   if (!isPlayerOpen || !detailItem) return null;
 
   const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
 
+  /* =======================
+     RENDER
+  ======================= */
   return (
     <div className="player-overlay">
       {/* HEADER */}
@@ -126,74 +141,33 @@ export default function PlayerOverlay() {
           </div>
         </div>
 
-        {/* SIDEBAR (DESKTOP ONLY) */}
+        {/* SIDEBAR (DESKTOP) */}
         <aside className="player-sidebar desktop-only-item">
           <div className="sidebar-content">
             <h2>{detailItem.title || detailItem.name}</h2>
 
-            <p style={{ fontSize: "0.9rem", color: "#aaa", marginBottom: 15 }}>
+            <p style={{ fontSize: "0.9rem", color: "#aaa", marginBottom: "15px" }}>
               {detailItem.overview}
             </p>
 
-            {/* SERVER PILL */}
-            <div className="pill-wrapper">
-              <div
-                className={`pill-dropdown ${activePill === "server-desktop" ? "open" : ""}`}
-                onClick={() =>
-                  setActivePill(activePill === "server-desktop" ? null : "server-desktop")
-                }
+            <div className="control-group">
+              <label>Server</label>
+              <select
+                className="sidebar-select"
+                value={serverIdx}
+                onChange={e => setServerIdx(+e.target.value)}
               >
-                <span>{servers[serverIdx].name}</span>
-                <i className="fa-solid fa-chevron-down" />
-              </div>
-
-              {activePill === "server-desktop" && (
-                <div className="pill-menu">
-                  <div className="menu-header">
-                    <span>
-                      Sandbox
-                      {servers[serverIdx].forceSandbox && (
-                        <span
-                          className="sandbox-badge"
-                          title="This server may show ads"
-                          style={{ marginLeft: 8 }}
-                        >
-                          Recommended ON
-                        </span>
-                      )}
-                    </span>
-
-                    <label className="switch">
-                      <input
-                        type="checkbox"
-                        checked={sandbox}
-                        disabled={servers[serverIdx].forceSandbox}
-                        onChange={() => setSandbox(!sandbox)}
-                      />
-                      <span className="slider" />
-                    </label>
-                  </div>
-
-                  {servers.map((s, i) => (
-                    <div
-                      key={i}
-                      className={`menu-option ${i === serverIdx ? "selected" : ""}`}
-                      onClick={() => {
-                        setServerIdx(i);
-                        setActivePill(null);
-                      }}
-                    >
-                      {s.name}
-                    </div>
-                  ))}
-                </div>
-              )}
+                {servers.map((s, i) => (
+                  <option key={i} value={i}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* EPISODES */}
             {isTv && (
               <>
-                <label style={{ marginTop: 20 }}>Episodes</label>
+                <label>Episodes</label>
                 <div className="sidebar-ep-grid">
                   {episodes.map(ep => (
                     <button
@@ -213,7 +187,7 @@ export default function PlayerOverlay() {
         </aside>
       </div>
 
-      {/* MOBILE CONTROLS (UNCHANGED) */}
+      {/* MOBILE CONTROLS */}
       <div className="player-controls-bar stacked mobile-only-item">
         <div className="pill-wrapper">
           <div
@@ -265,3 +239,4 @@ export default function PlayerOverlay() {
     </div>
   );
 }
+export default PlayerOverlay;
