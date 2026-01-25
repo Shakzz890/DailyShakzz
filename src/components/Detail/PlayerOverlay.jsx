@@ -159,7 +159,7 @@ const PlayerOverlay = () => {
                     src={src} 
                     allowFullScreen 
                     title="Player"
-                    sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms" : undefined}
+                    sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox" : undefined}
                 ></iframe>
             </div>
 
