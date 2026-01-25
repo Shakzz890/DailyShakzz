@@ -209,16 +209,14 @@ const PlayerOverlay = () => {
                 {/* Row 2: Search + Episode */}
                 {isTv && (
                     <div className="row-nav">
-                     <div className="pill-wrapper">
-    <input
-        type="text"
-        placeholder="Search Ep..."
-        className="episode-search"
-        value={epSearch}
-        onChange={(e) => { setEpSearch(e.target.value); setActivePill('episode'); }}
-        onClick={(e) => { e.stopPropagation(); setActivePill('episode'); }}
-    />
-</div>
+                        <input
+                            type="text"
+                            placeholder="Search Ep..."
+                            className="episode-search"
+                            value={epSearch}
+                            onChange={(e) => { setEpSearch(e.target.value); setActivePill('episode'); }}
+                            onClick={(e) => { e.stopPropagation(); setActivePill('episode'); }}
+                        />
 
                         <div className="pill-wrapper">
                             <div className={`pill-dropdown ${activePill === 'episode' ? 'open' : ''}`} onClick={(e) => { e.stopPropagation(); setActivePill(activePill === 'episode' ? null : 'episode'); }}>
