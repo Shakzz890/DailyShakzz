@@ -3439,3 +3439,40 @@ input:checked + .slider:before { transform: translateX(18px); }
   height: 100%;
   object-fit: contain;
 }
+/* ========================================================
+   DESKTOP PLAYER CONTROLS FIX (4 Pills in 1 Row)
+   ======================================================== */
+@media (min-width: 1024px) {
+  
+  /* 1. Turn the main control bar into a 4-column Grid */
+  .player-controls-bar.stacked {
+    display: grid !important;
+    /* This creates exactly 4 columns of equal width */
+    grid-template-columns: repeat(4, 1fr) !important; 
+    gap: 20px !important;
+    width: 100% !important;
+    /* Adjust padding to sit nicely at the bottom */
+    padding: 20px 40px 40px 40px !important;
+    align-items: center !important;
+  }
+
+  /* 2. "Dissolve" the intermediate row containers 
+     This makes the Grid ignore .row-server and .row-nav 
+     so it can control the .pill-wrapper children directly */
+  .row-server, .row-nav {
+    display: contents !important;
+  }
+
+  /* 3. Force all pills to fill their grid cell */
+  .pill-wrapper, .episode-search {
+    width: 100% !important;
+    margin: 0 !important;
+    flex: none !important;
+  }
+
+  /* 4. Ensure they are exactly the same height */
+  .pill-dropdown, .episode-search {
+    height: 55px !important; /* Slightly taller for desktop */
+    width: 100% !important;
+  }
+}
