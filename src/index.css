@@ -3436,94 +3436,115 @@ input:checked + .slider:before { transform: translateX(18px); }
   visibility: visible !important;
 }
 /* ========================================================
-   DESKTOP PLAYER OVERLAY FIX (Single Line, Uniform Pills)
+   DESKTOP PLAYER OVERLAY FIX - Single Row Layout
    ======================================================== */
+
 @media (min-width: 1024px) {
-
-  /* 1. Reset Overlay Layout */
-  .player-overlay {
-    flex-direction: column !important; /* Stack video on top, controls bottom */
-    padding: 0 !important;
-    background: #000;
-  }
-
-  /* 2. Video Area: Fill available space, center it */
-  .iframe-wrapper {
-    flex: 1; /* Takes all height minus header and controls */
-    width: 100% !important;
-    height: 100%;
-    max-width: 100% !important;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 0;
-    margin: 0;
-    box-shadow: none;
-  }
-
-  #overlay-video {
-    width: 100%;
-    height: 100%;
-    max-height: 85vh; /* Prevent video from getting too tall */
-    aspect-ratio: 16/9;
-  }
-
-  /* 3. Controls Bar: THE STRAIGHT LINE FIX */
+  /* Controls bar - SINGLE ROW for all pills */
   .player-controls-bar.stacked {
-    position: relative;
-    width: 100%;
-    max-width: 1200px; /* Keep controls centered */
-    margin: 0 auto;
-    
-    /* Force Single Line */
     display: flex !important;
-    flex-direction: row !important;
-    align-items: center;
-    justify-content: center;
-    gap: 15px; /* Gap between the two groups */
-    
-    padding: 20px 0 40px 0; /* Spacing from bottom */
-    background: transparent;
-    border: none;
+    flex-direction: row !important; /* HORIZONTAL layout */
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    padding: 20px 40px !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    background: #000 !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
   }
 
-  /* 4. The Groups (Server/Season & Search/Episode) */
+  /* Make row containers flow inline */
   .row-server, .row-nav {
-    display: flex;
-    flex-direction: row !important; /* Items side by side */
-    align-items: center;
-    gap: 15px; /* Gap between pills */
-    width: auto !important; /* Stop taking full width */
-    flex: 0 1 auto; /* Allow them to sit next to each other */
+    display: contents !important; /* Children flow inline with siblings */
   }
 
-  /* 5. UNIFORM PILL SIZE (The "Same Size" Fix) */
+  /* Pill wrapper - uniform sizing */
   .pill-wrapper {
-    width: 200px; /* Fixed width for all wrappers */
-    flex: none; /* Don't stretch */
+    position: relative !important;
+    flex: 0 0 auto !important;
+    width: 200px !important; /* FIXED equal width */
+    min-width: 200px !important;
+    max-width: 200px !important;
+    overflow: visible !important;
   }
 
-  /* Target the inputs and dropdowns to fill that 200px */
-  .pill-dropdown, 
-  .episode-search {
-    width: 100% !important; /* Fill the wrapper */
-    height: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    margin: 0; /* Reset margins */
+  /* Dropdown buttons - consistent sizing */
+  .pill-dropdown, .episode-search {
+    height: 50px !important;
+    width: 100% !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    padding: 0 20px !important;
+    background: rgba(30, 30, 30, 1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    cursor: pointer !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    box-sizing: border-box !important;
   }
 
-  /* Specific tweak for Search input to align perfectly */
-  .episode-search {
-    width: 200px !important; /* Match pill wrapper width */
-  }
-
-  /* 6. Fix Popup Menu Position for Desktop */
+  /* Pill menu - open upward */
   .pill-menu {
-    bottom: 110%; /* Open up slightly higher */
-    width: 100%; /* Match parent width */
-    min-width: 100%;
+    position: absolute !important;
+    bottom: calc(100% + 10px) !important;
+    left: 0 !important;
+    width: 200px !important;
+    min-width: 200px !important;
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    background: #151515 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.95) !important;
+    z-index: 10000 !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Menu items */
+  .menu-option {
+    padding: 12px 15px !important;
+    font-size: 0.95rem !important;
+    color: #eee !important;
+    cursor: pointer !important;
+    border-radius: 8px !important;
+    margin-bottom: 2px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  .menu-option:hover {
+    background: rgba(255,255,255,0.1) !important;
+  }
+
+  .menu-option.selected {
+    background: var(--accent-color) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+  }
+
+  /* Menu header */
+  .menu-header {
+    padding: 10px 15px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    color: #aaa !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    margin-bottom: 5px !important;
+    position: sticky !important;
+    top: 0 !important;
+    background: #151515 !important;
+    z-index: 5 !important;
   }
 }
