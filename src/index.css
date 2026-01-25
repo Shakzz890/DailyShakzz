@@ -2003,7 +2003,7 @@ img {
 }
 
 /* ========================================================
-   9. PLAYER OVERLAY (Fixed Stacked Layout)
+   9. PLAYER OVERLAY (Fixed & Stacked)
    ======================================================== */
 .player-overlay {
   position: fixed; 
@@ -2069,11 +2069,10 @@ img {
 
 #overlay-video { width: 100%; height: 100%; border: none; }
 
-/* CONTROLS - Forced Stacked */
+/* CONTROLS - Forces menu to float outside */
 .player-controls-bar.stacked {
   position: relative;
   width: 100%;
-  /* CRITICAL: Force vertical stack on ALL screens */
   display: flex !important;
   flex-direction: column !important; 
   padding: 20px 25px 30px 25px;
@@ -2082,6 +2081,7 @@ img {
   border-top: 1px solid rgba(255,255,255,0.1);
   z-index: 50;
   flex-shrink: 0;
+  overflow: visible !important; /* CRITICAL FIX FOR CROPPING */
 }
 
 .row-server, .row-nav {
@@ -2092,7 +2092,11 @@ img {
   justify-content: space-between;
 }
 
-.pill-wrapper { position: relative; flex: 1; }
+.pill-wrapper { 
+  position: relative; 
+  flex: 1;
+  overflow: visible !important; /* CRITICAL FIX */
+}
 
 .pill-dropdown, .episode-search {
   height: 50px; width: 100%; padding: 0 20px;
@@ -2109,13 +2113,26 @@ img {
 .pill-label { width: 100%; display: flex; justify-content: space-between; align-items: center; }
 .pill-label span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* Pop-up Menus (OPEN UPWARDS) */
 .pill-menu {
-  position: absolute; bottom: 120%; left: 0; 
-  width: 100%; min-width: 200px; max-height: 300px; overflow-y: auto;
-  background: #151515; border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95);
-  display: none; flex-direction: column; z-index: 100; padding: 5px;
+  position: absolute;
+  bottom: 100%; /* Opens UP */
+  left: 0; 
+  width: 100%; 
+  min-width: 200px;
+  max-height: 50vh; /* Limits height so it fits on screen */
+  overflow-y: auto;
+  background: #151515;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.95);
+  display: none; 
+  flex-direction: column; 
+  z-index: 10000; 
+  padding: 5px;
+  margin-bottom: 10px;
 }
+
 .pill-wrapper .pill-dropdown.open + .pill-menu { display: flex; animation: fadeInUp 0.15s ease-out; }
 
 .menu-header { padding: 10px 15px; font-size: 0.85rem; font-weight: 700; color: #aaa; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; position: sticky; top: 0; background: #151515; z-index: 5; }
@@ -2131,10 +2148,9 @@ input:checked + .slider { background: var(--accent-color); }
 input:checked + .slider:before { transform: translateX(18px); }
 
 /* --- DESKTOP SPECIFIC OVERRIDE --- */
-/* This forces the stack layout even on wide screens */
 @media (min-width: 1024px) {
   .player-controls-bar.stacked {
-    flex-direction: column !important; /* Force Column */
+    flex-direction: column !important; 
     width: 100%;
     max-width: 100%;
     background: #000;
@@ -3418,4 +3434,96 @@ input:checked + .slider:before { transform: translateX(18px); }
   display: flex !important;
   opacity: 1 !important;
   visibility: visible !important;
+}
+/* ========================================================
+   DESKTOP PLAYER OVERLAY FIX (Single Line, Uniform Pills)
+   ======================================================== */
+@media (min-width: 1024px) {
+
+  /* 1. Reset Overlay Layout */
+  .player-overlay {
+    flex-direction: column !important; /* Stack video on top, controls bottom */
+    padding: 0 !important;
+    background: #000;
+  }
+
+  /* 2. Video Area: Fill available space, center it */
+  .iframe-wrapper {
+    flex: 1; /* Takes all height minus header and controls */
+    width: 100% !important;
+    height: 100%;
+    max-width: 100% !important;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 0;
+    margin: 0;
+    box-shadow: none;
+  }
+
+  #overlay-video {
+    width: 100%;
+    height: 100%;
+    max-height: 85vh; /* Prevent video from getting too tall */
+    aspect-ratio: 16/9;
+  }
+
+  /* 3. Controls Bar: THE STRAIGHT LINE FIX */
+  .player-controls-bar.stacked {
+    position: relative;
+    width: 100%;
+    max-width: 1200px; /* Keep controls centered */
+    margin: 0 auto;
+    
+    /* Force Single Line */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Gap between the two groups */
+    
+    padding: 20px 0 40px 0; /* Spacing from bottom */
+    background: transparent;
+    border: none;
+  }
+
+  /* 4. The Groups (Server/Season & Search/Episode) */
+  .row-server, .row-nav {
+    display: flex;
+    flex-direction: row !important; /* Items side by side */
+    align-items: center;
+    gap: 15px; /* Gap between pills */
+    width: auto !important; /* Stop taking full width */
+    flex: 0 1 auto; /* Allow them to sit next to each other */
+  }
+
+  /* 5. UNIFORM PILL SIZE (The "Same Size" Fix) */
+  .pill-wrapper {
+    width: 200px; /* Fixed width for all wrappers */
+    flex: none; /* Don't stretch */
+  }
+
+  /* Target the inputs and dropdowns to fill that 200px */
+  .pill-dropdown, 
+  .episode-search {
+    width: 100% !important; /* Fill the wrapper */
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 0; /* Reset margins */
+  }
+
+  /* Specific tweak for Search input to align perfectly */
+  .episode-search {
+    width: 200px !important; /* Match pill wrapper width */
+  }
+
+  /* 6. Fix Popup Menu Position for Desktop */
+  .pill-menu {
+    bottom: 110%; /* Open up slightly higher */
+    width: 100%; /* Match parent width */
+    min-width: 100%;
+  }
 }
