@@ -3283,3 +3283,15 @@ input:checked + .slider:before {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
   }
 }
+/* Ensure the iframe wrapper is isolated and clickable */
+.iframe-wrapper {
+  position: relative;
+  z-index: 1; /* Lower than controls, but ensures own stacking context */
+  pointer-events: auto; /* Force clicks to work */
+}
+
+/* Ensure controls don't have invisible overflow blocking the video */
+.player-controls-bar.stacked {
+  z-index: 50;
+  /* pointer-events: none;  <-- DO NOT DO THIS globally, or buttons won't work */
+}
