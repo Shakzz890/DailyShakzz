@@ -3296,30 +3296,39 @@ input:checked + .slider:before {
   /* pointer-events: none;  <-- DO NOT DO THIS globally, or buttons won't work */
 }
 /* ========================================================
-   PLAYER OVERLAY & KISSKH STYLE SIDEBAR
+   PLAYER OVERLAY – FINAL KISSKH LAYOUT
    ======================================================== */
 
-/* --- SHARED BASE STYLES --- */
+/* ======================
+   BASE OVERLAY
+   ====================== */
 .player-overlay {
-  display: flex !important;
-  flex-direction: column !important;
   position: fixed;
   inset: 0;
   background: #000;
   z-index: 90000 !important;
-  height: 100dvh;
-  width: 100vw;
-}
-
-.player-layout-container {
   display: flex;
   flex-direction: column;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ======================
+   MAIN LAYOUT CONTAINER
+   ====================== */
+.player-layout-container {
   flex: 1;
+  display: flex;
+  flex-direction: column; /* mobile default */
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
+/* ======================
+   VIDEO AREA
+   ====================== */
 .video-area {
   flex: 1;
   background: #000;
@@ -3327,87 +3336,106 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: center;
   position: relative;
+}
+
+.iframe-wrapper,
+#overlay-video {
   width: 100%;
+  height: 100%;
+  border: none;
 }
 
-/* Default Mobile: Hide Sidebar */
+/* ======================
+   SIDEBAR (HIDDEN ON MOBILE)
+   ====================== */
 .player-sidebar {
-  display: none; 
+  display: none;
 }
 
-/* Default Mobile: Show Bottom Controls */
-.mobile-only-item {
+/* ======================
+   HEADER (MOBILE)
+   ====================== */
+.player-header {
+  position: relative;
+  height: 60px;
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 15px;
+  background: #000;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
 }
 
+.close-player-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
 
-/* --- DESKTOP LAYOUT (Min-Width: 1024px) --- */
+/* ========================================================
+   DESKTOP LAYOUT (KISSKH STYLE)
+   ======================================================== */
 @media (min-width: 1024px) {
-  
-  /* 1. Layout Adjustments */
-  .player-overlay {
-    overflow: hidden; /* Prevent body scroll */
-  }
 
+  /* Split layout */
   .player-layout-container {
-    flex-direction: row; /* Split left/right */
-    padding-top: 0;
+    flex-direction: row;
   }
 
-  /* 2. Video Area (Left) */
+  /* VIDEO LEFT */
   .video-area {
-    flex: 1; /* Takes all available space */
+    flex: 1;
     height: 100%;
   }
 
-  /* 3. Sidebar (Right) - KISSKH Style */
+  /* SIDEBAR RIGHT */
   .player-sidebar {
     display: flex;
     flex-direction: column;
-    width: 380px; /* Fixed width like KISSKH */
-    background: #181818; /* Dark grey background */
-    border-left: 1px solid rgba(255,255,255,0.1);
+    width: 380px;
     height: 100%;
-    z-index: 50;
+    background: #181818;
+    border-left: 1px solid rgba(255,255,255,0.1);
     flex-shrink: 0;
   }
 
   .sidebar-content {
     padding: 25px;
-    height: 100%;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
-  /* 4. Hide Mobile Elements */
-  .mobile-only-item {
-    display: none !important;
-  }
-
-  /* 5. Header Adjustments */
+  /* FLOATING CLOSE BUTTON */
   .player-header {
-    position: absolute; /* Float over video on desktop */
+    position: absolute;
     top: 0;
-    right: 380px; /* Offset by sidebar width */
-    width: auto;
+    right: 380px; /* sidebar width */
     background: transparent;
     border: none;
+    pointer-events: none;
     z-index: 100;
-    pointer-events: none; /* Let clicks pass through to video */
   }
 
   .close-player-btn {
-    pointer-events: auto; /* Re-enable click for close button */
-    margin: 20px;
+    pointer-events: auto;
     background: rgba(0,0,0,0.6);
+    margin: 20px;
   }
 }
 
-/* --- SIDEBAR COMPONENTS STYLING --- */
+/* ========================================================
+   SIDEBAR CONTENT
+   ======================================================== */
 
-/* Info Section */
-.sidebar-info-block h2 {
+.sidebar-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
@@ -3431,66 +3459,17 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-/* Action Buttons */
-.sidebar-actions {
-  display: flex;
-  justify-content: space-between;
-  background: rgba(255,255,255,0.05);
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
-.action-btn {
-  background: transparent;
-  border: none;
-  color: #ccc;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.action-btn i {
-  font-size: 1.2rem;
-  margin-bottom: 2px;
-}
-
-.action-btn:hover {
-  color: var(--accent-color);
-}
-
-.sidebar-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  margin-bottom: 20px;
-}
-
-/* Select Inputs */
+/* ======================
+   SERVER / SEASON SELECTS
+   ====================== */
 .sidebar-controls {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.control-group label {
-  font-size: 0.8rem;
-  color: #888;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.sidebar-select {
+.sidebar-controls select {
   width: 100%;
   padding: 12px;
   background: #222;
@@ -3499,84 +3478,57 @@ input:checked + .slider:before {
   color: #fff;
   font-size: 0.95rem;
   cursor: pointer;
-  outline: none;
 }
 
-.sidebar-select:focus {
+.sidebar-controls select:focus {
   border-color: var(--accent-color);
 }
 
-/* --- EPISODE GRID (KISSKH Style) --- */
-.ep-section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 12px;
-}
-
-.ep-section-header h3 {
-  font-size: 1.1rem;
-  color: #fff;
-  font-weight: 700;
-}
-
-.ep-total {
-  font-size: 0.85rem;
-  color: #666;
-}
-
+/* ======================
+   EPISODE SEARCH
+   ====================== */
 .sidebar-search-input {
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px 14px;
   background: #222;
   border: 1px solid #333;
   border-radius: 8px;
   color: #fff;
-  margin-bottom: 15px;
   font-size: 0.9rem;
-  outline: none;
+  margin-bottom: 12px;
 }
 
 .sidebar-search-input:focus {
   border-color: var(--accent-color);
 }
 
+/* ======================
+   EPISODE GRID (5 COLS)
+   ====================== */
 .sidebar-ep-grid {
   display: grid;
-  /* 5 items per row, exactly like the screenshot */
-  grid-template-columns: repeat(5, 1fr); 
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
 }
 
 .ep-grid-btn {
-  background: #333; /* Dark gray background */
+  background: #333;
   color: #fff;
   border: none;
   border-radius: 6px;
-  padding: 10px 0; /* Vertical padding */
+  padding: 10px 0;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
+  transition: background 0.2s;
 }
 
 .ep-grid-btn:hover {
-  background: #444; /* Lighter gray on hover */
+  background: #444;
 }
 
-/* Active State (Selected Episode) */
 .ep-grid-btn.active {
-  background: #ddd; /* Light/White background */
-  color: #000; /* Black text */
+  background: #e5e5e5;
+  color: #000;
   font-weight: 800;
-  box-shadow: 0 0 8px rgba(255,255,255,0.3);
-}
-
-.no-ep-msg {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: #666;
-  padding: 20px;
-  font-size: 0.9rem;
 }
