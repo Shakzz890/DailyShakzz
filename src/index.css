@@ -3548,3 +3548,84 @@ input:checked + .slider:before {
     transform: rotate(180deg);
   }
 }
+/* ========================================================
+   PLAYER LAYOUT (UNIVERSAL SIDEBAR)
+   ======================================================== */
+
+/* Mobile: Stacked Layout */
+.player-layout-container {
+  display: flex;
+  flex-direction: column; /* Video top, Sidebar bottom */
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* Allow scrolling the whole container on mobile */
+}
+
+/* Make Sidebar Visible on Mobile */
+.player-sidebar {
+  display: flex !important; /* Force show */
+  flex-direction: column;
+  width: 100%;
+  background: #181818;
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+/* Sidebar Inputs */
+.sidebar-select, .sidebar-search-input {
+  width: 100%;
+  padding: 12px;
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  margin-bottom: 5px;
+}
+
+.sidebar-search-input:focus, .sidebar-select:focus {
+  border-color: var(--accent-color);
+}
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+.control-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Desktop: Side-by-Side Layout */
+@media (min-width: 1024px) {
+  .player-overlay {
+    overflow: hidden; /* Lock scroll on desktop */
+  }
+
+  .player-layout-container {
+    flex-direction: row; /* Video Left, Sidebar Right */
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .video-area {
+    flex: 1;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .player-sidebar {
+    width: 350px; /* Fixed width sidebar */
+    height: 100%;
+    overflow-y: auto; /* Scroll inside sidebar only */
+    border-left: 1px solid rgba(255,255,255,0.1);
+  }
+}
