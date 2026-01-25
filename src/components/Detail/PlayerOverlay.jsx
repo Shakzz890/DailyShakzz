@@ -28,6 +28,7 @@ const PlayerOverlay = () => {
     const [activePill, setActivePill] = useState(null); 
     const [epSearch, setEpSearch] = useState("");
 
+    // --- INITIAL LOAD ---
     useEffect(() => {
         if (isPlayerOpen && detailItem) {
             let startSeason = 1;
@@ -62,6 +63,7 @@ const PlayerOverlay = () => {
         }
     }, [isPlayerOpen, detailItem]);
 
+    // Save Settings
     useEffect(() => {
         localStorage.setItem('currentServer', serverIdx);
         localStorage.setItem('sandboxEnabled', sandbox);
@@ -115,13 +117,42 @@ const PlayerOverlay = () => {
     return (
         <div id="player-overlay" className="player-overlay" style={{ display: 'flex' }}>
             
-            {/* CLEAN HEADER: Title removed to allow server title to shine */}
+            {/* --- HEADER: Left=Title/Info, Right=Close --- */}
             <div className="player-header">
+                
+                {/* RESTORED TITLE SECTION */}
+                <div className="player-header-info">
+                    <span style={{ 
+                        color: '#fff', 
+                        fontSize: '1.1rem', 
+                        fontWeight: '700', 
+                        whiteSpace: 'nowrap', 
+                        overflow: 'hidden', 
+                        textOverflow: 'ellipsis',
+                        display: 'block'
+                    }}>
+                        {detailItem.title || detailItem.name}
+                    </span>
+                    {isTv && (
+                        <span style={{ 
+                            color: 'var(--accent-color)', 
+                            fontSize: '0.8rem', 
+                            fontWeight: '600',
+                            marginTop: '2px',
+                            display: 'block'
+                        }}>
+                            Season {season} - Episode {episode}
+                        </span>
+                    )}
+                </div>
+
+                {/* Close Button */}
                 <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
-                    <i className="fa-solid fa-arrow-right"></i>
+                    <i className="fa-solid fa-xmark"></i> 
                 </button>
             </div>
 
+            {/* --- VIDEO --- */}
             <div className="iframe-wrapper">
                 <iframe 
                     id="overlay-video" 
@@ -132,8 +163,10 @@ const PlayerOverlay = () => {
                 ></iframe>
             </div>
 
-            {/* CONTROLS REMAIN STACKED BELOW VIDEO */}
+            {/* --- CONTROLS --- */}
             <div className="player-controls-bar stacked">
+                
+                {/* Row 1: Server + Season */}
                 <div className="row-server">
                     <div className="pill-wrapper">
                         <div className={`pill-dropdown ${activePill === 'server' ? 'open' : ''}`} onClick={(e) => { e.stopPropagation(); setActivePill(activePill === 'server' ? null : 'server'); }}>
@@ -173,6 +206,7 @@ const PlayerOverlay = () => {
                     )}
                 </div>
 
+                {/* Row 2: Search + Episode */}
                 {isTv && (
                     <div className="row-nav">
                         <input
