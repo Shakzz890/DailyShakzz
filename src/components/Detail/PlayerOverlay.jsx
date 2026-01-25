@@ -119,9 +119,9 @@ const PlayerOverlay = () => {
     return (
         <div id="player-overlay" className="player-overlay">
             
-            {/* --- TOP HEADER (Mobile Only - Title) --- */}
+            {/* --- TOP HEADER (Visible on Mobile Only usually, mostly hidden on Desktop by CSS) --- */}
             <div className="player-header">
-                {/* Title Section (Hidden on Desktop) */}
+                {/* Title Section (Mobile Only via CSS) */}
                 <div className="player-header-info mobile-only-item">
                     <span style={{ color: '#fff', fontSize: '1.1rem', fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block'}}>
                         {detailItem.title || detailItem.name}
@@ -139,10 +139,10 @@ const PlayerOverlay = () => {
                 </button>
             </div>
 
-            {/* --- MAIN SPLIT LAYOUT (Desktop) --- */}
+            {/* --- MAIN SPLIT LAYOUT --- */}
             <div className="player-layout-container">
                 
-                {/* LEFT: VIDEO PLAYER (Takes remaining space) */}
+                {/* LEFT: VIDEO PLAYER */}
                 <div className="video-area">
                     <div className="iframe-wrapper">
                         <iframe 
@@ -155,10 +155,9 @@ const PlayerOverlay = () => {
                     </div>
                 </div>
 
-                {/* RIGHT: SIDEBAR (Desktop Only - KISSKH Style) */}
+                {/* RIGHT: SIDEBAR (Desktop Only) */}
                 <div className="player-sidebar desktop-only-item">
                     <div className="sidebar-content">
-                        
                         {/* Info Block */}
                         <div className="sidebar-info-block">
                             <h2>{detailItem.title || detailItem.name}</h2>
@@ -170,7 +169,7 @@ const PlayerOverlay = () => {
                                 <span>{isTv ? 'TV Series' : 'Movie'}</span>
                             </div>
                             
-                            {/* Action Buttons */}
+                            {/* Action Buttons (Visual Only) */}
                             <div className="sidebar-actions">
                                 <button className="action-btn">
                                     <i className="fa-regular fa-heart"></i>
@@ -185,17 +184,9 @@ const PlayerOverlay = () => {
                                     <span>Report</span>
                                 </button>
                             </div>
-                            
-                            <div className="pop-ad-note">
-                                Pop ads only have frequency of 1 pop per 1 hour.
-                            </div>
                         </div>
 
-                        {/* Controls: Description Dropdown (Visual) */}
-                        <div className="sidebar-dropdown-box">
-                            <span>Description</span>
-                            <i className="fas fa-chevron-down"></i>
-                        </div>
+                        <div className="sidebar-divider"></div>
 
                         {/* Controls: Server & Season */}
                         <div className="sidebar-controls">
@@ -232,11 +223,10 @@ const PlayerOverlay = () => {
                         {isTv && (
                             <div className="sidebar-episodes-section">
                                 <div className="ep-section-header">
-                                    <h3>Episode</h3>
+                                    <h3>Episodes</h3>
                                     <span className="ep-total">Total {episodeList.length}</span>
                                 </div>
                                 
-                                {/* Episode Search inside Sidebar */}
                                 <input 
                                     type="text" 
                                     className="sidebar-search-input"
@@ -267,7 +257,7 @@ const PlayerOverlay = () => {
                 </div>
             </div>
 
-            {/* --- MOBILE CONTROLS (Bottom Pills - Hidden on Desktop) --- */}
+            {/* --- MOBILE CONTROLS (Hidden on Desktop) --- */}
             <div className="player-controls-bar stacked mobile-only-item">
                 <div className="row-server">
                     <div className="pill-wrapper">
