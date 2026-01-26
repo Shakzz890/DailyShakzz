@@ -25,8 +25,8 @@ export default function PlayerOverlay() {
   
   // UI States
   const [showDesc, setShowDesc] = useState(false);
-  const [showServerMenu, setShowServerMenu] = useState(false); // New Dropdown State
-  const dropdownRef = useRef(null); // Ref for click outside
+  const [showServerMenu, setShowServerMenu] = useState(false);
+  const dropdownRef = useRef(null);
 
   // --- SANDBOX LOGIC ---
   const sandboxKey = useMemo(() => detailItem ? `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}` : null, [detailItem, season, episode, serverIdx]);
@@ -120,17 +120,14 @@ export default function PlayerOverlay() {
 
   return (
     <div className="player-overlay">
-      {/* HEADER */}
       <div className="player-header">
         <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
           <i className="fa-solid fa-xmark" />
         </button>
       </div>
 
-      {/* MAIN LAYOUT */}
       <div className="player-layout-container">
         
-        {/* LEFT: VIDEO */}
         <div className="video-area">
           <div className="iframe-wrapper">
             <iframe
@@ -143,7 +140,6 @@ export default function PlayerOverlay() {
           </div>
         </div>
 
-        {/* RIGHT: SIDEBAR */}
         <aside className="player-sidebar">
           <div className="sidebar-content">
             <h2>{detailItem.title || detailItem.name}</h2>
@@ -155,7 +151,6 @@ export default function PlayerOverlay() {
                 <span>{detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'N/A'} <i className="fas fa-star" style={{color:'gold', fontSize:'0.7rem'}}></i></span>
             </div>
 
-            {/* DESCRIPTION */}
             <div className="description-container">
                 <div className="desc-header" onClick={() => setShowDesc(!showDesc)}>
                     <span>Description</span>
@@ -171,77 +166,62 @@ export default function PlayerOverlay() {
                 </div>
             </div>
 
-            {/* --- CUSTOM SERVER DROPDOWN WITH SANDBOX --- */}
-            <div className="control-group" ref={dropdownRef}>
-              <label>Select Server</label>
-              <div className="custom-dropdown">
-                {/* Trigger Button */}
-                <button 
-                    className={`dropdown-btn ${showServerMenu ? 'active' : ''}`} 
-                    onClick={() => setShowServerMenu(!showServerMenu)}
-                >
-                    <span>{servers[serverIdx].name}</span>
-                    <i className={`fas fa-chevron-down ${showServerMenu ? 'rotate' : ''}`}></i>
-                </button>
+            {/* --- SINGLE ROW FOR SELECTORS --- */}
+            <div className="controls-row">
+                
+                {/* 1. SERVER SELECTOR (Custom) */}
+                <div className="control-group half-width" ref={dropdownRef}>
+                  <label>Server</label>
+                  <div className="custom-dropdown">
+                    <button 
+                        className={`dropdown-btn ${showServerMenu ? 'active' : ''}`} 
+                        onClick={() => setShowServerMenu(!showServerMenu)}
+                    >
+                        <span>{servers[serverIdx].name}</span>
+                        <i className={`fas fa-chevron-down ${showServerMenu ? 'rotate' : ''}`}></i>
+                    </button>
 
-                {/* Dropdown Menu */}
-                <div className={`dropdown-menu ${showServerMenu ? 'show' : ''}`}>
-                    
-                    {/* SANDBOX TOGGLE (Always on Top) */}
-                    <div className="dropdown-header-sandbox" onClick={(e) => e.stopPropagation()}>
-                        <div className="sandbox-info">
-                            <i className="fas fa-shield-alt"></i>
-                            <span>Sandbox Mode</span>
+                    <div className={`dropdown-menu ${showServerMenu ? 'show' : ''}`}>
+                        <div className="server-list-scroll">
+                            {servers.map((s, i) => (
+                                <div 
+                                    key={i} 
+                                    className={`dropdown-item ${serverIdx === i ? 'selected' : ''}`}
+                                    onClick={() => {
+                                        setServerIdx(i);
+                                        setShowServerMenu(false);
+                                    }}
+                                >
+                                    {s.name}
+                                    {s.forceSandbox && <span className="tag-forced">Ad-Block</span>}
+                                </div>
+                            ))}
                         </div>
-                        <label className="switch sm">
-                            <input 
-                                type="checkbox" 
-                                checked={sandbox}
-                                disabled={servers[serverIdx].forceSandbox}
-                                onChange={() => setSandbox(!sandbox)}
-                            />
-                            <span className="slider round"></span>
-                        </label>
                     </div>
-
-                    {/* Server List */}
-                    <div className="server-list-scroll">
-                        {servers.map((s, i) => (
-                            <div 
-                                key={i} 
-                                className={`dropdown-item ${serverIdx === i ? 'selected' : ''}`}
-                                onClick={() => {
-                                    setServerIdx(i);
-                                    setShowServerMenu(false);
-                                }}
-                            >
-                                {s.name}
-                                {s.forceSandbox && <span className="tag-forced">Ad-Block</span>}
-                            </div>
-                        ))}
-                    </div>
+                  </div>
                 </div>
-              </div>
+
+                {/* 2. SEASON SELECTOR (Standard Select) */}
+                {isTv && (
+                    <div className="control-group half-width">
+                      <label>Season</label>
+                      <select
+                        className="sidebar-select"
+                        value={season}
+                        onChange={e => handleSeasonChange(+e.target.value)}
+                      >
+                        {seasons.map(s => (
+                          <option key={s.id} value={s.season_number}>
+                            Season {s.season_number}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                )}
             </div>
 
-            {/* SEASON & EPISODE (TV ONLY) */}
             {isTv && (
               <>
-                <div className="control-group">
-                  <label>Select Season</label>
-                  <select
-                    className="sidebar-select"
-                    value={season}
-                    onChange={e => handleSeasonChange(+e.target.value)}
-                  >
-                    {seasons.map(s => (
-                      <option key={s.id} value={s.season_number}>
-                        Season {s.season_number}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
                 <div className="control-group">
                   <label>Search Episode</label>
                   <input 
@@ -275,6 +255,21 @@ export default function PlayerOverlay() {
                 </div>
               </>
             )}
+
+            <div className="sidebar-divider"></div>
+            <div className="sandbox-toggle-row">
+                <span>Ad-Block (Sandbox)</span>
+                <label className="switch" style={{transform:'scale(0.8)'}}>
+                  <input
+                    type="checkbox"
+                    checked={sandbox}
+                    disabled={servers[serverIdx].forceSandbox}
+                    onChange={() => setSandbox(!sandbox)}
+                  />
+                  <span className="slider" />
+                </label>
+            </div>
+
           </div>
         </aside>
       </div>
