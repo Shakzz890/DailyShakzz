@@ -3295,3 +3295,531 @@ input:checked + .slider:before {
   z-index: 50;
   /* pointer-events: none;  <-- DO NOT DO THIS globally, or buttons won't work */
 }
+
+/* ========================================================
+   PLAYER OVERLAY & SIDEBAR (FINAL WIDE LAYOUT)
+   ======================================================== */
+
+/* --- 1. BASE OVERLAY (Fixed Fullscreen) --- */
+.player-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 90000 !important;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+/* --- 2. MAIN LAYOUT CONTAINER --- */
+.player-layout-container {
+  display: flex;
+  flex-direction: column; /* Default: Mobile (Stacked) */
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* Scroll the whole page on mobile */
+}
+
+/* --- 3. VIDEO AREA --- */
+.video-area {
+  width: 100%;
+  background: #000;
+  position: sticky; /* Stick to top on mobile */
+  top: 0;
+  z-index: 20;
+  aspect-ratio: 16/9; /* Keep video aspect ratio on mobile */
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iframe-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+#overlay-video {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* --- 4. SIDEBAR (CONTROLS) --- */
+.player-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width on mobile */
+  background: #181818;
+  flex-shrink: 0;
+  min-height: 60vh; /* Ensure enough space for scrolling */
+}
+
+.sidebar-content {
+  padding: 25px; /* Comfortable padding */
+}
+
+/* --- SIDEBAR COMPONENTS --- */
+
+/* Title & Meta */
+.sidebar-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.sidebar-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+
+.sidebar-meta .dot {
+  width: 4px;
+  height: 4px;
+  background: #555;
+  border-radius: 50%;
+}
+
+/* --- DESCRIPTION DROPDOWN (Slide Animation) --- */
+.description-container {
+  background: #202020;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.desc-header {
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #252525;
+  color: #eee;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.desc-header:hover {
+  background: #333;
+}
+
+.desc-header i {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.desc-header i.rotate {
+  transform: rotate(180deg);
+}
+
+.desc-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+  background: #1a1a1a;
+}
+
+.desc-content.open {
+  max-height: 500px; /* Large enough to fit content */
+  padding: 15px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  transition: max-height 0.4s ease-in-out;
+}
+
+.overview-text {
+  font-size: 0.9rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.genre-tag {
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.1);
+  color: #ddd;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+/* --- CONTROLS (Selects & Inputs) --- */
+.control-group {
+  margin-bottom: 20px;
+}
+
+.control-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-select, .sidebar-search-input {
+  width: 100%;
+  padding: 14px 15px;
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.sidebar-select:focus, .sidebar-search-input:focus {
+  border-color: var(--accent-color);
+  background: #2a2a2a;
+}
+
+/* --- EPISODE GRID --- */
+.ep-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 30px 0 15px 0;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+}
+
+.sidebar-ep-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 Columns like KISSKH */
+  gap: 10px;
+}
+
+.ep-grid-btn {
+  background: #333;
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  height: 45px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ep-grid-btn:hover {
+  background: #444;
+  border-color: #666;
+}
+
+.ep-grid-btn.active {
+  background: #eee;
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+/* --- SANDBOX TOGGLE FOOTER --- */
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 30px 0 20px 0;
+}
+
+.sandbox-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #aaa;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* --- CLOSE BUTTON (Floating Header) --- */
+.player-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 100;
+  pointer-events: none; /* Let clicks pass through */
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px;
+}
+
+.close-player-btn {
+  pointer-events: auto; /* Re-enable clicks */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.close-player-btn:hover {
+  background: #fff;
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* ========================================================
+   DESKTOP LAYOUT (Min-Width: 1024px)
+   ======================================================== */
+@media (min-width: 1024px) {
+  
+  /* 1. Container: Split Row */
+  .player-layout-container {
+    flex-direction: row; /* Video Left | Sidebar Right */
+    overflow: hidden; /* Lock main scroll */
+  }
+
+  /* 2. Video Area: Fill Left */
+  .video-area {
+    flex: 1;
+    height: 100%;
+    aspect-ratio: auto; /* Remove mobile aspect ratio */
+    position: relative;
+  }
+
+  /* 3. Sidebar: Fixed Right (WIDER NOW) */
+  .player-sidebar {
+    width: 420px; /* Increased from 380px */
+    height: 100%;
+    overflow-y: auto; /* Independent scroll */
+    border-left: 1px solid rgba(255,255,255,0.1);
+    background: #121212;
+  }
+
+  /* 4. Header: Adjust Close Button */
+  .player-header {
+    width: auto;
+    top: 15px;
+    right: 440px; /* Shift left of sidebar (420px + padding) */
+  }
+  
+  .close-player-btn {
+    width: 45px;
+    height: 45px;
+  }
+}
+/* ========================================================
+   CUSTOM DROPDOWN & SANDBOX STYLES
+   ======================================================== */
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+/* Dropdown Trigger Button */
+.dropdown-btn {
+  width: 100%;
+  padding: 12px 15px;
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-btn:hover, .dropdown-btn.active {
+  border-color: var(--accent-color);
+  background: #2a2a2a;
+}
+
+.dropdown-btn i {
+  font-size: 0.8rem;
+  transition: transform 0.3s;
+}
+
+.dropdown-btn i.rotate {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu Container */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* --- SANDBOX HEADER (Always on Top) --- */
+.dropdown-header-sandbox {
+  padding: 12px 15px;
+  background: #252525;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sandbox-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ddd;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sandbox-info i {
+  color: var(--accent-color);
+}
+
+/* --- SERVER LIST --- */
+.server-list-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.dropdown-item.selected {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.tag-forced {
+  font-size: 0.65rem;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #999;
+}
+
+/* --- TOGGLE SWITCH (Small Version) --- */
+.switch.sm {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch.sm input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #444;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+input:disabled + .slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* --- FLEX ROW FOR SELECTORS --- */
+.controls-row {
+  display: flex;
+  gap: 12px; /* Space between Server and Season */
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.control-group.half-width {
+  flex: 1; /* Both take equal space (50%) */
+  min-width: 0; /* Prevents overflow issues */
+}
+
+/* Ensure dropdowns inside the row match heights */
+.dropdown-btn, 
+.sidebar-select {
+  height: 45px; /* Fixed height for alignment */
+  display: flex;
+  align-items: center;
+}
+
+/* Remove margin-bottom from groups inside row to keep tight layout */
+.control-group.half-width {
+  margin-bottom: 15px;
+}
