@@ -273,5 +273,3 @@ export default function PlayerOverlay() {
     </div>
   );
 }
-
-export default PlayerOverlay;
