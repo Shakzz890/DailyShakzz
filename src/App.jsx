@@ -5,26 +5,30 @@ import { GlobalProvider, useGlobal } from './context/GlobalContext';
 import Navbar from './components/Layout/Navbar';
 import Sidebar from './components/Layout/Sidebar';
 import InfoModal from './components/Layout/InfoModal';
-import Loader from './components/Layout/Loader';
+import Loader from './components/Layout/Loader'; // <--- Make sure file is named "Loader.jsx"
 
 // Pages
 import Home from './pages/Home';
 import Live from './pages/Live';
 import Explore from './pages/Explore';
-import DetailView from './components/Detail/DetailView';      // Now a page
-import PlayerOverlay from './components/Detail/PlayerOverlay'; // Now a page (rename to PlayerPage later if you want)
-import CategoryView from './components/Category/CategoryView'; // Now a page
 
-// Modals (These can stay as overlays/modals)
+// Components & Overlays
+import DetailView from './components/Detail/DetailView';
+import PlayerOverlay from './components/Detail/PlayerOverlay';
+import CategoryView from './components/Category/CategoryView';
 import SearchModal from './components/Search/SearchModal';
 
 const AppContent = () => {
     const { currentView, switchView } = useGlobal();
 
     const handleNavClick = (view) => {
+        // Reset scroll behavior to instant for the switch
         document.documentElement.style.scrollBehavior = 'auto';
         window.scrollTo(0, 0);
+        
         switchView(view); 
+        
+        // Restore smooth scrolling after a tiny delay
         setTimeout(() => document.documentElement.style.scrollBehavior = '', 50);
     };
 
@@ -33,51 +37,43 @@ const AppContent = () => {
         window.scrollTo(0, 0);
     }, [currentView]);
 
+    // Active State Logic for Bottom Nav
     const isHomeActive = currentView === 'home';
     const isExploreActive = currentView === 'explore';
     const isLiveActive = currentView === 'live';
 
     return (
         <>
+            {/* NEW LOADER COMPONENT */}
             <Loader />
+            
             <Sidebar />
             <Navbar />
 
-            {/* MAIN CONTENT AREA - Only ONE visible at a time */}
-            <main className="main-content">
-                {/* Standard Pages */}
-                {currentView === 'home' && <Home />}
-                {currentView === 'explore' && <Explore />}
-                {currentView === 'live' && <Live />}
-                
-                {/* Detail Page (was overlay, now page) */}
-                {currentView === 'detail' && <DetailView />}
-                
-                {/* Player Page (was overlay, now page) */}
-                {currentView === 'player' && <PlayerOverlay />}
-                
-                {/* Category Page (was overlay, now page) */}
-                {currentView === 'category' && <CategoryView />}
-            </main>
+            {/* MAIN PAGES (Hidden/Shown via CSS for state preservation) */}
+            <div style={{ display: currentView === 'home' ? 'block' : 'none' }}><Home /></div>
+            <div style={{ display: currentView === 'explore' ? 'block' : 'none' }}><Explore /></div>
+            <div style={{ display: currentView === 'live' ? 'block' : 'none' }}><Live /></div>
             
-            {/* MODALS - These render on top when open */}
+            {/* OVERLAYS & MODALS */}
+            <DetailView />
+            <PlayerOverlay />
+            <CategoryView />
             <SearchModal />
             <InfoModal />
             
-            {/* MOBILE BOTTOM NAV - Hide when on Player or Detail for immersive experience */}
-            {currentView !== 'player' && currentView !== 'detail' && (
-                <div className="bottom-nav">
-                    <div className={`nav-item ${isHomeActive ? 'active' : ''}`} onClick={() => handleNavClick('home')}>
-                        <i className="fa-solid fa-house"></i><span>Home</span>
-                    </div>
-                    <div className={`nav-item ${isExploreActive ? 'active' : ''}`} onClick={() => handleNavClick('explore')}>
-                        <i className="fa-regular fa-compass"></i><span>Explore</span>
-                    </div>
-                    <div className={`nav-item ${isLiveActive ? 'active' : ''}`} onClick={() => handleNavClick('live')}>
-                        <i className="fa-solid fa-tv"></i><span>Live TV</span>
-                    </div>
+            {/* MOBILE BOTTOM NAV */}
+            <div className="bottom-nav">
+                <div className={`nav-item ${isHomeActive ? 'active' : ''}`} onClick={() => handleNavClick('home')}>
+                    <i className="fa-solid fa-house"></i><span>Home</span>
                 </div>
-            )}
+                <div className={`nav-item ${isExploreActive ? 'active' : ''}`} onClick={() => handleNavClick('explore')}>
+                    <i className="fa-regular fa-compass"></i><span>Explore</span>
+                </div>
+                <div className={`nav-item ${isLiveActive ? 'active' : ''}`} onClick={() => handleNavClick('live')}>
+                    <i className="fa-solid fa-tv"></i><span>Live TV</span>
+                </div>
+            </div>
         </>
     );
 };

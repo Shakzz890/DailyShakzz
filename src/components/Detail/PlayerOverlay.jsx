@@ -1,283 +1,244 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useGlobal } from "../../context/GlobalContext";
-import { fetchData } from "../../api/tmdb";
+import React, { useState, useEffect, useRef } from 'react';
+import { useGlobal } from '../../context/GlobalContext';
+import { fetchData } from '../../api/tmdb';
 
 const servers = [
-  { name: "Server 1", forceSandbox: false, getUrl: (id, type, s, e) => `https://vidsrc.cc/v2/embed/${type}/${id}${type === "tv" ? `/${s}/${e}?autoPlay=false&poster=true` : "?autoPlay=false&poster=true"}` },
-  { name: "Server 2", forceSandbox: false, getUrl: (id, type, s, e) => `https://zxcstream.xyz/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
-  { name: "Server 3", forceSandbox: true, getUrl: (id, type, s, e) => type === "movie" ? `https://fmovies4u.com/embed/movie/${id}` : `https://fmovies4u.com/embed/tv/${id}/${s}/${e}` },
-  { name: "Server 4", forceSandbox: false, getUrl: (id, type, s, e) => `https://vidsrc.cx/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}` },
-  { name: "Server 5 (Ads)", forceSandbox: true, getUrl: (id, type, s, e) => `https://mapple.uk/watch/${type}/${id}${type === "tv" ? `-${s}-${e}` : ""}` },
+    { name: "Server 1", getUrl: (id, type, s, e) => `https://vidsrc.cc/v2/embed/${type}/${id}` + (type === "tv" ? `/${s}/${e}?autoPlay=false&poster=true` : "?autoPlay=false&poster=true") },
+    { name: "Server 2", getUrl: (id, type, s, e) => `https://zxcstream.xyz/embed/${type}/${id}` + (type === "tv" ? `/${s}/${e}` : "") },
+    { name: "Server 3", getUrl: (id, type, s, e) => type === "movie" ? `https://fmovies4u.com/embed/movie/${id}` : `https://fmovies4u.com/embed/tv/${id}/${s}/${e}` },
+    { name: "Server 4", getUrl: (id, type, s, e) => `https://vidsrc.cx/embed/${type}/${id}` + (type === "tv" ? `/${s}/${e}` : "") },
+    { name: "Server 5 (Ads) ⚠️", getUrl: (id, type, s, e) => `https://mapple.uk/watch/${type}/${id}` + (type === "tv" ? `-${s}-${e}` : "") },
+    { name: "Server 6 (Ads) ⚠️", getUrl: (id, type, s, e) => `https://vidnest.fun/${type}/${id}` + (type === "tv" ? `/${s}/${e}` : "") },
+    { name: "Server 7 (Ads) ⚠️", getUrl: (id, type, s, e) => `https://vidlink.pro/${type}/${id}` + (type === "tv" ? `/${s}/${e}` : "") }
 ];
 
-export default function PlayerPage() {
-  const { detailItem, addToHistory, setCurrentView } = useGlobal(); // Added setCurrentView
-
-  const isTv = detailItem?.media_type === "tv" || detailItem?.first_air_date;
-  const type = isTv ? "tv" : "movie";
-
-  const [serverIdx, setServerIdx] = useState(0);
-  const [season, setSeason] = useState(1);
-  const [episode, setEpisode] = useState(1);
-  const [seasons, setSeasons] = useState([]);
-  const [episodes, setEpisodes] = useState([]);
-  const [epSearch, setEpSearch] = useState("");
-  
-  // UI States
-  const [showDesc, setShowDesc] = useState(false);
-  const [showServerMenu, setShowServerMenu] = useState(false);
-  const dropdownRef = useRef(null);
-
-  // --- SANDBOX LOGIC ---
-  const sandboxKey = useMemo(() => detailItem ? `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}` : null, [detailItem, season, episode, serverIdx]);
-  const [sandbox, setSandbox] = useState(true);
-  const [iframeKey, setIframeKey] = useState(0);
-
-  useEffect(() => {
-    if (sandboxKey) {
-      const saved = localStorage.getItem(sandboxKey);
-      if (saved !== null) setSandbox(JSON.parse(saved));
-    }
-  }, [sandboxKey]);
-
-  useEffect(() => {
-    if (sandboxKey) localStorage.setItem(sandboxKey, JSON.stringify(sandbox));
-  }, [sandbox, sandboxKey]);
-
-  useEffect(() => {
-    if (servers[serverIdx]?.forceSandbox) setSandbox(true);
-  }, [serverIdx]);
-
-  useEffect(() => {
-    setIframeKey(prev => prev + 1);
-  }, [sandbox]);
-
-  // --- CLICK OUTSIDE HANDLER ---
-  useEffect(() => {
-    function handleClickOutside(event) {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setShowServerMenu(false);
-        }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // --- DATA FETCHING ---
-  useEffect(() => {
-    if (!detailItem) {
-      setCurrentView('home'); // Go home if no item
-      return;
-    }
+const PlayerOverlay = () => {
+    const { isPlayerOpen, setIsPlayerOpen, detailItem, addToHistory } = useGlobal();
     
-    let startSeason = 1;
-    let startEpisode = 1;
+    const [serverIdx, setServerIndex] = useState(() => parseInt(localStorage.getItem('currentServer') || '0'));
+    const [season, setSeason] = useState(1);
+    const [episode, setEpisode] = useState(1);
+    const [sandbox, setSandbox] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('sandboxEnabled') ?? 'true'); } 
+        catch { return true; }
+    });
+    
+    const [seasonsData, setSeasonsData] = useState([]);
+    const [episodeList, setEpisodeList] = useState([]);
+    const [activePill, setActivePill] = useState(null); 
+    const [epSearch, setEpSearch] = useState("");
 
-    if (detailItem.badge_label && detailItem.badge_label.includes(':')) {
-        const match = detailItem.badge_label.match(/S(\d+):E(\d+)/);
-        if (match) {
-            startSeason = parseInt(match[1]);
-            startEpisode = parseInt(match[2]);
+    // --- INITIAL LOAD ---
+    useEffect(() => {
+        if (isPlayerOpen && detailItem) {
+            let startSeason = 1;
+            let startEpisode = 1;
+
+            if (detailItem.badge_label && detailItem.badge_label.includes(':')) {
+                const match = detailItem.badge_label.match(/S(\d+):E(\d+)/);
+                if (match) {
+                    startSeason = parseInt(match[1]);
+                    startEpisode = parseInt(match[2]);
+                }
+            }
+
+            setSeason(startSeason);
+            setEpisode(startEpisode);
+            setActivePill(null); 
+            setEpSearch("");
+            
+            const isTv = detailItem.media_type === 'tv' || detailItem.first_air_date;
+            
+            if (!isTv) {
+                addToHistory(detailItem, null, null);
+            } else {
+                addToHistory(detailItem, startSeason, startEpisode);
+                fetchData(`/tv/${detailItem.id}`).then(data => {
+                    if(data.seasons) {
+                        setSeasonsData(data.seasons.filter(s => s.season_number > 0));
+                        fetchEpisodes(startSeason); 
+                    }
+                });
+            }
         }
-    }
-    setSeason(startSeason);
-    setEpisode(startEpisode);
-    setShowDesc(false);
-    setShowServerMenu(false);
+    }, [isPlayerOpen, detailItem]);
 
-    if (isTv) {
-      fetchData(`/tv/${detailItem.id}`).then(d => {
-        setSeasons(d.seasons?.filter(s => s.season_number > 0) || []);
-      });
-      fetchData(`/tv/${detailItem.id}/season/${startSeason}`).then(d => {
-        setEpisodes(d.episodes || []);
-        addToHistory(detailItem, startSeason, startEpisode);
-      });
-    } else {
-        addToHistory(detailItem, null, null);
-    }
-  }, [detailItem, isTv, addToHistory, setCurrentView]);
+    // Save Settings
+    useEffect(() => {
+        localStorage.setItem('currentServer', serverIdx);
+        localStorage.setItem('sandboxEnabled', sandbox);
+    }, [serverIdx, sandbox]);
 
-  const handleSeasonChange = async (newSeason) => {
-    setSeason(newSeason);
-    setEpisode(1);
-    const d = await fetchData(`/tv/${detailItem.id}/season/${newSeason}`);
-    setEpisodes(d.episodes || []);
-    addToHistory(detailItem, newSeason, 1);
-  };
+    const fetchEpisodes = async (seasonNum) => {
+        const data = await fetchData(`/tv/${detailItem.id}/season/${seasonNum}`);
+        setEpisodeList(data.episodes || []);
+    };
 
-  const handleEpisodeChange = (newEp) => {
-    setEpisode(newEp);
-    addToHistory(detailItem, season, newEp);
-  };
+    const handleSeasonChange = (seasonNum) => {
+        setSeason(seasonNum);
+        setEpisode(1);
+        fetchEpisodes(seasonNum);
+        setActivePill(null);
+        addToHistory(detailItem, seasonNum, 1);
+    };
 
-  // Handle back button
-  const handleBack = () => {
-    setCurrentView('home'); // Or 'detail' if you want to go back to detail view
-  };
+    const handleEpisodeChange = (epNum) => {
+        setEpisode(epNum);
+        setActivePill(null);
+        addToHistory(detailItem, season, epNum);
+    };
 
-  if (!detailItem) return null;
+    useEffect(() => {
+        const closeMenu = (e) => {
+            if (!e.target.closest('.pill-wrapper') && !e.target.closest('.episode-search')) {
+                setActivePill(null);
+            }
+        };
+        window.addEventListener('click', closeMenu);
+        return () => window.removeEventListener('click', closeMenu);
+    }, []);
 
-  const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
-  
-  const filteredEpisodes = episodes.filter(ep => 
-    !epSearch || 
-    ep.episode_number.toString() === epSearch || 
-    (ep.name && ep.name.toLowerCase().includes(epSearch.toLowerCase()))
-  );
+    if (!isPlayerOpen || !detailItem) return null;
 
-  return (
-    <div className="player-page-view">
-      <div className="player-header">
-        <button className="close-player-btn" onClick={handleBack}>
-          <i className="fa-solid fa-arrow-left" /> {/* Changed to back arrow */}
-        </button>
-      </div>
+    const isTv = detailItem.media_type === 'tv' || detailItem.first_air_date;
+    const type = isTv ? 'tv' : 'movie';
+    const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
 
-      <div className="player-layout">
-        
-        {/* LEFT: VIDEO */}
-        <div className="video-section">
-          <div className="iframe-wrapper">
-            <iframe
-              key={iframeKey}
-              id="overlay-video"
-              src={src}
-              allowFullScreen
-              sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox" : undefined}
-            />
-          </div>
-        </div>
+    const filteredEpisodes = episodeList.filter(ep => {
+        if (!epSearch) return true;
+        const q = epSearch.toLowerCase();
+        return (
+            ep.episode_number.toString() === q ||
+            (ep.name && ep.name.toLowerCase().includes(q)) ||
+            q.includes(ep.episode_number.toString())
+        );
+    });
 
-        {/* RIGHT: SIDEBAR */}
-        <aside className="sidebar-section">
-          <div className="sidebar-content">
-            <h2 className="sidebar-title">{detailItem.title || detailItem.name}</h2>
-            <div className="sidebar-meta">
-                <span>{detailItem.release_date?.split('-')[0] || detailItem.first_air_date?.split('-')[0] || 'N/A'}</span>
-                <span className="dot"></span>
-                <span>{isTv ? 'TV Series' : 'Movie'}</span>
-                <span className="dot"></span>
-                <span>{detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'N/A'} <i className="fas fa-star" style={{color:'gold', fontSize:'0.7rem'}}></i></span>
-            </div>
-
-            <div className="description-box">
-                <div className="desc-trigger" onClick={() => setShowDesc(!showDesc)}>
-                    <span>Description</span>
-                    <i className={`fas fa-chevron-down ${showDesc ? 'rotate' : ''}`}></i>
-                </div>
-                <div className={`desc-body ${showDesc ? 'open' : ''}`}>
-                    <p>{detailItem.overview || "No synopsis available."}</p>
-                    {detailItem.genres && (
-                        <div className="genre-tags">
-                            {detailItem.genres.map(g => <span key={g.id} className="tag">{g.name}</span>)}
-                        </div>
+    return (
+        <div id="player-overlay" className="player-overlay" style={{ display: 'flex' }}>
+            
+            {/* --- HEADER: Left=Title/Info, Right=Close --- */}
+            <div className="player-header">
+                
+                {/* RESTORED TITLE SECTION */}
+                <div className="player-header-info">
+                    <span style={{ 
+                        color: '#fff', 
+                        fontSize: '1.1rem', 
+                        fontWeight: '700', 
+                        whiteSpace: 'nowrap', 
+                        overflow: 'hidden', 
+                        textOverflow: 'ellipsis',
+                        display: 'block'
+                    }}>
+                        {detailItem.title || detailItem.name}
+                    </span>
+                    {isTv && (
+                        <span style={{ 
+                            color: 'var(--accent-color)', 
+                            fontSize: '0.8rem', 
+                            fontWeight: '600',
+                            marginTop: '2px',
+                            display: 'block'
+                        }}>
+                            Season {season} - Episode {episode}
+                        </span>
                     )}
                 </div>
+
+                {/* Close Button */}
+                <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
+                    <i className="fa-solid fa-xmark"></i> 
+                </button>
             </div>
 
-            <div className="controls-grid">
-                {/* 1. SERVER SELECTOR (Custom) */}
-                <div className="control-item" ref={dropdownRef}>
-                  <label>Server</label>
-                  <div className="custom-dropdown">
-                    <button 
-                        className={`dropdown-btn ${showServerMenu ? 'active' : ''}`} 
-                        onClick={() => setShowServerMenu(!showServerMenu)}
-                    >
-                        <span>{servers[serverIdx].name}</span>
-                        <i className={`fas fa-chevron-down ${showServerMenu ? 'rotate' : ''}`}></i>
-                    </button>
+            {/* --- VIDEO --- */}
+            <div className="iframe-wrapper">
+                <iframe 
+                    id="overlay-video" 
+                    src={src} 
+                    allowFullScreen 
+                    title="Player"
+                    sandbox={sandbox ? "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups allow-popups-to-escape-sandbox" : undefined}
+                ></iframe>
+            </div>
 
-                    <div className={`dropdown-menu ${showServerMenu ? 'show' : ''}`}>
-                        <div className="dropdown-header-sandbox" onClick={(e) => e.stopPropagation()}>
-                            <div className="sandbox-info">
-                                <i className="fas fa-shield-alt"></i>
-                                <span>Sandbox</span>
-                            </div>
-                            <label className="switch sm">
-                                <input 
-                                    type="checkbox" 
-                                    checked={sandbox}
-                                    disabled={servers[serverIdx].forceSandbox}
-                                    onChange={() => setSandbox(!sandbox)}
-                                />
-                                <span className="slider round"></span>
-                            </label>
+            {/* --- CONTROLS --- */}
+            <div className="player-controls-bar stacked">
+                
+                {/* Row 1: Server + Season */}
+                <div className="row-server">
+                    <div className="pill-wrapper">
+                        <div className={`pill-dropdown ${activePill === 'server' ? 'open' : ''}`} onClick={(e) => { e.stopPropagation(); setActivePill(activePill === 'server' ? null : 'server'); }}>
+                            <div className="pill-label"><span>{servers[serverIdx].name}</span><i className="fas fa-chevron-up"></i></div>
                         </div>
-
-                        <div className="server-list-scroll">
+                        <div className="pill-menu" style={{display: activePill === 'server' ? 'flex' : 'none'}} onClick={(e) => e.stopPropagation()}>
+                            <div className="menu-header">
+                                <span>Sandbox</span>
+                                <label className="switch">
+                                    <input type="checkbox" checked={sandbox} onChange={() => setSandbox(!sandbox)} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
                             {servers.map((s, i) => (
-                                <div 
-                                    key={i} 
-                                    className={`dropdown-item ${serverIdx === i ? 'selected' : ''}`}
-                                    onClick={() => {
-                                        setServerIdx(i);
-                                        setShowServerMenu(false);
-                                    }}
-                                >
+                                <div key={i} className={`menu-option ${serverIdx === i ? 'selected' : ''}`} onClick={() => { setServerIndex(i); setActivePill(null); }}>
                                     {s.name}
-                                    {s.forceSandbox && <span className="tag-forced">Ad-Block</span>}
                                 </div>
                             ))}
                         </div>
                     </div>
-                  </div>
+
+                    {isTv && (
+                        <div className="pill-wrapper">
+                            <div className={`pill-dropdown ${activePill === 'season' ? 'open' : ''}`} onClick={(e) => { e.stopPropagation(); setActivePill(activePill === 'season' ? null : 'season'); }}>
+                                <div className="pill-label"><span>Season {season}</span><i className="fas fa-chevron-up"></i></div>
+                            </div>
+                            <div className="pill-menu" style={{display: activePill === 'season' ? 'flex' : 'none'}} onClick={(e) => e.stopPropagation()}>
+                                <div className="menu-header">Select Season</div>
+                                {seasonsData.map(s => (
+                                    <div key={s.id} className={`menu-option ${season === s.season_number ? 'selected' : ''}`} onClick={() => handleSeasonChange(s.season_number)}>
+                                        <span>Season {s.season_number}</span>
+                                        <span style={{fontSize:'0.75rem', opacity:0.5}}>{s.episode_count} Eps</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* 2. SEASON SELECTOR */}
+                {/* Row 2: Search + Episode */}
                 {isTv && (
-                    <div className="control-item">
-                        <label>Season</label>
-                        <select 
-                            className="dark-select"
-                            value={season}
-                            onChange={(e) => handleSeasonChange(+e.target.value)}
-                        >
-                            {seasons.map(s => <option key={s.id} value={s.season_number}>Season {s.season_number}</option>)}
-                        </select>
+                    <div className="row-nav">
+                        <input
+                            type="text"
+                            placeholder="Search Ep..."
+                            className="episode-search"
+                            value={epSearch}
+                            onChange={(e) => { setEpSearch(e.target.value); setActivePill('episode'); }}
+                            onClick={(e) => { e.stopPropagation(); setActivePill('episode'); }}
+                        />
+
+                        <div className="pill-wrapper">
+                            <div className={`pill-dropdown ${activePill === 'episode' ? 'open' : ''}`} onClick={(e) => { e.stopPropagation(); setActivePill(activePill === 'episode' ? null : 'episode'); }}>
+                                <div className="pill-label"><span>Episode {episode}</span><i className="fas fa-chevron-up"></i></div>
+                            </div>
+                            <div className="pill-menu" style={{display: activePill === 'episode' ? 'flex' : 'none'}} onClick={(e) => e.stopPropagation()}>
+                                <div className="menu-header">Select Episode</div>
+                                {filteredEpisodes.length === 0 ? <div style={{padding:'15px', color:'#888', textAlign:'center'}}>No episode found</div> : 
+                                    filteredEpisodes.map(ep => (
+                                        <div key={ep.id} className={`menu-option ${episode === ep.episode_number ? 'selected' : ''}`} onClick={() => handleEpisodeChange(ep.episode_number)}>
+                                            <span style={{fontWeight:700, color:'#e50914', marginRight:'8px'}}>{ep.episode_number}.</span>
+                                            <span style={{whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{ep.name || `Episode ${ep.episode_number}`}</span>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
+        </div>
+    );
+};
 
-            {isTv && (
-              <>
-                <div className="control-item">
-                    <label>Search Episode</label>
-                    <input 
-                        type="text" 
-                        className="dark-input" 
-                        placeholder="Episode number..."
-                        value={epSearch}
-                        onChange={(e) => setEpSearch(e.target.value)}
-                    />
-                </div>
-
-                <div className="episode-header">
-                    <span>Episodes ({filteredEpisodes.length})</span>
-                </div>
-                
-                <div className="episode-grid">
-                  {filteredEpisodes.length === 0 ? (
-                    <div className="no-ep-msg">No episodes found</div>
-                  ) : (
-                    filteredEpisodes.map(ep => (
-                      <button
-                        key={ep.id}
-                        className={`ep-btn ${episode === ep.episode_number ? "active" : ""}`}
-                        onClick={() => handleEpisodeChange(ep.episode_number)}
-                        title={ep.name}
-                      >
-                        {ep.episode_number}
-                      </button>
-                    ))
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </aside>
-      </div>
-    </div>
-  );
-}
+export default PlayerOverlay;

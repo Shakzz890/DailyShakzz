@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../../api/tmdb';
 
-const DetailPage = () => {
+const DetailView = () => {
+    // 1. Get everything we need from Context
     const { 
         detailItem, 
-        setCurrentView, // Changed from closeDetail
+        isDetailOpen, 
+        closeDetail, // Use the new helper function
         setIsPlayerOpen, 
         watchlist, 
         toggleWatchlist, 
@@ -16,6 +18,7 @@ const DetailPage = () => {
     const [fullDetails, setFullDetails] = useState(null);
     const [similar, setSimilar] = useState([]);
 
+    // 2. Fetch Data
     useEffect(() => {
         if (detailItem) {
             const type = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'tv' : 'movie';
@@ -23,35 +26,24 @@ const DetailPage = () => {
             fetchData(`/${type}/${detailItem.id}/recommendations`).then(res => {
                 setSimilar(res.results || []);
             });
-        } else {
-            setCurrentView('home'); // Redirect if no item
         }
-    }, [detailItem, setCurrentView]);
+    }, [detailItem]);
 
-    if (!detailItem) return null;
+    // 3. Logic to show/hide
+    if (!isDetailOpen || !detailItem) return null;
 
     const handleRecClick = (item) => {
         const type = item.media_type || (item.title ? 'movie' : 'tv');
         openDetail({ ...item, media_type: type });
-        // Scroll to top
-        const view = document.querySelector('.detail-page');
+        const view = document.getElementById('detail-view');
         if(view) view.scrollTop = 0;
-    };
-
-    const handlePlay = () => {
-        setIsPlayerOpen(true); // Or setCurrentView('player') if you want player as separate page
-        addToHistory(detailItem);
-    };
-
-    const handleBack = () => {
-        setCurrentView('home');
     };
 
     const isAdded = watchlist.some(i => i.id === detailItem.id);
     const typeLabel = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'TV Series' : 'Movie';
 
     return (
-        <div className="page-view detail-page">
+        <div id="detail-view" style={{ display: 'block' }}>
             
             <div className="detail-backdrop-layer">
                 <img 
@@ -63,7 +55,8 @@ const DetailPage = () => {
                 <div className="detail-overlay-gradient"></div>
             </div>
 
-            <button className="close-detail-btn" onClick={handleBack}>
+            {/* Close button calls the fixed context function */}
+            <button className="close-detail-btn" onClick={closeDetail}>
                 <i className="fa-solid fa-arrow-left"></i>
             </button>
 
@@ -97,7 +90,10 @@ const DetailPage = () => {
                         <p id="detail-overview">{detailItem.overview}</p>
 
                         <div className="detail-actions">
-                            <button className="play-btn-primary" onClick={handlePlay}>
+                            <button className="play-btn-primary" onClick={() => {
+                                setIsPlayerOpen(true);
+                                addToHistory(detailItem);
+                            }}>
                                 <i className="fas fa-play"></i> Play
                             </button>
                             
@@ -135,4 +131,4 @@ const DetailPage = () => {
     );
 };
 
-export default DetailPage;
+export default DetailView;
