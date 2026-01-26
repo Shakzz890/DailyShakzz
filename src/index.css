@@ -4422,3 +4422,107 @@ input:checked + .slider:before { transform: translateX(16px); }
     top: 10px;
   }
 }
+/* ========================================================
+   PAGE VIEW SYSTEM (Non-Overlay)
+   ======================================================== */
+
+/* Base page class - Replaces fixed overlay behavior */
+.page-view, 
+.player-page-view {
+  position: relative; /* Changed from fixed */
+  width: 100%;
+  min-height: calc(100vh - var(--header-height)); /* Full height minus navbar */
+  background: var(--bg-color);
+  z-index: 1; /* Lower than navbar (30000) */
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--header-height); /* Push content below fixed navbar */
+  animation: fadeIn 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Ensure pages can scroll if content is long */
+.page-view {
+  overflow-y: auto;
+}
+
+/* Player specific - prevent double scroll issues */
+.player-page-view {
+  overflow: hidden; /* Let internal layout handle scroll */
+  height: calc(100vh - var(--header-height));
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Player layout adjustments for page context */
+.player-page-view .player-layout {
+  height: 100%;
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .player-page-view .player-layout {
+    overflow: hidden; /* Desktop: sidebar scrolls independently */
+  }
+  
+  .player-page-view .sidebar-section {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+/* Detail Page Specific */
+.detail-page {
+  background: #141414;
+  padding-bottom: 40px;
+}
+
+/* Category Page Specific */
+.category-page {
+  background: var(--bg-color);
+}
+
+/* Back button positioning adjustment for pages */
+.player-page-view .player-header,
+.detail-page .close-detail-btn,
+.category-page .category-header {
+  position: fixed; /* Keep buttons accessible */
+  z-index: 100;
+}
+
+.detail-page .close-detail-btn {
+  top: calc(var(--header-height) + 10px);
+  right: 20px;
+}
+
+/* Ensure content doesn't hide under fixed header in category */
+.category-page .category-content {
+  padding-top: 10px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 1023px) {
+  .page-view, 
+  .player-page-view {
+    padding-bottom: 90px; /* Space for bottom nav */
+    min-height: calc(100vh - var(--header-height) - 70px); /* Account for bottom nav */
+  }
+  
+  .player-page-view {
+    height: calc(100vh - var(--header-height) - 70px);
+  }
+  
+  /* Hide bottom nav on desktop */
+  @media (min-width: 1024px) {
+    .page-view,
+    .player-page-view {
+      padding-bottom: 20px;
+    }
+  }
+}
+
+/* Remove old fixed overlay styles */
+#detail-view,
+#category-view,
+.player-overlay {
+  display: none !important; /* Hide old overlay containers */
+}
