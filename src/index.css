@@ -3823,32 +3823,3 @@ input:disabled + .slider {
 .control-group.half-width {
   margin-bottom: 15px;
 }
-
-/* ========================================================
-   PLAYER PAGE LAYOUT (Below Navbar)
-   ======================================================== */
-
-.player-overlay {
-  position: fixed;
-  /* Start below the Navbar */
-  top: var(--header-height); 
-  left: 0;
-  width: 100vw;
-  /* Fill remaining height */
-  height: calc(100dvh - var(--header-height)); 
-  
-  background: #000;
-  
-  /* Z-Index: High enough to cover content, 
-     but LOWER than Navbar (30000) */
-  z-index: 25000 !important; 
-  
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Optional: Add a subtle shadow under the navbar to separate it */
-.navbar {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
