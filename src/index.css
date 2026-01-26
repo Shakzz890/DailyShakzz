@@ -3629,3 +3629,172 @@ input:checked + .slider:before {
     height: 45px;
   }
 }
+/* ========================================================
+   CUSTOM DROPDOWN & SANDBOX STYLES
+   ======================================================== */
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+/* Dropdown Trigger Button */
+.dropdown-btn {
+  width: 100%;
+  padding: 12px 15px;
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-btn:hover, .dropdown-btn.active {
+  border-color: var(--accent-color);
+  background: #2a2a2a;
+}
+
+.dropdown-btn i {
+  font-size: 0.8rem;
+  transition: transform 0.3s;
+}
+
+.dropdown-btn i.rotate {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu Container */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* --- SANDBOX HEADER (Always on Top) --- */
+.dropdown-header-sandbox {
+  padding: 12px 15px;
+  background: #252525;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sandbox-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ddd;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sandbox-info i {
+  color: var(--accent-color);
+}
+
+/* --- SERVER LIST --- */
+.server-list-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.dropdown-item.selected {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.tag-forced {
+  font-size: 0.65rem;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #999;
+}
+
+/* --- TOGGLE SWITCH (Small Version) --- */
+.switch.sm {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.switch.sm input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #444;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+input:disabled + .slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
