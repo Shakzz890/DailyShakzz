@@ -10,8 +10,8 @@ const servers = [
   { name: "Server 5 (Ads)", forceSandbox: true, getUrl: (id, type, s, e) => `https://mapple.uk/watch/${type}/${id}${type === "tv" ? `-${s}-${e}` : ""}` },
 ];
 
-export default function PlayerOverlay() {
-  const { isPlayerOpen, setIsPlayerOpen, detailItem, addToHistory } = useGlobal();
+export default function PlayerPage() {
+  const { detailItem, addToHistory, setCurrentView } = useGlobal(); // Added setCurrentView
 
   const isTv = detailItem?.media_type === "tv" || detailItem?.first_air_date;
   const type = isTv ? "tv" : "movie";
@@ -65,7 +65,10 @@ export default function PlayerOverlay() {
 
   // --- DATA FETCHING ---
   useEffect(() => {
-    if (!isPlayerOpen || !detailItem) return;
+    if (!detailItem) {
+      setCurrentView('home'); // Go home if no item
+      return;
+    }
     
     let startSeason = 1;
     let startEpisode = 1;
@@ -93,7 +96,7 @@ export default function PlayerOverlay() {
     } else {
         addToHistory(detailItem, null, null);
     }
-  }, [isPlayerOpen, detailItem]);
+  }, [detailItem, isTv, addToHistory, setCurrentView]);
 
   const handleSeasonChange = async (newSeason) => {
     setSeason(newSeason);
@@ -108,7 +111,12 @@ export default function PlayerOverlay() {
     addToHistory(detailItem, season, newEp);
   };
 
-  if (!isPlayerOpen || !detailItem) return null;
+  // Handle back button
+  const handleBack = () => {
+    setCurrentView('home'); // Or 'detail' if you want to go back to detail view
+  };
+
+  if (!detailItem) return null;
 
   const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
   
@@ -121,8 +129,8 @@ export default function PlayerOverlay() {
   return (
     <div className="player-page-view">
       <div className="player-header">
-        <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
-          <i className="fa-solid fa-xmark" />
+        <button className="close-player-btn" onClick={handleBack}>
+          <i className="fa-solid fa-arrow-left" /> {/* Changed to back arrow */}
         </button>
       </div>
 
