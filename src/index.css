@@ -4526,3 +4526,57 @@ input:checked + .slider:before { transform: translateX(16px); }
 .player-overlay {
   display: none !important; /* Hide old overlay containers */
 }
+/* Main content container */
+.main-content {
+    position: relative;
+    min-height: calc(100vh - var(--header-height));
+    padding-top: var(--header-height); /* Push content below fixed navbar */
+}
+
+/* Hide old overlay positioning - Force pages to flow normally */
+.page-view,
+.player-page-view,
+.detail-page,
+.category-page {
+    position: relative !important; /* Override any fixed positioning */
+    inset: auto !important;        /* Remove inset: 0 */
+    width: 100% !important;
+    min-height: calc(100vh - var(--header-height));
+    z-index: 1 !important;         /* Below navbar (30000) */
+    display: flex;                 /* Ensure visible when rendered */
+    flex-direction: column;
+    background: var(--bg-color);
+    animation: fadeIn 0.3s ease;
+}
+
+/* Player specific - fill available space */
+.player-page-view {
+    height: calc(100vh - var(--header-height));
+    overflow: hidden; /* Prevent body scroll, handle internally */
+    background: #000;
+}
+
+/* Mobile adjustments */
+@media (max-width: 1023px) {
+    .main-content {
+        min-height: calc(100vh - var(--header-height) - 70px); /* Account for bottom nav */
+    }
+    
+    .page-view,
+    .player-page-view,
+    .detail-page,
+    .category-page {
+        min-height: calc(100vh - var(--header-height) - 70px);
+    }
+    
+    .player-page-view {
+        height: calc(100vh - var(--header-height) - 70px);
+    }
+}
+
+/* Hide bottom nav spacer on desktop */
+@media (min-width: 1024px) {
+    .main-content {
+        padding-bottom: 0;
+    }
+}
