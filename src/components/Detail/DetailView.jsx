@@ -3,11 +3,10 @@ import { useGlobal } from '../../context/GlobalContext';
 import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../../api/tmdb';
 
 const DetailView = () => {
-    // 1. Get everything we need from Context
     const { 
         detailItem, 
         isDetailOpen, 
-        closeDetail, // Use the new helper function
+        closeDetail, 
         setIsPlayerOpen, 
         watchlist, 
         toggleWatchlist, 
@@ -18,7 +17,6 @@ const DetailView = () => {
     const [fullDetails, setFullDetails] = useState(null);
     const [similar, setSimilar] = useState([]);
 
-    // 2. Fetch Data
     useEffect(() => {
         if (detailItem) {
             const type = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'tv' : 'movie';
@@ -29,13 +27,12 @@ const DetailView = () => {
         }
     }, [detailItem]);
 
-    // 3. Logic to show/hide
     if (!isDetailOpen || !detailItem) return null;
 
     const handleRecClick = (item) => {
         const type = item.media_type || (item.title ? 'movie' : 'tv');
         openDetail({ ...item, media_type: type });
-        const view = document.getElementById('detail-view');
+        const view = document.querySelector('.detail-page');
         if(view) view.scrollTop = 0;
     };
 
@@ -43,7 +40,7 @@ const DetailView = () => {
     const typeLabel = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'TV Series' : 'Movie';
 
     return (
-        <div id="detail-view" style={{ display: 'block' }}>
+        <div className="page-view detail-page">
             
             <div className="detail-backdrop-layer">
                 <img 
@@ -55,7 +52,6 @@ const DetailView = () => {
                 <div className="detail-overlay-gradient"></div>
             </div>
 
-            {/* Close button calls the fixed context function */}
             <button className="close-detail-btn" onClick={closeDetail}>
                 <i className="fa-solid fa-arrow-left"></i>
             </button>

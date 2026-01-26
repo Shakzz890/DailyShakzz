@@ -23,9 +23,12 @@ export default function PlayerOverlay() {
   const [episodes, setEpisodes] = useState([]);
   const [epSearch, setEpSearch] = useState("");
   
-  const [showDesc, setShowDesc] = useState(false); // Toggle Description
+  // UI States
+  const [showDesc, setShowDesc] = useState(false);
+  const [showServerMenu, setShowServerMenu] = useState(false);
+  const dropdownRef = useRef(null);
 
-  // --- SANDBOX ---
+  // --- SANDBOX LOGIC ---
   const sandboxKey = useMemo(() => detailItem ? `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}` : null, [detailItem, season, episode, serverIdx]);
   const [sandbox, setSandbox] = useState(true);
   const [iframeKey, setIframeKey] = useState(0);
@@ -49,14 +52,24 @@ export default function PlayerOverlay() {
     setIframeKey(prev => prev + 1);
   }, [sandbox]);
 
-  // --- DATA ---
+  // --- CLICK OUTSIDE HANDLER ---
+  useEffect(() => {
+    function handleClickOutside(event) {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setShowServerMenu(false);
+        }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- DATA FETCHING ---
   useEffect(() => {
     if (!isPlayerOpen || !detailItem) return;
     
     let startSeason = 1;
     let startEpisode = 1;
 
-    // Check for Resume Badge (S1:E5)
     if (detailItem.badge_label && detailItem.badge_label.includes(':')) {
         const match = detailItem.badge_label.match(/S(\d+):E(\d+)/);
         if (match) {
@@ -67,6 +80,7 @@ export default function PlayerOverlay() {
     setSeason(startSeason);
     setEpisode(startEpisode);
     setShowDesc(false);
+    setShowServerMenu(false);
 
     if (isTv) {
       fetchData(`/tv/${detailItem.id}`).then(d => {
@@ -106,14 +120,12 @@ export default function PlayerOverlay() {
 
   return (
     <div className="player-page-view">
-      {/* 1. HEADER (Floating Close) */}
       <div className="player-header">
         <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
           <i className="fa-solid fa-xmark" />
         </button>
       </div>
 
-      {/* 2. SPLIT LAYOUT */}
       <div className="player-layout">
         
         {/* LEFT: VIDEO */}
@@ -132,8 +144,6 @@ export default function PlayerOverlay() {
         {/* RIGHT: SIDEBAR */}
         <aside className="sidebar-section">
           <div className="sidebar-content">
-            
-            {/* Title & Meta */}
             <h2 className="sidebar-title">{detailItem.title || detailItem.name}</h2>
             <div className="sidebar-meta">
                 <span>{detailItem.release_date?.split('-')[0] || detailItem.first_air_date?.split('-')[0] || 'N/A'}</span>
@@ -143,7 +153,6 @@ export default function PlayerOverlay() {
                 <span>{detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'N/A'} <i className="fas fa-star" style={{color:'gold', fontSize:'0.7rem'}}></i></span>
             </div>
 
-            {/* Description Dropdown */}
             <div className="description-box">
                 <div className="desc-trigger" onClick={() => setShowDesc(!showDesc)}>
                     <span>Description</span>
@@ -159,19 +168,56 @@ export default function PlayerOverlay() {
                 </div>
             </div>
 
-            {/* Controls */}
             <div className="controls-grid">
-                <div className="control-item">
-                    <label>Server</label>
-                    <select 
-                        className="dark-select"
-                        value={serverIdx}
-                        onChange={(e) => setServerIdx(+e.target.value)}
+                {/* 1. SERVER SELECTOR (Custom) */}
+                <div className="control-item" ref={dropdownRef}>
+                  <label>Server</label>
+                  <div className="custom-dropdown">
+                    <button 
+                        className={`dropdown-btn ${showServerMenu ? 'active' : ''}`} 
+                        onClick={() => setShowServerMenu(!showServerMenu)}
                     >
-                        {servers.map((s, i) => <option key={i} value={i}>{s.name}</option>)}
-                    </select>
+                        <span>{servers[serverIdx].name}</span>
+                        <i className={`fas fa-chevron-down ${showServerMenu ? 'rotate' : ''}`}></i>
+                    </button>
+
+                    <div className={`dropdown-menu ${showServerMenu ? 'show' : ''}`}>
+                        <div className="dropdown-header-sandbox" onClick={(e) => e.stopPropagation()}>
+                            <div className="sandbox-info">
+                                <i className="fas fa-shield-alt"></i>
+                                <span>Sandbox</span>
+                            </div>
+                            <label className="switch sm">
+                                <input 
+                                    type="checkbox" 
+                                    checked={sandbox}
+                                    disabled={servers[serverIdx].forceSandbox}
+                                    onChange={() => setSandbox(!sandbox)}
+                                />
+                                <span className="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div className="server-list-scroll">
+                            {servers.map((s, i) => (
+                                <div 
+                                    key={i} 
+                                    className={`dropdown-item ${serverIdx === i ? 'selected' : ''}`}
+                                    onClick={() => {
+                                        setServerIdx(i);
+                                        setShowServerMenu(false);
+                                    }}
+                                >
+                                    {s.name}
+                                    {s.forceSandbox && <span className="tag-forced">Ad-Block</span>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                  </div>
                 </div>
 
+                {/* 2. SEASON SELECTOR */}
                 {isTv && (
                     <div className="control-item">
                         <label>Season</label>
@@ -186,7 +232,6 @@ export default function PlayerOverlay() {
                 )}
             </div>
 
-            {/* Episode Grid (TV Only) */}
             {isTv && (
               <>
                 <div className="control-item">
@@ -222,18 +267,6 @@ export default function PlayerOverlay() {
                 </div>
               </>
             )}
-
-            {/* Footer / Sandbox */}
-            <div className="sidebar-footer">
-                <div className="sandbox-row">
-                    <span>Ad-Block (Sandbox)</span>
-                    <label className="switch sm">
-                        <input type="checkbox" checked={sandbox} disabled={servers[serverIdx].forceSandbox} onChange={() => setSandbox(!sandbox)} />
-                        <span className="slider round"></span>
-                    </label>
-                </div>
-            </div>
-
           </div>
         </aside>
       </div>
