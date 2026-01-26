@@ -9,7 +9,6 @@ const CategoryView = () => {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     
-    // Check if we are showing a user list (History/Favorites) or an API list
     const isUserList = categoryModal.title === 'Watch History' || categoryModal.title === 'My Favorites';
 
     useEffect(() => {
@@ -20,7 +19,6 @@ const CategoryView = () => {
         setHasMore(true);
 
         if (isUserList) {
-            // LOAD LOCAL DATA
             if (categoryModal.title === 'Watch History') {
                 setResults(history || []);
             } else {
@@ -29,7 +27,6 @@ const CategoryView = () => {
             setLoading(false);
             setHasMore(false);
         } else {
-            // LOAD API DATA
             loadApiData(1);
         }
     }, [categoryModal.isOpen, categoryModal.endpoint, history, watchlist]);
@@ -62,28 +59,16 @@ const CategoryView = () => {
     const isHistory = categoryModal.title === 'Watch History';
 
     return (
-        <div 
-            id="category-view" 
-            className="category-view" 
-            style={{ 
-                // FIX: Force Fixed Position to cover the screen 
-                display: 'flex', 
-                position: 'fixed', 
-                inset: 0, 
-                zIndex: 10005, 
-                background: 'var(--bg-color)',
-                paddingTop: '0px' // Reset legacy padding if needed
-            }}
-        >
+        <div className="page-view category-page">
             <div className="category-header">
                 <i className="fa-solid fa-arrow-left" onClick={() => setCategoryModal({ ...categoryModal, isOpen: false })}></i>
                 <h1 id="category-title">{categoryModal.title}</h1>
             </div>
             
-            <div className="category-content" id="category-content" onScroll={handleScroll} style={{ overflowY: 'auto', flex: 1 }}>
+            <div className="category-content" onScroll={handleScroll} style={{ overflowY: 'auto', flex: 1 }}>
                 <div className={`category-grid ${isHistory ? 'landscape-grid' : ''}`} id="category-grid">
                     {results.map((item, index) => {
-                        if(!item) return null; // Safety check
+                        if(!item) return null;
                         const title = getDisplayTitle(item);
                         const year = (item.release_date || item.first_air_date || 'N/A').split('-')[0];
                         const typeLabel = item.media_type === 'tv' || item.first_air_date ? 'Series' : 'Movie';
