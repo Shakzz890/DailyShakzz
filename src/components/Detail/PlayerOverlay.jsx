@@ -169,7 +169,7 @@ export default function PlayerOverlay() {
             {/* --- SINGLE ROW FOR SELECTORS --- */}
             <div className="controls-row">
                 
-                {/* 1. SERVER SELECTOR (Custom) */}
+                {/* 1. SERVER SELECTOR (Custom with Sandbox) */}
                 <div className="control-group half-width" ref={dropdownRef}>
                   <label>Server</label>
                   <div className="custom-dropdown">
@@ -182,6 +182,24 @@ export default function PlayerOverlay() {
                     </button>
 
                     <div className={`dropdown-menu ${showServerMenu ? 'show' : ''}`}>
+                        
+                        {/* SANDBOX TOGGLE (Always on Top) */}
+                        <div className="dropdown-header-sandbox" onClick={(e) => e.stopPropagation()}>
+                            <div className="sandbox-info">
+                                <i className="fas fa-shield-alt"></i>
+                                <span>Sandbox</span>
+                            </div>
+                            <label className="switch sm">
+                                <input 
+                                    type="checkbox" 
+                                    checked={sandbox}
+                                    disabled={servers[serverIdx].forceSandbox}
+                                    onChange={() => setSandbox(!sandbox)}
+                                />
+                                <span className="slider round"></span>
+                            </label>
+                        </div>
+
                         <div className="server-list-scroll">
                             {servers.map((s, i) => (
                                 <div 
@@ -255,21 +273,6 @@ export default function PlayerOverlay() {
                 </div>
               </>
             )}
-
-            <div className="sidebar-divider"></div>
-            <div className="sandbox-toggle-row">
-                <span>Ad-Block (Sandbox)</span>
-                <label className="switch" style={{transform:'scale(0.8)'}}>
-                  <input
-                    type="checkbox"
-                    checked={sandbox}
-                    disabled={servers[serverIdx].forceSandbox}
-                    onChange={() => setSandbox(!sandbox)}
-                  />
-                  <span className="slider" />
-                </label>
-            </div>
-
           </div>
         </aside>
       </div>
