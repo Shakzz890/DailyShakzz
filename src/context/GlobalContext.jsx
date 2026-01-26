@@ -23,7 +23,7 @@ const db = getFirestore(app);
 export const GlobalProvider = ({ children }) => {
     
     // --- 1. UI STATE (PERSISTED) ---
-    // Remembers if you were on Home, Explore, or Live TV
+    // 'home' | 'live' | 'detail' | 'player' | 'category' | 'explore'
     const [currentView, setCurrentView] = useState(() => {
         return localStorage.getItem('shakzz_current_view') || 'home';
     });
@@ -37,26 +37,20 @@ export const GlobalProvider = ({ children }) => {
     const [history, setHistory] = useState([]);
     const [watchlist, setWatchlist] = useState([]);
 
-    // --- 3. DETAIL & PLAYER STATE (PERSISTED) ---
+    // --- 3. ACTIVE CONTENT STATE (PERSISTED) ---
+    // Stores the item being viewed in Detail or Player pages
     const [detailItem, setDetailItem] = useState(() => {
-        try { return JSON.parse(localStorage.getItem('shakzz_active_item')) || null; } catch { return null; }
+        try { return JSON.parse(localStorage.getItem('shakzz_active_item')) || null; } 
+        catch { return null; }
     });
 
-    const [isDetailOpen, setIsDetailOpen] = useState(() => {
-        try { return JSON.parse(localStorage.getItem('shakzz_detail_open')) || false; } catch { return false; }
-    });
-
-    const [isPlayerOpen, setIsPlayerOpen] = useState(() => {
-        try { return JSON.parse(localStorage.getItem('shakzz_player_open')) || false; } catch { return false; }
-    });
-
-    // --- 4. MODALS (CATEGORY PERSISTED) ---
-    // Remembers if you were viewing "Latest Updates", "Filipino Drama", etc.
+    // --- 4. CATEGORY STATE (PERSISTED) ---
+    // Stores which category is being browsed in Category page
     const [categoryModal, setCategoryModal] = useState(() => {
         try { 
-            return JSON.parse(localStorage.getItem('shakzz_category_modal')) || { isOpen: false, title: '', endpoint: '' }; 
+            return JSON.parse(localStorage.getItem('shakzz_category_modal')) || { title: '', endpoint: '' }; 
         } catch { 
-            return { isOpen: false, title: '', endpoint: '' }; 
+            return { title: '', endpoint: '' }; 
         }
     });
 
@@ -64,14 +58,11 @@ export const GlobalProvider = ({ children }) => {
     const [searchModal, setSearchModal] = useState({ isOpen: false, mode: 'search' }); 
 
     // --- 5. MASTER SAVE EFFECT ---
-    // Saves EVERYTHING whenever it changes
     useEffect(() => {
         localStorage.setItem('shakzz_current_view', currentView);
         localStorage.setItem('shakzz_active_item', JSON.stringify(detailItem));
-        localStorage.setItem('shakzz_detail_open', JSON.stringify(isDetailOpen));
-        localStorage.setItem('shakzz_player_open', JSON.stringify(isPlayerOpen));
         localStorage.setItem('shakzz_category_modal', JSON.stringify(categoryModal));
-    }, [currentView, detailItem, isDetailOpen, isPlayerOpen, categoryModal]);
+    }, [currentView, detailItem, categoryModal]);
 
 
     // --- NAVIGATION ---
@@ -91,6 +82,48 @@ export const GlobalProvider = ({ children }) => {
 
     const hideLoader = () => {
         setTimeout(() => setIsLoading(false), 500);
+    };
+
+    // --- PAGE NAVIGATION HELPERS ---
+    
+    // Open Detail Page (replaces overlay)
+    const openDetail = (item) => {
+        setDetailItem(item);
+        setCurrentView('detail');
+    };
+
+    // Close Detail Page (goes back to home)
+    const closeDetail = () => {
+        setDetailItem(null);
+        setCurrentView('home');
+        localStorage.removeItem('shakzz_active_item');
+    };
+
+    // Open Player Page (replaces overlay)
+    // Call this from Detail page when clicking Play
+    const openPlayer = () => {
+        if (!detailItem) return;
+        setCurrentView('player');
+    };
+
+    // Close Player Page (goes back to detail)
+    const closePlayer = () => {
+        if (detailItem) {
+            setCurrentView('detail');
+        } else {
+            setCurrentView('home');
+        }
+    };
+
+    // Open Category Page (replaces modal)
+    const openCategory = (title, endpoint) => {
+        setCategoryModal({ title, endpoint });
+        setCurrentView('category');
+    };
+
+    // Close Category Page (goes back to home)
+    const closeCategory = () => {
+        setCurrentView('home');
     };
 
     // --- AUTH ---
@@ -210,35 +243,24 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
-    // --- CONTROLS ---
-    const openDetail = (item) => {
-        setDetailItem(item);
-        setIsDetailOpen(true);
-        setIsPlayerOpen(false); 
-    };
-
-    const closeDetail = () => {
-        setDetailItem(null);
-        setIsDetailOpen(false);
-        setIsPlayerOpen(false);
-        // Clear active item from storage when closed
-        localStorage.removeItem('shakzz_active_item');
-        localStorage.removeItem('shakzz_detail_open');
-        localStorage.removeItem('shakzz_player_open');
-    };
-
     return (
         <GlobalContext.Provider value={{
-            currentView, isSidebarOpen, isLoading, loadingMessage,
+            currentView, setCurrentView, // Expose setter for direct navigation
+            isSidebarOpen, isLoading, loadingMessage,
             user, history, watchlist,
-            detailItem, isDetailOpen, isPlayerOpen,
-            infoModal, searchModal, categoryModal,
+            detailItem, 
+            categoryModal, setCategoryModal,
+            infoModal, setInfoModal, 
+            searchModal, setSearchModal,
             db, switchView, toggleSidebar, showLoader, hideLoader,
             loginGoogle, loginGithub, doLogout,
             addToHistory, removeFromHistory, togglePin, toggleWatchlist,
-            setInfoModal, setSearchModal, setCategoryModal,
-            setDetailItem, setIsPlayerOpen, 
-            openDetail, closeDetail
+            // Page Navigation Functions
+            openDetail, closeDetail,
+            openPlayer, closePlayer,
+            openCategory, closeCategory,
+            // Legacy compatibility (optional - can remove if not needed)
+            setDetailItem
         }}>
             {children}
         </GlobalContext.Provider>
