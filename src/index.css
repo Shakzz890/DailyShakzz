@@ -3798,3 +3798,28 @@ input:disabled + .slider {
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* --- FLEX ROW FOR SELECTORS --- */
+.controls-row {
+  display: flex;
+  gap: 12px; /* Space between Server and Season */
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.control-group.half-width {
+  flex: 1; /* Both take equal space (50%) */
+  min-width: 0; /* Prevents overflow issues */
+}
+
+/* Ensure dropdowns inside the row match heights */
+.dropdown-btn, 
+.sidebar-select {
+  height: 45px; /* Fixed height for alignment */
+  display: flex;
+  align-items: center;
+}
+
+/* Remove margin-bottom from groups inside row to keep tight layout */
+.control-group.half-width {
+  margin-bottom: 15px;
+}
