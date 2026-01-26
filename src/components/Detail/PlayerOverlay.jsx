@@ -23,12 +23,9 @@ export default function PlayerOverlay() {
   const [episodes, setEpisodes] = useState([]);
   const [epSearch, setEpSearch] = useState("");
   
-  // UI States
-  const [showDesc, setShowDesc] = useState(false);
-  const [showServerMenu, setShowServerMenu] = useState(false);
-  const dropdownRef = useRef(null);
+  const [showDesc, setShowDesc] = useState(false); // Toggle Description
 
-  // --- SANDBOX LOGIC ---
+  // --- SANDBOX ---
   const sandboxKey = useMemo(() => detailItem ? `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}` : null, [detailItem, season, episode, serverIdx]);
   const [sandbox, setSandbox] = useState(true);
   const [iframeKey, setIframeKey] = useState(0);
@@ -52,24 +49,14 @@ export default function PlayerOverlay() {
     setIframeKey(prev => prev + 1);
   }, [sandbox]);
 
-  // --- CLICK OUTSIDE HANDLER ---
-  useEffect(() => {
-    function handleClickOutside(event) {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setShowServerMenu(false);
-        }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // --- DATA FETCHING ---
+  // --- DATA ---
   useEffect(() => {
     if (!isPlayerOpen || !detailItem) return;
     
     let startSeason = 1;
     let startEpisode = 1;
 
+    // Check for Resume Badge (S1:E5)
     if (detailItem.badge_label && detailItem.badge_label.includes(':')) {
         const match = detailItem.badge_label.match(/S(\d+):E(\d+)/);
         if (match) {
@@ -80,7 +67,6 @@ export default function PlayerOverlay() {
     setSeason(startSeason);
     setEpisode(startEpisode);
     setShowDesc(false);
-    setShowServerMenu(false);
 
     if (isTv) {
       fetchData(`/tv/${detailItem.id}`).then(d => {
@@ -119,16 +105,19 @@ export default function PlayerOverlay() {
   );
 
   return (
-    <div className="player-overlay">
+    <div className="player-page-view">
+      {/* 1. HEADER (Floating Close) */}
       <div className="player-header">
         <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
           <i className="fa-solid fa-xmark" />
         </button>
       </div>
 
-      <div className="player-layout-container">
+      {/* 2. SPLIT LAYOUT */}
+      <div className="player-layout">
         
-        <div className="video-area">
+        {/* LEFT: VIDEO */}
+        <div className="video-section">
           <div className="iframe-wrapper">
             <iframe
               key={iframeKey}
@@ -140,9 +129,12 @@ export default function PlayerOverlay() {
           </div>
         </div>
 
-        <aside className="player-sidebar">
+        {/* RIGHT: SIDEBAR */}
+        <aside className="sidebar-section">
           <div className="sidebar-content">
-            <h2>{detailItem.title || detailItem.name}</h2>
+            
+            {/* Title & Meta */}
+            <h2 className="sidebar-title">{detailItem.title || detailItem.name}</h2>
             <div className="sidebar-meta">
                 <span>{detailItem.release_date?.split('-')[0] || detailItem.first_air_date?.split('-')[0] || 'N/A'}</span>
                 <span className="dot"></span>
@@ -151,118 +143,75 @@ export default function PlayerOverlay() {
                 <span>{detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'N/A'} <i className="fas fa-star" style={{color:'gold', fontSize:'0.7rem'}}></i></span>
             </div>
 
-            <div className="description-container">
-                <div className="desc-header" onClick={() => setShowDesc(!showDesc)}>
+            {/* Description Dropdown */}
+            <div className="description-box">
+                <div className="desc-trigger" onClick={() => setShowDesc(!showDesc)}>
                     <span>Description</span>
                     <i className={`fas fa-chevron-down ${showDesc ? 'rotate' : ''}`}></i>
                 </div>
-                <div className={`desc-content ${showDesc ? 'open' : ''}`}>
-                    <p className="overview-text">{detailItem.overview || "No synopsis available."}</p>
+                <div className={`desc-body ${showDesc ? 'open' : ''}`}>
+                    <p>{detailItem.overview || "No synopsis available."}</p>
                     {detailItem.genres && (
                         <div className="genre-tags">
-                            {detailItem.genres.map(g => <span key={g.id} className="genre-tag">{g.name}</span>)}
+                            {detailItem.genres.map(g => <span key={g.id} className="tag">{g.name}</span>)}
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* --- SINGLE ROW FOR SELECTORS --- */}
-            <div className="controls-row">
-                
-                {/* 1. SERVER SELECTOR (Custom with Sandbox) */}
-                <div className="control-group half-width" ref={dropdownRef}>
-                  <label>Server</label>
-                  <div className="custom-dropdown">
-                    <button 
-                        className={`dropdown-btn ${showServerMenu ? 'active' : ''}`} 
-                        onClick={() => setShowServerMenu(!showServerMenu)}
+            {/* Controls */}
+            <div className="controls-grid">
+                <div className="control-item">
+                    <label>Server</label>
+                    <select 
+                        className="dark-select"
+                        value={serverIdx}
+                        onChange={(e) => setServerIdx(+e.target.value)}
                     >
-                        <span>{servers[serverIdx].name}</span>
-                        <i className={`fas fa-chevron-down ${showServerMenu ? 'rotate' : ''}`}></i>
-                    </button>
-
-                    <div className={`dropdown-menu ${showServerMenu ? 'show' : ''}`}>
-                        
-                        {/* SANDBOX TOGGLE (Always on Top) */}
-                        <div className="dropdown-header-sandbox" onClick={(e) => e.stopPropagation()}>
-                            <div className="sandbox-info">
-                                <i className="fas fa-shield-alt"></i>
-                                <span>Sandbox</span>
-                            </div>
-                            <label className="switch sm">
-                                <input 
-                                    type="checkbox" 
-                                    checked={sandbox}
-                                    disabled={servers[serverIdx].forceSandbox}
-                                    onChange={() => setSandbox(!sandbox)}
-                                />
-                                <span className="slider round"></span>
-                            </label>
-                        </div>
-
-                        <div className="server-list-scroll">
-                            {servers.map((s, i) => (
-                                <div 
-                                    key={i} 
-                                    className={`dropdown-item ${serverIdx === i ? 'selected' : ''}`}
-                                    onClick={() => {
-                                        setServerIdx(i);
-                                        setShowServerMenu(false);
-                                    }}
-                                >
-                                    {s.name}
-                                    {s.forceSandbox && <span className="tag-forced">Ad-Block</span>}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                  </div>
+                        {servers.map((s, i) => <option key={i} value={i}>{s.name}</option>)}
+                    </select>
                 </div>
 
-                {/* 2. SEASON SELECTOR (Standard Select) */}
                 {isTv && (
-                    <div className="control-group half-width">
-                      <label>Season</label>
-                      <select
-                        className="sidebar-select"
-                        value={season}
-                        onChange={e => handleSeasonChange(+e.target.value)}
-                      >
-                        {seasons.map(s => (
-                          <option key={s.id} value={s.season_number}>
-                            Season {s.season_number}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="control-item">
+                        <label>Season</label>
+                        <select 
+                            className="dark-select"
+                            value={season}
+                            onChange={(e) => handleSeasonChange(+e.target.value)}
+                        >
+                            {seasons.map(s => <option key={s.id} value={s.season_number}>Season {s.season_number}</option>)}
+                        </select>
                     </div>
                 )}
             </div>
 
+            {/* Episode Grid (TV Only) */}
             {isTv && (
               <>
-                <div className="control-group">
-                  <label>Search Episode</label>
-                  <input 
-                    type="text" 
-                    className="sidebar-search-input" 
-                    placeholder="Episode number..."
-                    value={epSearch}
-                    onChange={(e) => setEpSearch(e.target.value)}
-                  />
+                <div className="control-item">
+                    <label>Search Episode</label>
+                    <input 
+                        type="text" 
+                        className="dark-input" 
+                        placeholder="Episode number..."
+                        value={epSearch}
+                        onChange={(e) => setEpSearch(e.target.value)}
+                    />
                 </div>
 
-                <div className="ep-section-header">
+                <div className="episode-header">
                     <span>Episodes ({filteredEpisodes.length})</span>
                 </div>
                 
-                <div className="sidebar-ep-grid">
+                <div className="episode-grid">
                   {filteredEpisodes.length === 0 ? (
                     <div className="no-ep-msg">No episodes found</div>
                   ) : (
                     filteredEpisodes.map(ep => (
                       <button
                         key={ep.id}
-                        className={`ep-grid-btn ${episode === ep.episode_number ? "active" : ""}`}
+                        className={`ep-btn ${episode === ep.episode_number ? "active" : ""}`}
                         onClick={() => handleEpisodeChange(ep.episode_number)}
                         title={ep.name}
                       >
@@ -273,6 +222,18 @@ export default function PlayerOverlay() {
                 </div>
               </>
             )}
+
+            {/* Footer / Sandbox */}
+            <div className="sidebar-footer">
+                <div className="sandbox-row">
+                    <span>Ad-Block (Sandbox)</span>
+                    <label className="switch sm">
+                        <input type="checkbox" checked={sandbox} disabled={servers[serverIdx].forceSandbox} onChange={() => setSandbox(!sandbox)} />
+                        <span className="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
           </div>
         </aside>
       </div>
