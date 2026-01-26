@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 import { POSTER_URL, IMG_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
 
-const CategoryView = () => {
-    const { categoryModal, setCategoryModal, openDetail, history, watchlist } = useGlobal();
+const CategoryPage = () => {
+    const { categoryModal, setCurrentView, openDetail, history, watchlist } = useGlobal(); // Changed from setCategoryModal
     const [results, setResults] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -12,8 +12,7 @@ const CategoryView = () => {
     const isUserList = categoryModal.title === 'Watch History' || categoryModal.title === 'My Favorites';
 
     useEffect(() => {
-        if (!categoryModal.isOpen) return;
-
+        // Reset when opened
         setResults([]);
         setPage(1);
         setHasMore(true);
@@ -29,7 +28,7 @@ const CategoryView = () => {
         } else {
             loadApiData(1);
         }
-    }, [categoryModal.isOpen, categoryModal.endpoint, history, watchlist]);
+    }, [categoryModal.endpoint, history, watchlist, isUserList]); // Removed isOpen dependency
 
     const loadApiData = async (pageNum) => {
         if (loading) return;
@@ -54,14 +53,16 @@ const CategoryView = () => {
         }
     };
 
-    if (!categoryModal.isOpen) return null;
+    const handleBack = () => {
+        setCurrentView('home');
+    };
 
     const isHistory = categoryModal.title === 'Watch History';
 
     return (
         <div className="page-view category-page">
             <div className="category-header">
-                <i className="fa-solid fa-arrow-left" onClick={() => setCategoryModal({ ...categoryModal, isOpen: false })}></i>
+                <i className="fa-solid fa-arrow-left" onClick={handleBack}></i>
                 <h1 id="category-title">{categoryModal.title}</h1>
             </div>
             
@@ -115,4 +116,4 @@ const CategoryView = () => {
     );
 };
 
-export default CategoryView;
+export default CategoryPage;
