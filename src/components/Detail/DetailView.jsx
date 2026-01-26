@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../../api/tmdb';
 
-const DetailView = () => {
+const DetailPage = () => {
     const { 
         detailItem, 
-        isDetailOpen, 
-        closeDetail, 
+        setCurrentView, // Changed from closeDetail
         setIsPlayerOpen, 
         watchlist, 
         toggleWatchlist, 
@@ -24,16 +23,28 @@ const DetailView = () => {
             fetchData(`/${type}/${detailItem.id}/recommendations`).then(res => {
                 setSimilar(res.results || []);
             });
+        } else {
+            setCurrentView('home'); // Redirect if no item
         }
-    }, [detailItem]);
+    }, [detailItem, setCurrentView]);
 
-    if (!isDetailOpen || !detailItem) return null;
+    if (!detailItem) return null;
 
     const handleRecClick = (item) => {
         const type = item.media_type || (item.title ? 'movie' : 'tv');
         openDetail({ ...item, media_type: type });
+        // Scroll to top
         const view = document.querySelector('.detail-page');
         if(view) view.scrollTop = 0;
+    };
+
+    const handlePlay = () => {
+        setIsPlayerOpen(true); // Or setCurrentView('player') if you want player as separate page
+        addToHistory(detailItem);
+    };
+
+    const handleBack = () => {
+        setCurrentView('home');
     };
 
     const isAdded = watchlist.some(i => i.id === detailItem.id);
@@ -52,7 +63,7 @@ const DetailView = () => {
                 <div className="detail-overlay-gradient"></div>
             </div>
 
-            <button className="close-detail-btn" onClick={closeDetail}>
+            <button className="close-detail-btn" onClick={handleBack}>
                 <i className="fa-solid fa-arrow-left"></i>
             </button>
 
@@ -86,10 +97,7 @@ const DetailView = () => {
                         <p id="detail-overview">{detailItem.overview}</p>
 
                         <div className="detail-actions">
-                            <button className="play-btn-primary" onClick={() => {
-                                setIsPlayerOpen(true);
-                                addToHistory(detailItem);
-                            }}>
+                            <button className="play-btn-primary" onClick={handlePlay}>
                                 <i className="fas fa-play"></i> Play
                             </button>
                             
@@ -127,4 +135,4 @@ const DetailView = () => {
     );
 };
 
-export default DetailView;
+export default DetailPage;
