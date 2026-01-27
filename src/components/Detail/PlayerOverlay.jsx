@@ -120,18 +120,17 @@ export default function PlayerOverlay() {
 
   return (
     <div className="player-page-view">
-      {/* NO INTERNAL HEADER - NAVBAR IS VISIBLE */}
+      <div className="player-header">
+        <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
+          <i className="fa-solid fa-xmark" />
+        </button>
+      </div>
 
       <div className="player-layout">
         
         {/* LEFT: VIDEO */}
         <div className="video-section">
           <div className="iframe-wrapper">
-             {/* New Back Button Inside Video Area */}
-             <button className="player-back-btn" onClick={() => setIsPlayerOpen(false)} title="Close Player">
-                <i className="fa-solid fa-arrow-left" />
-             </button>
-
             <iframe
               key={iframeKey}
               id="overlay-video"

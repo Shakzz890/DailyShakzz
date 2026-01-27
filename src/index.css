@@ -2,7 +2,7 @@
    SHAKZZ TV - SHADOW MONARCH THEME (SOLO LEVELING EDITION)
    ========================================================================== */
 
-/* ========================================================.
+/* ========================================================
    1. CSS CUSTOM PROPERTIES
    ======================================================== */
 :root {
@@ -131,7 +131,7 @@ img {
   justify-content: space-between;
   align-items: center;
   padding: 0 4%;
-  z-index: 100000 !important;
+  z-index: 30000 !important;
   background: linear-gradient(to bottom, rgba(5, 5, 5, 0.95) 0%, transparent 100%);
   transition: background 0.3s ease;
   box-shadow: none;
@@ -4087,118 +4087,4 @@ input:disabled + .slider {
     right: 440px; /* Position left of sidebar */
     top: 10px;
   }
-}
-/* ========================================================
-   2. CONVERT OVERLAYS TO PAGES
-   ======================================================== */
-/* Applies to both Detail and Player views */
-.page-view, 
-.player-page-view,
-#detail-view {
-  position: fixed;
-  top: var(--header-height); /* Push down by 70px to sit under Navbar */
-  left: 0;
-  width: 100%;
-  height: calc(100vh - var(--header-height)); /* Fill remaining height */
-  background: #000;
-  z-index: 50000; /* High enough to cover Home, but LOWER than Navbar */
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto; /* The page itself scrolls */
-  animation: fadeIn 0.3s ease;
-  padding-bottom: 0 !important;
-}
-
-/* ========================================================
-   3. PLAYER SPECIFIC TWEAKS
-   ======================================================== */
-.player-header {
-  display: none !important; /* Hide the internal player header */
-}
-
-/* Back button positioning specifically for this layout */
-.player-back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 100; /* Sit above the video iframe */
-  transition: all 0.2s;
-}
-
-.player-back-btn:hover {
-  background: #fff;
-  color: #000;
-}
-
-/* ========================================================
-   4. DETAIL PAGE TWEAKS
-   ======================================================== */
-.detail-content-wrapper {
-  /* Reduce top padding since we are already pushed down by 70px */
-  padding-top: 50px !important; 
-}
-
-/* Reposition Detail close button to be comfortably under the navbar */
-.close-detail-btn {
-  top: 20px;
-  left: 20px;
-  right: auto;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255,255,255,0.2);
-}
-/* ========================================================
-   FIX: SOLID PAGE & NAVBAR STYLING
-   ======================================================== */
-
-/* 1. Make the Navbar Solid Black when a page is active */
-.navbar.solid-nav,
-.navbar.force-solid {
-    background: #050505 !important;
-    border-bottom: 1px solid #1a1a1a;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-    backdrop-filter: none !important; /* Remove blur to prevent transparency */
-}
-
-/* 2. Ensure Page Views are Solid and block the Home Slider */
-.page-view, 
-.player-page-view,
-#detail-view {
-    position: fixed;
-    top: 70px !important; /* Standard header height */
-    left: 0;
-    width: 100vw;
-    height: calc(100vh - 70px);
-    background: #050505 !important; /* Solid background matches body */
-    z-index: 5000; /* Above Home, Below Navbar */
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-/* 3. Hide the Floating Back Button (Matches your 2nd image) */
-.close-detail-btn,
-.player-back-btn {
-    display: none !important;
-}
-
-/* 4. Adjust spacing now that the back button is gone */
-.detail-content-wrapper {
-    padding-top: 30px !important; /* Reduced padding for cleaner look */
-}
-
-/* Optional: Ensure the Backdrop Image blends into the black background */
-.detail-backdrop-layer {
-    height: 65vh;
-    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
 }

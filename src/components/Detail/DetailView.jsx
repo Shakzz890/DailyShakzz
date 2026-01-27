@@ -32,8 +32,7 @@ const DetailView = () => {
     const handleRecClick = (item) => {
         const type = item.media_type || (item.title ? 'movie' : 'tv');
         openDetail({ ...item, media_type: type });
-        // Scroll to top of the specific view ID
-        const view = document.getElementById('detail-view');
+        const view = document.querySelector('.detail-page');
         if(view) view.scrollTop = 0;
     };
 
@@ -41,9 +40,8 @@ const DetailView = () => {
     const typeLabel = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'TV Series' : 'Movie';
 
     return (
-        <div id="detail-view" className="page-view">
+        <div className="page-view detail-page">
             
-            {/* Backdrop Layer */}
             <div className="detail-backdrop-layer">
                 <img 
                     id="detail-backdrop-img" 
@@ -54,7 +52,6 @@ const DetailView = () => {
                 <div className="detail-overlay-gradient"></div>
             </div>
 
-            {/* Close Button - Now positioned nicely under Navbar */}
             <button className="close-detail-btn" onClick={closeDetail}>
                 <i className="fa-solid fa-arrow-left"></i>
             </button>
