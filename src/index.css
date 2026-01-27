@@ -4156,3 +4156,49 @@ input:disabled + .slider {
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255,255,255,0.2);
 }
+/* ========================================================
+   FIX: SOLID PAGE & NAVBAR STYLING
+   ======================================================== */
+
+/* 1. Make the Navbar Solid Black when a page is active */
+.navbar.solid-nav,
+.navbar.force-solid {
+    background: #050505 !important;
+    border-bottom: 1px solid #1a1a1a;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    backdrop-filter: none !important; /* Remove blur to prevent transparency */
+}
+
+/* 2. Ensure Page Views are Solid and block the Home Slider */
+.page-view, 
+.player-page-view,
+#detail-view {
+    position: fixed;
+    top: 70px !important; /* Standard header height */
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 70px);
+    background: #050505 !important; /* Solid background matches body */
+    z-index: 5000; /* Above Home, Below Navbar */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 3. Hide the Floating Back Button (Matches your 2nd image) */
+.close-detail-btn,
+.player-back-btn {
+    display: none !important;
+}
+
+/* 4. Adjust spacing now that the back button is gone */
+.detail-content-wrapper {
+    padding-top: 30px !important; /* Reduced padding for cleaner look */
+}
+
+/* Optional: Ensure the Backdrop Image blends into the black background */
+.detail-backdrop-layer {
+    height: 65vh;
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
