@@ -4110,3 +4110,28 @@ input:disabled + .slider {
 .player-page-view {
     padding-top: var(--header-height); /* Adds 70px top space */
 }
+
+/* ========================================================
+   FIX: DETAIL VIEW AS PAGE (BELOW NAVBAR)
+   ======================================================== */
+
+.detail-page {
+    position: fixed !important;
+    top: 70px !important;       /* Starts exactly below the Navbar */
+    left: 0 !important;
+    width: 100vw !important;
+    height: calc(100dvh - 70px) !important; /* Fills the rest of the screen */
+    z-index: 5000 !important;   /* Lower than Navbar (200000) */
+    background: #141414;        /* Ensure background color is consistent */
+}
+
+/* Adjust the internal padding so the content doesn't sit too low */
+/* Since the header no longer overlaps the content, we can reduce the top padding */
+.detail-content-wrapper {
+    padding-top: 50px !important; /* Reduced from 200px */
+}
+
+/* Ensure the backdrop image stays contained within this new view area */
+.detail-backdrop-layer {
+    height: 50vh !important; /* Adjust height relative to the new view */
+}
