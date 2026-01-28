@@ -120,6 +120,8 @@ export default function PlayerOverlay() {
 
   return (
     <div className="player-page-view">
+      
+      {/* HEADER REMOVED HERE - The Navbar will now sit above this via CSS z-index */}
 
       <div className="player-layout">
         
