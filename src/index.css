@@ -4083,7 +4083,24 @@ input:disabled + .slider {
     overflow-y: auto; /* Sidebar scrolls independently */
     border-left: 1px solid rgba(255,255,255,0.1);
   }
+.channel-count-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes Count to Left, Clock to Right */
+  width: auto;
+  margin: 0 20px 15px 20px; /* Aligns with the Search Bar margins */
+  padding: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Optional: Adds a subtle divider line */
+  padding-bottom: 10px;
+}
 
+/* Specific styling for the Clock/Date text to ensure it aligns right */
+.channel-count-display > div:last-child, 
+.channel-count-display > span:last-child {
+  text-align: right;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums; /* Prevents numbers from jumping as seconds tick */
+}
   .player-header {
     width: auto;
     right: 440px; /* Position left of sidebar */
