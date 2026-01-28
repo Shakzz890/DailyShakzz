@@ -4088,3 +4088,82 @@ input:disabled + .slider {
     top: 10px;
   }
 }
+/* ========================================================
+   PLAYER PAGE VIEW (Modified to fit below Navbar)
+   ======================================================== */
+
+.player-page-view {
+  position: fixed;
+  /* Start below the header so the navbar is visible */
+  top: var(--header-height, 70px); 
+  left: 0;
+  width: 100vw;
+  /* Calculate height so it doesn't scroll behind the header */
+  height: calc(100dvh - var(--header-height, 70px));
+  background: #000;
+  /* Lower than Navbar (which is usually 30000), but higher than content */
+  z-index: 20000 !important; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Ensure the layout takes full height of the container */
+.player-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Mobile & Tablet Styles */
+@media (max-width: 1023px) {
+  .player-layout {
+    flex-direction: column;
+  }
+  
+  .video-section {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    z-index: 50;
+  }
+  
+  .sidebar-section {
+    width: 100%;
+    min-height: auto;
+    overflow-y: visible;
+    padding-bottom: 80px; /* Space for mobile nav if needed */
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1024px) {
+  .player-layout {
+    flex-direction: row; /* Video Left | Sidebar Right */
+    overflow: hidden;
+  }
+
+  .video-section {
+    flex: 1; /* Takes remaining space */
+    height: 100%;
+    aspect-ratio: auto;
+    position: relative;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-section {
+    width: 400px; /* Fixed width sidebar */
+    height: 100%;
+    overflow-y: auto; /* Independent scroll */
+    background: #121212;
+    border-left: 1px solid rgba(255,255,255,0.1);
+  }
+}
