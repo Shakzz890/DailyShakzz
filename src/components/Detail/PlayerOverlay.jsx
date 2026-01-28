@@ -120,12 +120,8 @@ export default function PlayerOverlay() {
 
   return (
     <div className="player-page-view">
-      <div className="player-header">
-        <button className="close-player-btn" onClick={() => setIsPlayerOpen(false)}>
-          <i className="fa-solid fa-xmark" />
-        </button>
-      </div>
-
+      {/* HEADER REMOVED: Now uses the global Navbar */}
+      
       <div className="player-layout">
         
         {/* LEFT: VIDEO */}
