@@ -119,8 +119,6 @@ export default function PlayerOverlay() {
   );
 
   return (
-    <div className="player-page-view">
-      </div>
 
       <div className="player-layout">
         
