@@ -23,7 +23,6 @@ const db = getFirestore(app);
 export const GlobalProvider = ({ children }) => {
     
     // --- 1. UI STATE (PERSISTED) ---
-    // Remembers if you were on Home, Explore, or Live TV
     const [currentView, setCurrentView] = useState(() => {
         return localStorage.getItem('shakzz_current_view') || 'home';
     });
@@ -51,7 +50,6 @@ export const GlobalProvider = ({ children }) => {
     });
 
     // --- 4. MODALS (CATEGORY PERSISTED) ---
-    // Remembers if you were viewing "Latest Updates", "Filipino Drama", etc.
     const [categoryModal, setCategoryModal] = useState(() => {
         try { 
             return JSON.parse(localStorage.getItem('shakzz_category_modal')) || { isOpen: false, title: '', endpoint: '' }; 
@@ -64,7 +62,6 @@ export const GlobalProvider = ({ children }) => {
     const [searchModal, setSearchModal] = useState({ isOpen: false, mode: 'search' }); 
 
     // --- 5. MASTER SAVE EFFECT ---
-    // Saves EVERYTHING whenever it changes
     useEffect(() => {
         localStorage.setItem('shakzz_current_view', currentView);
         localStorage.setItem('shakzz_active_item', JSON.stringify(detailItem));
@@ -77,8 +74,13 @@ export const GlobalProvider = ({ children }) => {
     // --- NAVIGATION ---
     const switchView = (view) => {
         setCurrentView(view);
+        
+        // --- KEY UPDATE: CLOSE OVERLAYS WHEN SWITCHING VIEWS ---
         setSearchModal({ ...searchModal, isOpen: false });
         setIsSidebarOpen(false);
+        setIsPlayerOpen(false); // <--- Closes player if navigating via sidebar/bottom nav
+        setIsDetailOpen(false); // <--- Closes detail view if navigating
+
         window.scrollTo(0, 0);
     };
 
