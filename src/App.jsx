@@ -5,7 +5,7 @@ import { GlobalProvider, useGlobal } from './context/GlobalContext';
 import Navbar from './components/Layout/Navbar';
 import Sidebar from './components/Layout/Sidebar';
 import InfoModal from './components/Layout/InfoModal';
-import Loader from './components/Layout/Loader'; // <--- Make sure file is named "Loader.jsx"
+import Loader from './components/Layout/Loader'; 
 
 // Pages
 import Home from './pages/Home';
