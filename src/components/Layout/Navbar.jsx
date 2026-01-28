@@ -13,7 +13,10 @@ const Navbar = () => {
         loginGithub, 
         doLogout, 
         setCategoryModal,
-        setInfoModal 
+        setInfoModal,
+        // --- ADDED THESE TWO ---
+        isDetailOpen,
+        isPlayerOpen
     } = useGlobal();
 
     const [authDropdown, setAuthDropdown] = useState(false);
@@ -35,7 +38,9 @@ const Navbar = () => {
     const isExploreOpen = searchModal.isOpen && searchModal.mode === 'explore';
     const isHomeActive = currentView === 'home' && !isExploreOpen;
     const isLiveActive = currentView === 'live' && !isExploreOpen;
-    const isSolid = currentView !== 'home' || scrolled || isExploreOpen;
+
+    // --- UPDATED LOGIC: Navbar becomes solid if Detail or Player is open ---
+    const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen;
 
     return (
         <div className={`navbar ${isSolid ? 'solid-nav' : ''}`}>
