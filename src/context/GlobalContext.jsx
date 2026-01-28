@@ -1,24 +1,12 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
-import { getFirestore, doc, setDoc, deleteDoc, getDoc, collection, query, orderBy, limit, getDocs, updateDoc } from "firebase/firestore";
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, deleteDoc, collection, query, orderBy, limit, getDocs, updateDoc } from "firebase/firestore";
+
+// --- IMPORT SERVICES FROM YOUR FIREBASE.JS ---
+// Adjust the path '../firebase' if your firebase.js is in a different folder
+import { auth, db, googleProvider, githubProvider } from '../firebase'; 
 
 const GlobalContext = createContext();
-
-const firebaseConfig = {
-    apiKey: "AIzaSyBh2QAytkv2e27oCRaMgVdYTru7lSS8Ffo",
-    authDomain: "shakzz-tv.firebaseapp.com",
-    databaseURL: "https://shakzz-tv-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "shakzz-tv",
-    storageBucket: "shakzz-tv.firebasestorage.app",
-    messagingSenderId: "640873351782",
-    appId: "1:640873351782:web:9fa2bb26142528f898bba7",
-    measurementId: "G-Y9BSQ0NT4H"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 export const GlobalProvider = ({ children }) => {
     
@@ -74,13 +62,10 @@ export const GlobalProvider = ({ children }) => {
     // --- NAVIGATION ---
     const switchView = (view) => {
         setCurrentView(view);
-        
-        // --- KEY UPDATE: CLOSE OVERLAYS WHEN SWITCHING VIEWS ---
         setSearchModal({ ...searchModal, isOpen: false });
         setIsSidebarOpen(false);
-        setIsPlayerOpen(false); // <--- Closes player if navigating via sidebar/bottom nav
-        setIsDetailOpen(false); // <--- Closes detail view if navigating
-
+        setIsPlayerOpen(false); 
+        setIsDetailOpen(false); 
         window.scrollTo(0, 0);
     };
 
@@ -112,11 +97,21 @@ export const GlobalProvider = ({ children }) => {
     }, []);
 
     const loginGoogle = async () => {
-        try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { alert(e.message); }
+        try { 
+            // Use the provider imported from firebase.js
+            await signInWithPopup(auth, googleProvider); 
+        } catch (e) { 
+            alert(e.message); 
+        }
     };
 
     const loginGithub = async () => {
-        try { await signInWithPopup(auth, new GithubAuthProvider()); } catch (e) { alert(e.message); }
+        try { 
+            // Use the provider imported from firebase.js
+            await signInWithPopup(auth, githubProvider); 
+        } catch (e) { 
+            alert(e.message); 
+        }
     };
 
     const doLogout = async () => {
@@ -223,7 +218,6 @@ export const GlobalProvider = ({ children }) => {
         setDetailItem(null);
         setIsDetailOpen(false);
         setIsPlayerOpen(false);
-        // Clear active item from storage when closed
         localStorage.removeItem('shakzz_active_item');
         localStorage.removeItem('shakzz_detail_open');
         localStorage.removeItem('shakzz_player_open');
