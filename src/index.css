@@ -482,7 +482,7 @@ img {
    5. VIEWS & CONTAINERS
    ======================================================== */
 #home-view {
-  padding-bottom: 40px;
+  padding-bottom: 0 !important;
   overflow-y: auto;
 }
 
