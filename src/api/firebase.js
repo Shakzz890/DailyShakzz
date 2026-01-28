@@ -3,15 +3,16 @@ import { getAuth, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBh2QAytkv2e27oCRaMgVdYTru7lSS8Ffo",
-    authDomain: "shakzz-tv.firebaseapp.com",
-    databaseURL: "https://shakzz-tv-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "shakzz-tv",
-    storageBucket: "shakzz-tv.firebasestorage.app",
-    messagingSenderId: "640873351782",
-    appId: "1:640873351782:web:9fa2bb26142528f898bba7",
-    measurementId: "G-Y9BSQ0NT4H"
+  apiKey: "AIzaSyBG_54h3xkGoGwfX_3kFLRUciTdEkmkrvA",
+  authDomain: "shakzztv-de597.firebaseapp.com",
+  databaseURL: "https://shakzztv-de597-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "shakzztv-de597",
+  storageBucket: "shakzztv-de597.firebasestorage.app",
+  messagingSenderId: "841207969238",
+  appId: "1:841207969238:web:4f173cc794f99494c5e077",
+  measurementId: "G-FZQTKE7STD"
 };
+
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
