@@ -42,6 +42,7 @@ const DetailView = () => {
     return (
         <div className="page-view detail-page">
             
+            {/* BACKDROP IMAGE */}
             <div className="detail-backdrop-layer">
                 <img 
                     id="detail-backdrop-img" 
@@ -52,6 +53,7 @@ const DetailView = () => {
                 <div className="detail-overlay-gradient"></div>
             </div>
 
+            {/* CLOSE BUTTON (Restored) */}
             <button className="close-detail-btn" onClick={closeDetail}>
                 <i className="fa-solid fa-arrow-left"></i>
             </button>
