@@ -4,7 +4,7 @@ import { channels, animeData } from '../api/channels';
 import { PLACEHOLDER_IMG } from '../api/tmdb';
 
 // --- CONFIGURATION ---
-const SECURE_WORKER_URL = "https://stream.supreme-ninja01.workers.dev";
+const SECURE_WORKER_URL = "https://stream.shakzz.workers.dev";
 
 const TABS = [
     "all", 
