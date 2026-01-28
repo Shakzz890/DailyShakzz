@@ -650,41 +650,20 @@ img {
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-@keyframes kenBurns {
-  0% { transform: scale(1); background-position: center 20%; }
-  100% { transform: scale(1.1); background-position: center 15%; }
-}
-
 .slide {
   min-width: 100%;
   height: 100%;
   position: relative;
   background-size: cover;
-  /* CHANGE: 'center center' ensures we see the middle of the action, not just the sky/ceiling */
-  background-position: center center !important; 
+  background-position: center top;
   flex-shrink: 0;
-}
-
-/* We create a pseudo-element for the image so we can animate it without shaking the text */
-.slide::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background-image: inherit; /* Inherits the image set in JS */
-  background-size: cover;
-  background-position: center 20%;
-  animation: kenBurns 20s ease-in-out infinite alternate;
-  z-index: 0;
 }
 
 .slide::after {
   content: '';
   position: absolute;
   inset: 0;
-  /* This gradient makes the edges dark (cinematic) but keeps the center image clear and bright */
-  background: radial-gradient(circle at center, transparent 0%, rgba(5,5,5,0.2) 50%, var(--bg-color) 100%),
-              linear-gradient(to top, var(--bg-color) 5%, rgba(0,0,0,0.6) 25%, transparent 60%);
-  z-index: 1;
+  background: linear-gradient(to top, var(--bg-color) 10%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.2) 80%, transparent 100%);
 }
 
 .slide-content {
@@ -1269,14 +1248,9 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* CHANGE: 50% 20% focuses slightly above the middle. 
-     This catches faces/logos which are usually in the top-third of posters. */
-  object-position: 50% 20%; 
   opacity: 0.5;
-  /* A smoother fade that lets more of the image show before fading to black */
-  mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
-  transition: opacity 0.3s ease;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
 }
 
 .detail-overlay-gradient {
@@ -1337,24 +1311,10 @@ img {
 .detail-poster-card {
   flex-shrink: 0;
   width: 300px;
-  border-radius: 12px;
-  /* This creates a glowing backlight effect matching your theme */
-  box-shadow: 0 0 30px rgba(168, 85, 247, 0.15), 
-              0 10px 40px rgba(0,0,0,0.8);
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.8);
   overflow: hidden;
   background: #222;
-  border: 1px solid rgba(255,255,255,0.1);
-  position: relative;
-  z-index: 20;
-}
-
-/* Optional: Add a glass sheen effect */
-.detail-poster-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-  pointer-events: none;
 }
 
 #detail-poster-img {
