@@ -3,6 +3,25 @@ import { useGlobal } from '../../context/GlobalContext';
 
 // --- EXPANDED CONTENT ---
 const infoContent = {
+    // --- NEW ABOUT SECTION ---
+    about: `
+        <div class="about-container" style="padding: 10px 0; color: #ccc; line-height: 1.8;">
+            <h2 style="color: #fff; font-size: 1.5rem; margin-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 5px;">About Shakzz TV</h2>
+            <p style="margin-bottom: 25px;">
+                Shakzz TV delivers a premier, curated portfolio of local and international networks, providing a seamless, high-quality streaming experience available 24/7. Our platform offers a comprehensive spectrum of programming designed to cater to every interest—from breaking news and live sports to insightful documentaries and engaging animation.
+            </p>
+
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px;">Our Vision & Commitment</h3>
+            <p style="margin-bottom: 25px;">
+                To become the go-to free streaming service for Filipinos everywhere, bridging distances by providing a reliable and comprehensive source of local and international content. We envision a platform where every user feels connected to home, informed about the world, and entertained without barriers. We are committed to delivering a stable and high-quality streaming experience. This means continuously optimizing our platform for minimal buffering, expanding our channel lineup based on viewer feedback, and ensuring our service remains accessible and easy to use for everyone, on any device.
+            </p>
+
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px;">The 'Why': A Note from the Creator</h3>
+            <p style="margin-bottom: 10px;">
+                Shakzz TV was born from a simple idea: everyone deserves easy access to the channels they love, especially those that connect them to news, culture, and entertainment from home. As a passionate developer and media enthusiast, I created this platform to solve the common frustration of unreliable streams and scattered content. This project is a labor of love, dedicated to providing a seamless and free service for the community.
+            </p>
+        </div>
+    `,
     updates: `
         <div class="update-item">
             <div class="update-header">
@@ -195,6 +214,7 @@ const InfoModal = () => {
     if (!infoModal.isOpen) return null;
 
     const titles = {
+        about: 'About Us', // Added this title
         updates: 'Latest Updates',
         contact: 'Contact Us',
         faq: 'Frequently Asked Questions',
