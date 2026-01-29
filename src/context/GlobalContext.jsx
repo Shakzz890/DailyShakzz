@@ -5,6 +5,7 @@ import { getFirestore, doc, setDoc, deleteDoc, getDoc, collection, query, orderB
 
 const GlobalContext = createContext();
 
+// ... (Your firebaseConfig and app init code remains the same) ...
 const firebaseConfig = {
   apiKey: "AIzaSyBG_54h3xkGoGwfX_3kFLRUciTdEkmkrvA",
   authDomain: "shakzztv-de597.firebaseapp.com",
@@ -22,8 +23,7 @@ const db = getFirestore(app);
 
 export const GlobalProvider = ({ children }) => {
     
-    // --- 1. UI STATE (PERSISTED) ---
-    // Remembers if you were on Home, Explore, or Live TV
+    // --- 1. UI STATE ---
     const [currentView, setCurrentView] = useState(() => {
         return localStorage.getItem('shakzz_current_view') || 'home';
     });
@@ -37,7 +37,7 @@ export const GlobalProvider = ({ children }) => {
     const [history, setHistory] = useState([]);
     const [watchlist, setWatchlist] = useState([]);
 
-    // --- 3. DETAIL & PLAYER STATE (PERSISTED) ---
+    // --- 3. DETAIL & PLAYER STATE ---
     const [detailItem, setDetailItem] = useState(() => {
         try { return JSON.parse(localStorage.getItem('shakzz_active_item')) || null; } catch { return null; }
     });
@@ -50,8 +50,7 @@ export const GlobalProvider = ({ children }) => {
         try { return JSON.parse(localStorage.getItem('shakzz_player_open')) || false; } catch { return false; }
     });
 
-    // --- 4. MODALS (CATEGORY PERSISTED) ---
-    // Remembers if you were viewing "Latest Updates", "Filipino Drama", etc.
+    // --- 4. MODALS ---
     const [categoryModal, setCategoryModal] = useState(() => {
         try { 
             return JSON.parse(localStorage.getItem('shakzz_category_modal')) || { isOpen: false, title: '', endpoint: '' }; 
@@ -64,7 +63,6 @@ export const GlobalProvider = ({ children }) => {
     const [searchModal, setSearchModal] = useState({ isOpen: false, mode: 'search' }); 
 
     // --- 5. MASTER SAVE EFFECT ---
-    // Saves EVERYTHING whenever it changes
     useEffect(() => {
         localStorage.setItem('shakzz_current_view', currentView);
         localStorage.setItem('shakzz_active_item', JSON.stringify(detailItem));
@@ -74,11 +72,19 @@ export const GlobalProvider = ({ children }) => {
     }, [currentView, detailItem, isDetailOpen, isPlayerOpen, categoryModal]);
 
 
-    // --- NAVIGATION ---
+    // --- NAVIGATION (UPDATED) ---
     const switchView = (view) => {
         setCurrentView(view);
         setSearchModal({ ...searchModal, isOpen: false });
         setIsSidebarOpen(false);
+        
+        // --- ADD THESE TWO LINES ---
+        // This ensures that when you click Logo, Home, Explore, etc., 
+        // the Player and Details close immediately.
+        setIsPlayerOpen(false);
+        setIsDetailOpen(false); 
+        // ---------------------------
+
         window.scrollTo(0, 0);
     };
 
@@ -221,7 +227,6 @@ export const GlobalProvider = ({ children }) => {
         setDetailItem(null);
         setIsDetailOpen(false);
         setIsPlayerOpen(false);
-        // Clear active item from storage when closed
         localStorage.removeItem('shakzz_active_item');
         localStorage.removeItem('shakzz_detail_open');
         localStorage.removeItem('shakzz_player_open');
