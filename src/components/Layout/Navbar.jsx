@@ -99,8 +99,8 @@ const Navbar = () => {
                         <a href="#" className={`nav-link ${isLiveActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('live'); }}>Live TV</a>
                     </li>
                     <li>
-    <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'about'}); }}>About</a>
-</li>
+                        <a href="#" className={`nav-link ${isExploreOpen ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setSearchModal({isOpen:true, mode:'explore'}); }}>Explore</a>
+                    </li>
                     <li>
                          <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a>
                     </li>
