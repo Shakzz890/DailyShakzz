@@ -431,22 +431,21 @@ img {
   border-color: rgba(255,255,255,0.2);
 }
 
-/* --- UPDATED FOOTER BRANDING (Right Aligned inside Left Column) --- */
+/* --- UPDATED FOOTER BRANDING (Left Aligned) --- */
 .footer-big-text {
   font-size: clamp(3rem, 10vw, 5rem);
   font-weight: 800;
   color: #1a1a1a;
   
-  /* FORCE RIGHT ALIGNMENT */
-  text-align: right; 
-  align-self: flex-end; /* Flexbox alignment backup */
-  width: 100%; /* Take full width of parent to allow text-align to work */
+  /* FORCE LEFT ALIGNMENT */
+  text-align: left; 
+  width: 100%; 
   
   line-height: 1;
   letter-spacing: -2px;
   white-space: nowrap;
   user-select: none;
-  margin-top: 40px; /* Space between description and logo */
+  margin-top: 25px; /* Space between description and logo */
   
   /* Gradient & Shadow Effect */
   background: -webkit-linear-gradient(#fff, #a855f7);
