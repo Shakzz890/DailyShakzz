@@ -1,130 +1,152 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
-import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../../api/tmdb';
+import { IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
+import BackToTop from '../components/Layout/BackToTop'; // Import BackToTop
 
 const DetailView = () => {
     const { 
         detailItem, 
         isDetailOpen, 
         closeDetail, 
-        setIsPlayerOpen, 
-        watchlist, 
+        addToHistory, 
         toggleWatchlist, 
-        addToHistory,
-        openDetail 
+        watchlist,
+        setIsPlayerOpen,
+        openDetail // Needed for recommendations
     } = useGlobal();
 
-    const [fullDetails, setFullDetails] = useState(null);
-    const [similar, setSimilar] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
+    const scrollRef = useRef(null); // Create ref for scrolling container
 
+    // Reset scroll when item changes
     useEffect(() => {
-        if (detailItem) {
-            const type = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'tv' : 'movie';
-            fetchData(`/${type}/${detailItem.id}`).then(setFullDetails);
-            fetchData(`/${type}/${detailItem.id}/recommendations`).then(res => {
-                setSimilar(res.results || []);
-            });
+        if (isDetailOpen && scrollRef.current) {
+            scrollRef.current.scrollTop = 0;
         }
-    }, [detailItem]);
+        
+        const fetchRecs = async () => {
+            if (detailItem) {
+                const endpoint = detailItem.media_type === 'tv' || detailItem.first_air_date
+                    ? `/tv/${detailItem.id}/recommendations`
+                    : `/movie/${detailItem.id}/recommendations`;
+                const data = await fetchData(endpoint);
+                setRecommendations(data.results || []);
+            }
+        };
+        fetchRecs();
+    }, [detailItem, isDetailOpen]);
 
     if (!isDetailOpen || !detailItem) return null;
 
-    const handleRecClick = (item) => {
-        const type = item.media_type || (item.title ? 'movie' : 'tv');
-        openDetail({ ...item, media_type: type });
-        const view = document.querySelector('.detail-page');
-        if(view) view.scrollTop = 0;
-    };
-
+    const title = getDisplayTitle(detailItem);
+    const backdrop = detailItem.backdrop_path ? IMG_URL + detailItem.backdrop_path : null;
+    const poster = detailItem.poster_path ? POSTER_URL + detailItem.poster_path : PLACEHOLDER_IMG;
+    const year = (detailItem.release_date || detailItem.first_air_date || 'N/A').split('-')[0];
+    const rating = detailItem.vote_average ? detailItem.vote_average.toFixed(1) : 'NR';
     const isAdded = watchlist.some(i => i.id === detailItem.id);
-    const typeLabel = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'TV Series' : 'Movie';
+
+    // Genres handling
+    const genreNames = detailItem.genres?.map(g => g.name) || [];
+    // If genres are IDs (from list view), map them manually if needed or skip
+    // Ideally, detailItem from API has full genre objects.
 
     return (
-        <div className="page-view detail-page">
-            
-            {/* BACKDROP IMAGE */}
+        <div 
+            id="detail-view" 
+            className="detail-page" 
+            ref={scrollRef} // Attach ref to main scrollable container
+        >
+            {/* BACKDROP & CLOSE BUTTON */}
             <div className="detail-backdrop-layer">
-                <img 
-                    id="detail-backdrop-img" 
-                    src={detailItem.backdrop_path ? IMG_URL + detailItem.backdrop_path : POSTER_URL + detailItem.poster_path} 
-                    onError={(e) => e.target.src = PLACEHOLDER_IMG}
-                    alt="Backdrop"
-                />
+                {backdrop && <img id="detail-backdrop-img" src={backdrop} alt="Backdrop" />}
                 <div className="detail-overlay-gradient"></div>
             </div>
 
-            {/* CLOSE BUTTON (Restored) */}
-            <button className="close-detail-btn" onClick={closeDetail}>
-                <i className="fa-solid fa-arrow-left"></i>
-            </button>
+            <div className="close-detail-btn" onClick={closeDetail}>
+                <i className="fa-solid fa-arrow-right"></i>
+            </div>
 
             <div className="detail-content-wrapper">
+                {/* HERO SECTION */}
                 <div className="detail-hero-layout">
                     <div className="detail-poster-card">
-                        <img 
-                            src={detailItem.poster_path ? POSTER_URL + detailItem.poster_path : PLACEHOLDER_IMG} 
-                            onError={(e) => e.target.src = PLACEHOLDER_IMG}
-                            alt="Poster"
-                        />
+                        <img id="detail-poster-img" src={poster} alt={title} onError={(e) => e.target.src = PLACEHOLDER_IMG} />
                     </div>
-
+                    
                     <div className="detail-info-box">
-                        <h1 id="detail-title">{getDisplayTitle(detailItem)}</h1>
+                        <h1 id="detail-title">{title}</h1>
                         
                         <div className="detail-meta-row">
-                            <span>{(detailItem.release_date || detailItem.first_air_date || 'N/A').split('-')[0]}</span>
+                            <span className="rating-box"><i className="fas fa-star"></i> {rating}</span>
                             <span className="dot-sep"></span>
-                            <span className="rating-box"><i className="fas fa-star"></i> {detailItem.vote_average?.toFixed(1)}</span>
+                            <span>{year}</span>
                             <span className="dot-sep"></span>
-                            <span>{typeLabel}</span>
+                            <span>{detailItem.media_type === 'tv' || detailItem.first_air_date ? 'Series' : 'Movie'}</span>
                         </div>
 
-                        <div className="genre-pills-row">
-                            {fullDetails?.genres?.slice(0, 3).map(g => (
-                                <span key={g.id} className="genre-pill">{g.name}</span>
-                            ))}
-                        </div>
+                        {genreNames.length > 0 && (
+                            <div className="genre-pills-row">
+                                {genreNames.slice(0, 3).map((g, i) => (
+                                    <span key={i} className="genre-pill">{g}</span>
+                                ))}
+                            </div>
+                        )}
 
-                        <p id="detail-overview">{detailItem.overview}</p>
+                        <p id="detail-overview">
+                            {detailItem.overview || "No overview available."}
+                        </p>
 
                         <div className="detail-actions">
-                            <button className="play-btn-primary" onClick={() => {
-                                setIsPlayerOpen(true);
-                                addToHistory(detailItem);
-                            }}>
-                                <i className="fas fa-play"></i> Play
+                            <button 
+                                className="play-btn-primary" 
+                                onClick={() => {
+                                    setIsPlayerOpen(true);
+                                    addToHistory(detailItem);
+                                }}
+                            >
+                                <i className="fas fa-play"></i> Play Now
                             </button>
                             
-                            <button className="watchlist-btn" onClick={() => toggleWatchlist(detailItem)}>
-                                <i className={isAdded ? "fas fa-check" : "fas fa-plus"}></i> {isAdded ? "List" : "List"}
+                            <button 
+                                className="watchlist-btn" 
+                                onClick={() => toggleWatchlist(detailItem)}
+                                style={{ background: isAdded ? 'var(--accent-color)' : 'rgba(255,255,255,0.1)' }}
+                            >
+                                <i className={isAdded ? "fas fa-check" : "fas fa-plus"}></i> 
+                                {isAdded ? ' Added' : ' My List'}
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="recommendations-section">
-                    <h3>You May Also Like</h3>
-                    <div className="recommendations-grid">
-                        {similar.length > 0 ? similar.slice(0, 12).map(item => (
-                            <div key={item.id} className="movie-card" onClick={() => handleRecClick(item)}>
-                                <div className="card-poster">
-                                    <div className="rating-badge"><i className="fas fa-star"></i> {item.vote_average?.toFixed(1)}</div>
-                                    <img 
-                                        src={item.poster_path ? POSTER_URL + item.poster_path : PLACEHOLDER_IMG} 
-                                        onError={(e) => e.target.src = PLACEHOLDER_IMG}
-                                        alt={item.title}
-                                    />
+                {/* RECOMMENDATIONS */}
+                {recommendations.length > 0 && (
+                    <div className="recommendations-section">
+                        <h3>You May Also Like</h3>
+                        <div className="recommendations-grid">
+                            {recommendations.slice(0, 12).map(item => (
+                                <div key={item.id} className="movie-card" onClick={() => openDetail(item)}>
+                                    <div className="card-poster">
+                                        <div className="rating-badge"><i className="fas fa-star"></i> {item.vote_average?.toFixed(1)}</div>
+                                        <img 
+                                            src={item.poster_path ? POSTER_URL + item.poster_path : PLACEHOLDER_IMG} 
+                                            loading="lazy" 
+                                            onError={(e) => e.target.src = PLACEHOLDER_IMG}
+                                            alt={getDisplayTitle(item)}
+                                        />
+                                    </div>
+                                    <div className="card-info">
+                                        <div className="card-title">{getDisplayTitle(item)}</div>
+                                    </div>
                                 </div>
-                                <div className="card-info">
-                                    <div className="card-title">{getDisplayTitle(item)}</div>
-                                </div>
-                            </div>
-                        )) : (
-                            <p style={{color:'#666', padding:'20px'}}>No recommendations found.</p>
-                        )}
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
+
+            {/* BACK TO TOP BUTTON */}
+            <BackToTop containerRef={scrollRef} />
         </div>
     );
 };
