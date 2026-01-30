@@ -1,21 +1,18 @@
 import React from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 
-// --- EXPANDED CONTENT ---
+// --- EXPANDED CONTENT (Same as before) ---
 const infoContent = {
-    // --- NEW ABOUT SECTION ---
     about: `
         <div class="about-container" style="padding: 10px 0; color: #ccc; line-height: 1.8;">
             <h2 style="color: #fff; font-size: 1.5rem; margin-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 5px;">About Shakzz TV</h2>
             <p style="margin-bottom: 25px;">
                 Shakzz TV delivers a premier, curated portfolio of local and international networks, providing a seamless, high-quality streaming experience available 24/7. Our platform offers a comprehensive spectrum of programming designed to cater to every interest—from breaking news and live sports to insightful documentaries and engaging animation.
             </p>
-
             <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px;">Our Vision & Commitment</h3>
             <p style="margin-bottom: 25px;">
                 To become the go-to free streaming service for Filipinos everywhere, bridging distances by providing a reliable and comprehensive source of local and international content. We envision a platform where every user feels connected to home, informed about the world, and entertained without barriers. We are committed to delivering a stable and high-quality streaming experience. This means continuously optimizing our platform for minimal buffering, expanding our channel lineup based on viewer feedback, and ensuring our service remains accessible and easy to use for everyone, on any device.
             </p>
-
             <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 10px;">The 'Why': A Note from the Creator</h3>
             <p style="margin-bottom: 10px;">
                 Shakzz TV was born from a simple idea: everyone deserves easy access to the channels they love, especially those that connect them to news, culture, and entertainment from home. As a passionate developer and media enthusiast, I created this platform to solve the common frustration of unreliable streams and scattered content. This project is a labor of love, dedicated to providing a seamless and free service for the community.
@@ -54,12 +51,10 @@ const infoContent = {
     `,
     faq: `
         <div class="faq-container" style="padding: 10px 0;">
-            
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-circle-question"></i> Is Shakzz TV really free?</h3>
                 <p class="faq-answer">Yes! Shakzz TV is 100% free. We do not ask for credit cards, subscriptions, or hidden fees. Just click and play.</p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-triangle-exclamation"></i> Why do I see pop-up ads?</h3>
                 <p class="faq-answer">
@@ -67,7 +62,6 @@ const infoContent = {
                     <br><strong>Tip:</strong> Simply close the pop-up and click play again. We try to select servers with the fewest ads possible.
                 </p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-wifi"></i> Why is the video buffering?</h3>
                 <p class="faq-answer">
@@ -77,21 +71,18 @@ const infoContent = {
                     <br>3. Check your internet connection.
                 </p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-closed-captioning"></i> How do I turn on subtitles?</h3>
                 <p class="faq-answer">
                     Most of our players have a <strong>"CC"</strong> button in the bottom corner of the video player. Click it to enable subtitles or switch languages. If a specific subtitle is missing, try switching to a different Server.
                 </p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-film"></i> How do I request a movie/show?</h3>
                 <p class="faq-answer">
                     We love adding new content! Use the <strong>"Contact Us"</strong> form in the sidebar menu. Please provide the exact Title and Year.
                 </p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-tv"></i> Can I watch on my Smart TV?</h3>
                 <p class="faq-answer">
@@ -99,7 +90,6 @@ const infoContent = {
                     <br>You can use your remote's arrow keys to navigate the entire interface seamlessly.
                 </p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-mobile-screen"></i> Is there a mobile app?</h3>
                 <p class="faq-answer">
@@ -108,7 +98,6 @@ const infoContent = {
                     <br><strong>Android:</strong> Tap Menu > "Install App" or "Add to Home Screen".
                 </p>
             </div>
-
             <div class="faq-item">
                 <h3 class="faq-question"><i class="fa-solid fa-link-slash"></i> The video says "File not found."</h3>
                 <p class="faq-answer">
@@ -131,7 +120,6 @@ const infoContent = {
                     This privacy policy will inform you as to how we look after your personal data when you visit our website.
                 </p>
             </div>
-
             <div class="update-item">
                 <h3 class="update-title" style="color: #fff;">2. Information We Collect</h3>
                 <p class="update-content">
@@ -142,7 +130,6 @@ const infoContent = {
                     <br><strong>• Technical Data:</strong> IP address, browser type, and operating system (standard web logs).
                 </p>
             </div>
-
             <div class="update-item">
                 <h3 class="update-title" style="color: #fff;">3. Third-Party Links & Servers</h3>
                 <p class="update-content">
@@ -151,14 +138,12 @@ const infoContent = {
                     Clicking on these links may allow third parties to collect data about you. We do not control these third-party websites and are not responsible for their privacy statements.
                 </p>
             </div>
-
             <div class="update-item">
                 <h3 class="update-title" style="color: #fff;">4. Cookies</h3>
                 <p class="update-content">
                     We use local storage and cookies to save your preferences (such as your last played channel, volume settings, or preferred server). You can clear this data at any time via your browser settings.
                 </p>
             </div>
-
             <div class="update-item">
                 <h3 class="update-title" style="color: #fff;">5. Data Deletion</h3>
                 <p class="update-content">
@@ -177,19 +162,16 @@ const infoContent = {
             </p>
 
             <form action="https://formspree.io/f/manpwdko" method="POST" style="max-width: 500px; margin: 0 auto; text-align: left;">
-                
                 <div style="margin-bottom: 15px;">
                     <label style="color:#ddd; font-size:0.9rem; margin-bottom:5px; display:block;">Your Email</label>
                     <input class="contact-input" type="email" name="email" placeholder="name@example.com" required 
                            style="width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; outline: none;">
                 </div>
-
                 <div style="margin-bottom: 15px;">
                     <label style="color:#ddd; font-size:0.9rem; margin-bottom:5px; display:block;">Message / Request</label>
                     <textarea class="contact-input" name="message" rows="4" placeholder="Enter movie name or describe the issue..." required 
                               style="width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; outline: none; resize: vertical;"></textarea>
                 </div>
-
                 <button type="submit" class="contact-btn" 
                         style="width: 100%; padding: 14px; background: #e50914; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem;">
                     <i class="fa-solid fa-paper-plane" style="margin-right:8px;"></i> Send Message
@@ -214,11 +196,13 @@ const InfoModal = () => {
     if (!infoModal.isOpen) return null;
 
     const titles = {
-        about: 'About Us', // Added this title
+        about: 'About Us',
         updates: 'Latest Updates',
         contact: 'Contact Us',
         faq: 'Frequently Asked Questions',
-        privacy: 'Privacy Policy'
+        privacy: 'Privacy Policy',
+        history: 'Watch History',
+        watchlist: 'My Favorites'
     };
 
     return (
@@ -226,22 +210,31 @@ const InfoModal = () => {
             id="info-modal" 
             className="info-modal" 
             style={{ 
+                // --- FIXED POSITIONING AS PAGE ---
+                position: 'fixed',
+                top: '70px', // Below navbar
+                left: 0,
+                width: '100vw',
+                height: 'calc(100vh - 70px)',
+                zIndex: 5000, // Below Navbar (200000) but above content
+                background: '#141414', // Solid background
                 display: 'flex',
-                // FIX: Highest Z-Index guarantees it covers the Bottom Nav (usually ~4000)
-                zIndex: 10002 
+                flexDirection: 'column',
+                overflow: 'hidden'
             }} 
-            onClick={(e) => e.target.id === 'info-modal' && setInfoModal({ ...infoModal, isOpen: false })}
         >
-            <div className="info-content-wrapper">
+            <div className="info-content-wrapper" style={{ width: '100%', height: '100%' }}>
                 <div className="info-header">
-                    <h2 id="info-title">{titles[infoModal.type]}</h2>
+                    <h2 id="info-title">{titles[infoModal.type] || 'Information'}</h2>
                     <span className="close-info" onClick={() => setInfoModal({ ...infoModal, isOpen: false })}>×</span>
                 </div>
-                {/* Content Injection */}
+                
+                {/* Scrollable Content Body */}
                 <div 
                     className="info-body" 
                     id="info-body" 
                     dangerouslySetInnerHTML={{ __html: infoContent[infoModal.type] }}
+                    style={{ flex: 1, overflowY: 'auto' }}
                 ></div>
             </div>
         </div>
