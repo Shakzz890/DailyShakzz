@@ -12,7 +12,6 @@ const Navbar = () => {
         loginGoogle, 
         loginGithub, 
         doLogout, 
-        // --- YOU WERE MISSING THIS ONE: ---
         categoryModal, 
         setCategoryModal,
         setInfoModal,
