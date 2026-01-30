@@ -14,9 +14,9 @@ const Navbar = () => {
         doLogout, 
         setCategoryModal,
         setInfoModal,
-        // --- ADDED THESE TWO ---
         isDetailOpen,
-        isPlayerOpen
+        isPlayerOpen,
+        infoModal // <--- ADDED THIS
     } = useGlobal();
 
     const [authDropdown, setAuthDropdown] = useState(false);
@@ -39,8 +39,8 @@ const Navbar = () => {
     const isHomeActive = currentView === 'home' && !isExploreOpen;
     const isLiveActive = currentView === 'live' && !isExploreOpen;
 
-    // --- UPDATED LOGIC: Navbar becomes solid if Detail or Player is open ---
-    const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen;
+    // --- UPDATED LOGIC: Include infoModal.isOpen ---
+    const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen;
 
     return (
         <div className={`navbar ${isSolid ? 'solid-nav' : ''}`}>
@@ -49,61 +49,37 @@ const Navbar = () => {
                     <i className="fa-solid fa-bars"></i>
                 </div>
                 
-                {/* --- UPDATED LOGO: SHAKZZ.ONLINE --- */}
                 <div className="logo-text" style={{ 
                     fontFamily: "'Outfit', sans-serif", 
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    cursor: 'pointer'
+                    display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' 
                 }} onClick={() => switchView('home')}>
                     
-                    {/* System Icon: Purple Glow Box */}
                     <div style={{
-                        width: '32px',
-                        height: '32px',
+                        width: '32px', height: '32px',
                         background: 'linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%)',
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)',
-                        border: '1px solid rgba(255,255,255,0.1)'
+                        borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)', border: '1px solid rgba(255,255,255,0.1)'
                     }}>
                         <i className="fa-solid fa-play" style={{ color: '#fff', fontSize: '12px' }}></i>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
                         <span style={{ 
-                            color: '#fff', 
-                            fontWeight: '900',
-                            fontSize: '1.3rem',
-                            letterSpacing: '1px',
+                            color: '#fff', fontWeight: '900', fontSize: '1.3rem', letterSpacing: '1px',
                             textShadow: '0 0 15px rgba(168, 85, 247, 0.5)' 
                         }}>SHAKZZ</span>
                         <span style={{ 
-                            color: 'var(--accent-color)', 
-                            fontSize: '0.65rem', 
-                            fontWeight: '700', 
-                            letterSpacing: '2px',
-                            textTransform: 'uppercase'
+                            color: 'var(--accent-color)', fontSize: '0.65rem', fontWeight: '700', 
+                            letterSpacing: '2px', textTransform: 'uppercase'
                         }}>Play</span>
                     </div>
                 </div>
 
                 <ul className="desktop-menu">
-                    <li>
-                        <a href="#" className={`nav-link ${isHomeActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('home'); }}>Home</a>
-                    </li>
-                    <li>
-                        <a href="#" className={`nav-link ${isLiveActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('live'); }}>Live TV</a>
-                    </li>
-                    <li>
-                        <a href="#" className={`nav-link ${isExploreOpen ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setSearchModal({isOpen:true, mode:'explore'}); }}>Explore</a>
-                    </li>
-                    <li>
-                         <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a>
-                    </li>
+                    <li><a href="#" className={`nav-link ${isHomeActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('home'); }}>Home</a></li>
+                    <li><a href="#" className={`nav-link ${isLiveActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('live'); }}>Live TV</a></li>
+                    <li><a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'about'}); }}>About</a></li>
+                    <li><a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a></li>
                 </ul>
             </div>
 
