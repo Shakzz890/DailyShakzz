@@ -12,11 +12,13 @@ const Navbar = () => {
         loginGoogle, 
         loginGithub, 
         doLogout, 
+        // --- YOU WERE MISSING THIS ONE: ---
+        categoryModal, 
         setCategoryModal,
         setInfoModal,
         isDetailOpen,
         isPlayerOpen,
-        infoModal // <--- ADDED THIS
+        infoModal 
     } = useGlobal();
 
     const [authDropdown, setAuthDropdown] = useState(false);
@@ -38,7 +40,9 @@ const Navbar = () => {
     const isExploreOpen = searchModal.isOpen && searchModal.mode === 'explore';
     const isHomeActive = currentView === 'home' && !isExploreOpen;
     const isLiveActive = currentView === 'live' && !isExploreOpen;
-   const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen || categoryModal.isOpen;
+
+    // --- NOW THIS WILL WORK WITHOUT CRASHING ---
+    const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen || categoryModal.isOpen;
 
     return (
         <div className={`navbar ${isSolid ? 'solid-nav' : ''}`}>
