@@ -431,18 +431,17 @@ img {
   border-color: rgba(255,255,255,0.2);
 }
 
-/* --- UPDATED FOOTER BRANDING (Smaller & Re-positioned) --- */
+/* --- UPDATED FOOTER BRANDING (Right Aligned inside Left Column) --- */
 .footer-big-text {
-  font-size: clamp(2rem, 8vw, 5rem); /* Reduced max size from 12rem to 5rem */
+  font-size: clamp(3rem, 10vw, 5rem);
   font-weight: 800;
   color: #1a1a1a;
-  text-align: center;
+  text-align: right; /* Aligns to the right of the container */
   line-height: 1;
   letter-spacing: -2px;
   white-space: nowrap;
   user-select: none;
-  margin: 0; /* Removed margin to pull it closer to content above */
-  padding-top: 20px; /* Slight breathing room */
+  margin-top: 40px; /* Space between description and logo */
   
   /* Gradient & Shadow Effect */
   background: -webkit-linear-gradient(#fff, #a855f7);
