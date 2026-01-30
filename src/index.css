@@ -436,7 +436,12 @@ img {
   font-size: clamp(3rem, 10vw, 5rem);
   font-weight: 800;
   color: #1a1a1a;
-  text-align: right; /* Aligns to the right of the container */
+  
+  /* FORCE RIGHT ALIGNMENT */
+  text-align: right; 
+  align-self: flex-end; /* Flexbox alignment backup */
+  width: 100%; /* Take full width of parent to allow text-align to work */
+  
   line-height: 1;
   letter-spacing: -2px;
   white-space: nowrap;
