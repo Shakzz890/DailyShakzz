@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 import { IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
 // --- FIX: Correct Import Path (Up one level to components, then to Layout) ---
-import BackToTop from '../components/Layout/BackToTop'; 
+import BackToTop from '../Layout/BackToTop'; 
 
 const DetailView = () => {
     const { 
