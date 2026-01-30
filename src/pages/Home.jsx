@@ -43,7 +43,7 @@ const Home = () => {
         hideLoader, 
         history, 
         removeFromHistory, 
-        togglePin,         
+        togglePin,          
         setCategoryModal,
         setInfoModal 
     } = useGlobal();
@@ -70,18 +70,11 @@ const Home = () => {
     // --- INITIALIZATION ---
     useEffect(() => {
         const init = async () => {
-            // --- SMART PRELOADER LOGIC ---
-            // Check if user has already seen the "System Init" this session
             const hasInitialized = sessionStorage.getItem('shakzz_system_ready');
 
             if (!hasInitialized) {
-                // First Visit: Show the cool branding text
                 showLoader("Initializing System...");
                 sessionStorage.setItem('shakzz_system_ready', 'true');
-            } else {
-                // Reload: Do NOT update text, keep it silent/fast
-                // We rely on the default isLoading=true from Context, 
-                // but we won't force the big "Initializing" message again.
             }
 
             try {
@@ -113,7 +106,6 @@ const Home = () => {
                 });
             } catch (e) { console.error(e); }
             
-            // Always hide loader when data is ready
             hideLoader();
         };
         init();
@@ -145,7 +137,7 @@ const Home = () => {
 
     // --- HANDLERS ---
     const playHistoryItem = (item) => {
-        setDetailItem(item);   
+        setDetailItem(item);    
         setIsPlayerOpen(true); 
     };
 
@@ -203,7 +195,6 @@ const Home = () => {
             {/* CONTINUE WATCHING */}
             {history.length > 0 && (
                 <div className="row" id="continue-watching-row">
-                    {/* CHANGED: Background color to var(--accent-color) for purple theme */}
                     <h2><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Continue Watching <i className="fa-solid fa-clock-rotate-left"></i></h2>
                     <div className="list" id="continue-list">
                         {history.slice(0, 10).map(item => (
@@ -263,7 +254,17 @@ const Home = () => {
                         
                         <div className="footer-nav-wrapper">
                             <div className="footer-col">
-                                <span className="col-title">EXPLORE</span>
+                                {/* CHANGED: "EXPLORE" -> "ABOUT US" (Clickable) */}
+                                <span 
+                                    className="col-title" 
+                                    style={{ cursor: 'pointer', color: '#fff', transition: 'color 0.3s' }}
+                                    onClick={() => setInfoModal({isOpen: true, type: 'about'})}
+                                    onMouseEnter={(e) => e.target.style.color = 'var(--accent-color)'}
+                                    onMouseLeave={(e) => e.target.style.color = '#fff'}
+                                >
+                                    ABOUT US
+                                </span>
+
                                 <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'faq'}); }}>FAQ</a>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'privacy'}); }}>Privacy Policy</a>
@@ -279,7 +280,6 @@ const Home = () => {
                                     <a href="https://www.youtube.com/@Shakzz05" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube"></i></a>
                                 </div>
                                 
-                                {/* JOIN COMMUNITY - SEPARATE SECTION */}
                                 <span className="col-title" style={{marginTop:'25px'}}>JOIN COMMUNITY</span>
                                 <div className="social-row">
                                     <a href="https://discord.gg/k8AJ9dWzb" target="_blank" rel="noreferrer" title="Join Discord">
@@ -290,14 +290,22 @@ const Home = () => {
                         </div>
                     </div>
                     
-                    {/* NEW BRANDING: AHJIN */}
+                    {/* NEW BRANDING: AHJIN (Resized & Repositioned) */}
                     <div className="footer-big-text" style={{
-                        background: '-webkit-linear-gradient(#fff, #a855f7)', /* White to Purple */
+                        background: '-webkit-linear-gradient(#fff, #a855f7)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
-                        filter: 'drop-shadow(0 0 25px rgba(168, 85, 247, 0.4))',
+                        filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.4))',
                         fontFamily: "'Orbitron', sans-serif",
-                        letterSpacing: '-5px'
+                        fontSize: 'clamp(2.5rem, 8vw, 5rem)', /* Smaller size */
+                        letterSpacing: '-2px',
+                        fontWeight: '800',
+                        textAlign: 'center',
+                        lineHeight: '1',
+                        whiteSpace: 'nowrap',
+                        userSelect: 'none',
+                        margin: '0',
+                        paddingTop: '10px'
                     }}>
                         AHJIN
                     </div>
