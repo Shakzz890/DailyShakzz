@@ -59,13 +59,41 @@ const CategoryView = () => {
     const isHistory = categoryModal.title === 'Watch History';
 
     return (
-        <div className="page-view category-page">
-            <div className="category-header">
-                <i className="fa-solid fa-arrow-left" onClick={() => setCategoryModal({ ...categoryModal, isOpen: false })}></i>
-                <h1 id="category-title">{categoryModal.title}</h1>
+        <div 
+            className="page-view category-page"
+            style={{
+                // --- PAGE CONFIGURATION ---
+                position: 'fixed',
+                top: '70px', // Sit below Navbar
+                left: 0,
+                width: '100vw',
+                height: 'calc(100vh - 70px)', // Fill remaining height
+                zIndex: 50000, // Below Navbar (200000), Above Home (1)
+                background: '#050505', // Solid background
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden' // Prevent double scrollbars
+            }}
+        >
+            <div className="category-header" style={{ flexShrink: 0, padding: '20px 30px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <i 
+                    className="fa-solid fa-arrow-left" 
+                    onClick={() => setCategoryModal({ ...categoryModal, isOpen: false })}
+                    style={{ fontSize: '1.2rem', cursor: 'pointer', marginRight: '20px', color: '#fff' }}
+                ></i>
+                <h1 id="category-title" style={{ display: 'inline', fontSize: '1.5rem', fontWeight: '700' }}>{categoryModal.title}</h1>
             </div>
             
-            <div className="category-content" onScroll={handleScroll} style={{ overflowY: 'auto', flex: 1 }}>
+            <div 
+                className="category-content" 
+                onScroll={handleScroll} 
+                style={{ 
+                    overflowY: 'auto', 
+                    flex: 1, 
+                    padding: '20px 30px',
+                    paddingBottom: '80px' 
+                }}
+            >
                 <div className={`category-grid ${isHistory ? 'landscape-grid' : ''}`} id="category-grid">
                     {results.map((item, index) => {
                         if(!item) return null;
@@ -80,7 +108,7 @@ const CategoryView = () => {
                                 {isHistory ? (
                                     <>
                                         <div className="history-image-wrapper">
-                                            <img src={image} onError={(e)=>e.target.src=PLACEHOLDER_IMG} loading="lazy" />
+                                            <img src={image} onError={(e)=>e.target.src=PLACEHOLDER_IMG} loading="lazy" alt={title} />
                                             <div className="history-play-icon"><i className="fas fa-play"></i></div>
                                             <div className="history-progress-bar"><div className="history-progress-fill" style={{width: `${item.progress || 45}%`}}></div></div>
                                         </div>
@@ -93,7 +121,7 @@ const CategoryView = () => {
                                     <>
                                         <div className="card-poster">
                                             <div className="rating-badge"><i className="fas fa-star"></i> {rating}</div>
-                                            <img src={image} onError={(e)=>e.target.src=PLACEHOLDER_IMG} loading="lazy" />
+                                            <img src={image} onError={(e)=>e.target.src=PLACEHOLDER_IMG} loading="lazy" alt={title} />
                                         </div>
                                         <div className="card-info">
                                             <div className="card-title">{title}</div>
