@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 import { IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
-import BackToTop from '../components/Layout/BackToTop'; // Import BackToTop
+// --- FIX: Correct Import Path (Up one level to components, then to Layout) ---
+import BackToTop from '../Layout/BackToTop'; 
 
 const DetailView = () => {
     const { 
@@ -47,8 +48,6 @@ const DetailView = () => {
 
     // Genres handling
     const genreNames = detailItem.genres?.map(g => g.name) || [];
-    // If genres are IDs (from list view), map them manually if needed or skip
-    // Ideally, detailItem from API has full genre objects.
 
     return (
         <div 
