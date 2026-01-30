@@ -38,9 +38,7 @@ const Navbar = () => {
     const isExploreOpen = searchModal.isOpen && searchModal.mode === 'explore';
     const isHomeActive = currentView === 'home' && !isExploreOpen;
     const isLiveActive = currentView === 'live' && !isExploreOpen;
-
-    // --- UPDATED LOGIC: Include infoModal.isOpen ---
-    const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen;
+   const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen || categoryModal.isOpen;
 
     return (
         <div className={`navbar ${isSolid ? 'solid-nav' : ''}`}>
