@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // 1. Added useRef
 import { useGlobal } from '../../context/GlobalContext';
 import { POSTER_URL, IMG_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
+import BackToTop from '../components/Layout/BackToTop'; // 2. Added Import
 
 const CategoryView = () => {
     const { categoryModal, setCategoryModal, openDetail, history, watchlist } = useGlobal();
@@ -8,6 +9,9 @@ const CategoryView = () => {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    
+    // 3. Create Ref for the scrollable container
+    const scrollContainerRef = useRef(null);
     
     const isUserList = categoryModal.title === 'Watch History' || categoryModal.title === 'My Favorites';
 
@@ -62,17 +66,16 @@ const CategoryView = () => {
         <div 
             className="page-view category-page"
             style={{
-                // --- PAGE CONFIGURATION ---
                 position: 'fixed',
-                top: '70px', // Sit below Navbar
+                top: '70px',
                 left: 0,
                 width: '100vw',
-                height: 'calc(100vh - 70px)', // Fill remaining height
-                zIndex: 50000, // Below Navbar (200000), Above Home (1)
-                background: '#050505', // Solid background
+                height: 'calc(100vh - 70px)',
+                zIndex: 50000,
+                background: '#050505',
                 display: 'flex',
                 flexDirection: 'column',
-                overflow: 'hidden' // Prevent double scrollbars
+                overflow: 'hidden'
             }}
         >
             <div className="category-header" style={{ flexShrink: 0, padding: '20px 30px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
@@ -86,6 +89,7 @@ const CategoryView = () => {
             
             <div 
                 className="category-content" 
+                ref={scrollContainerRef} // 4. Attach Ref Here
                 onScroll={handleScroll} 
                 style={{ 
                     overflowY: 'auto', 
@@ -139,6 +143,9 @@ const CategoryView = () => {
                     {loading && <div className="spinner" style={{margin:'20px auto'}}></div>}
                 </div>
             </div>
+
+            {/* 5. Render BackToTop Component */}
+            <BackToTop containerRef={scrollContainerRef} />
         </div>
     );
 };
