@@ -433,7 +433,7 @@ img {
 
 /* --- UPDATED FOOTER BRANDING (Smaller & Re-positioned) --- */
 .footer-big-text {
-  font-size: clamp(2.5rem, 10vw, 6rem); 
+  font-size: clamp(2rem, 8vw, 5rem); /* Reduced max size from 12rem to 5rem */
   font-weight: 800;
   color: #1a1a1a;
   text-align: center;
@@ -441,7 +441,10 @@ img {
   letter-spacing: -2px;
   white-space: nowrap;
   user-select: none;
-  margin: 10px 0 0 0; 
+  margin: 0; /* Removed margin to pull it closer to content above */
+  padding-top: 20px; /* Slight breathing room */
+  
+  /* Gradient & Shadow Effect */
   background: -webkit-linear-gradient(#fff, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
