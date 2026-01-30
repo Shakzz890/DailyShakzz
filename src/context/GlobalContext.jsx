@@ -1,31 +1,22 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
-import { getFirestore, doc, setDoc, deleteDoc, getDoc, collection, query, orderBy, limit, getDocs, updateDoc } from "firebase/firestore";
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { doc, setDoc, deleteDoc, collection, query, orderBy, limit, getDocs, updateDoc } from "firebase/firestore";
+
+// --- FIX 1: Correct Import Path to your API folder ---
+// Your firebase.js is in /src/api/, so we go up one level (../) to src, then into api/
+import { auth, db, googleProvider, githubProvider } from '../api/firebase'; 
 
 const GlobalContext = createContext();
-
-// ... (Your firebaseConfig and app init code remains the same) ...
-const firebaseConfig = {
-  apiKey: "AIzaSyBG_54h3xkGoGwfX_3kFLRUciTdEkmkrvA",
-  authDomain: "shakzztv-de597.firebaseapp.com",
-  databaseURL: "https://shakzztv-de597-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "shakzztv-de597",
-  storageBucket: "shakzztv-de597.firebasestorage.app",
-  messagingSenderId: "841207969238",
-  appId: "1:841207969238:web:4f173cc794f99494c5e077",
-  measurementId: "G-FZQTKE7STD"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 export const GlobalProvider = ({ children }) => {
     
     // --- 1. UI STATE ---
     const [currentView, setCurrentView] = useState(() => {
-        return localStorage.getItem('shakzz_current_view') || 'home';
+        // Check if running in browser to avoid build errors
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('shakzz_current_view') || 'home';
+        }
+        return 'home';
     });
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -72,18 +63,17 @@ export const GlobalProvider = ({ children }) => {
     }, [currentView, detailItem, isDetailOpen, isPlayerOpen, categoryModal]);
 
 
-    // --- NAVIGATION (UPDATED) ---
+    // --- FIX 2: UPDATE NAVIGATION LOGIC ---
     const switchView = (view) => {
         setCurrentView(view);
         setSearchModal({ ...searchModal, isOpen: false });
         setIsSidebarOpen(false);
         
-        // --- ADD THESE TWO LINES ---
-        // This ensures that when you click Logo, Home, Explore, etc., 
-        // the Player and Details close immediately.
-        setIsPlayerOpen(false);
+        // --- FORCE CLOSE OVERLAYS ON NAVIGATION ---
+        // This makes sure the player disappears when you click Home/Logo
+        setIsPlayerOpen(false); 
         setIsDetailOpen(false); 
-        // ---------------------------
+        // ------------------------------------------
 
         window.scrollTo(0, 0);
     };
@@ -116,11 +106,19 @@ export const GlobalProvider = ({ children }) => {
     }, []);
 
     const loginGoogle = async () => {
-        try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { alert(e.message); }
+        try { 
+            await signInWithPopup(auth, googleProvider); 
+        } catch (e) { 
+            alert(`Login Error: ${e.message}`); 
+        }
     };
 
     const loginGithub = async () => {
-        try { await signInWithPopup(auth, new GithubAuthProvider()); } catch (e) { alert(e.message); }
+        try { 
+            await signInWithPopup(auth, githubProvider); 
+        } catch (e) { 
+            alert(`Login Error: ${e.message}`); 
+        }
     };
 
     const doLogout = async () => {
@@ -129,17 +127,21 @@ export const GlobalProvider = ({ children }) => {
     };
 
     const loadUserData = async (uid) => {
-        const histRef = collection(db, "users", uid, "history");
-        const qHist = query(histRef, orderBy("timestamp", "desc"), limit(30));
-        const histSnap = await getDocs(qHist);
-        const histData = histSnap.docs.map(d => d.data());
-        histData.sort((a, b) => (b.pinned === true ? 1 : 0) - (a.pinned === true ? 1 : 0));
-        setHistory(histData);
+        try {
+            const histRef = collection(db, "users", uid, "history");
+            const qHist = query(histRef, orderBy("timestamp", "desc"), limit(30));
+            const histSnap = await getDocs(qHist);
+            const histData = histSnap.docs.map(d => d.data());
+            histData.sort((a, b) => (b.pinned === true ? 1 : 0) - (a.pinned === true ? 1 : 0));
+            setHistory(histData);
 
-        const watchRef = collection(db, "users", uid, "watchlist");
-        const qWatch = query(watchRef, orderBy("added_at", "desc"));
-        const watchSnap = await getDocs(qWatch);
-        setWatchlist(watchSnap.docs.map(d => d.data()));
+            const watchRef = collection(db, "users", uid, "watchlist");
+            const qWatch = query(watchRef, orderBy("added_at", "desc"));
+            const watchSnap = await getDocs(qWatch);
+            setWatchlist(watchSnap.docs.map(d => d.data()));
+        } catch (error) {
+            console.error("Data Load Error:", error);
+        }
     };
 
     // --- HISTORY MANAGEMENT ---
