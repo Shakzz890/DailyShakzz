@@ -243,18 +243,29 @@ const Home = () => {
             <div className="row"><h2 onClick={() => openCat('anime', 'Trending Anime')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Anime <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.anime} /></div>
             <div className="row"><h2 onClick={() => openCat('upcoming', 'Upcoming Releases')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Upcoming <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.upcoming} isUpcoming={true} /></div>
         
-            {/* UPDATED FOOTER LAYOUT (AHJIN BRANDING) */}
+            {/* UPDATED FOOTER LAYOUT (AHJIN BRANDING MOVED) */}
             <footer className="footer">
                 <div className="footer-content">
                     <div className="footer-top">
                         <div className="footer-desc">
                             <h4>DIVE INTO THE SYSTEM</h4>
                             <p>Watch your favorite movies, TV shows, and anime in HD. Experience the ultimate entertainment platform.</p>
+                            
+                            {/* MOVED: AHJIN Branding is now here, aligned right */}
+                            <div className="footer-big-text" style={{
+                                background: '-webkit-linear-gradient(#fff, #a855f7)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.4))',
+                                fontFamily: "'Orbitron', sans-serif",
+                                letterSpacing: '-2px'
+                            }}>
+                                AHJIN
+                            </div>
                         </div>
                         
                         <div className="footer-nav-wrapper">
                             <div className="footer-col">
-                                {/* CHANGED: "EXPLORE" -> "ABOUT US" (Clickable) */}
                                 <span 
                                     className="col-title" 
                                     style={{ cursor: 'pointer', color: '#fff', transition: 'color 0.3s' }}
@@ -288,26 +299,6 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    {/* NEW BRANDING: AHJIN (Resized & Repositioned) */}
-                    <div className="footer-big-text" style={{
-                        background: '-webkit-linear-gradient(#fff, #a855f7)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.4))',
-                        fontFamily: "'Orbitron', sans-serif",
-                        fontSize: 'clamp(2.5rem, 8vw, 5rem)', /* Smaller size */
-                        letterSpacing: '-2px',
-                        fontWeight: '800',
-                        textAlign: 'center',
-                        lineHeight: '1',
-                        whiteSpace: 'nowrap',
-                        userSelect: 'none',
-                        margin: '0',
-                        paddingTop: '10px'
-                    }}>
-                        AHJIN
                     </div>
                     
                     <div className="footer-bottom">
