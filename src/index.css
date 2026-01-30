@@ -4204,3 +4204,49 @@ input:disabled + .slider {
     gap: 8px !important;
     margin-bottom: 5px !important; /* Reduces space below the last filter row */
 }
+
+/* --- BACK TO TOP BUTTON --- */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5);
+    z-index: 40000; /* Above most things, below Modals */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background: #fff;
+    color: var(--accent-color);
+    transform: translateY(-5px);
+}
+
+/* Adjust for Mobile so it doesn't cover content */
+@media (max-width: 768px) {
+    .back-to-top {
+        bottom: 80px; /* Moves up to avoid Bottom Nav */
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
