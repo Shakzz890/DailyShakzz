@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'; // 1. Added useRef
+import React, { useState, useEffect, useRef } from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 import { POSTER_URL, IMG_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
-import BackToTop from '../components/Layout/BackToTop'; // 2. Added Import
+import BackToTop from '../Layout/BackToTop'; 
 
 const CategoryView = () => {
     const { categoryModal, setCategoryModal, openDetail, history, watchlist } = useGlobal();
