@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useGlobal } from '../context/GlobalContext'; 
+import { useGlobal } from '../../context/GlobalContext'; 
 import { channels, animeData } from '../api/channels'; 
 import { PLACEHOLDER_IMG } from '../api/tmdb';
 
@@ -362,14 +362,8 @@ const Live = () => {
                 </div>
 
                 {/* --- HEADER: COUNT (Left) | DATE & TIME (Right) --- */}
-                <div className="channel-count-display" style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '0 5px',
-                    marginBottom: '10px',
-                    width: '100%'
-                }}>
+                {/* FIXED: Removed inline styles so CSS can handle margins/width correctly */}
+                <div className="channel-count-display">
                     {/* LEFT */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#888', fontWeight: '600', fontSize: '0.8rem' }}>
                         <i className="fas fa-tv"></i>
