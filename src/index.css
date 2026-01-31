@@ -868,3 +868,4 @@ input:checked + .switch.sm .slider:before { transform: translateX(16px); }
 @media (hover: hover) and (pointer: coarse) {
   .slider-arrow:hover { background: #fff; color: #000; transform: translateY(-50%) scale(1.1); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
 }
+
