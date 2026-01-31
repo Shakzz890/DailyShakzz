@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGlobal } from '../../context/GlobalContext';
 
-// --- UPDATED CONTENT ---
+// --- EXPANDED PROFESSIONAL CONTENT ---
 const infoContent = {
     about: `
         <div class="update-item">
@@ -12,144 +12,136 @@ const infoContent = {
                 Shakzz TV delivers a premier, curated portfolio of local and international networks, providing a seamless, high-quality streaming experience available 24/7. Our platform offers a comprehensive spectrum of programming designed to cater to every interest—from breaking news and live sports to insightful documentaries and engaging animation.
             </p>
         </div>
-
         <div class="update-item">
             <div class="update-header">
                 <h3 class="update-title" style="font-size: 1.2rem; color: #fff;">Our Vision & Commitment</h3>
             </div>
             <p class="update-content">
-                To become the go-to free streaming service for Filipinos everywhere, bridging distances by providing a reliable and comprehensive source of local and international content. We envision a platform where every user feels connected to home, informed about the world, and entertained without barriers.
+                To become the go-to free streaming service for Filipinos everywhere, bridging distances by providing a reliable and comprehensive source of local and international content.
             </p>
         </div>
-
         <div class="update-item">
             <div class="update-header">
-                <h3 class="update-title" style="font-size: 1.2rem; color: #fff;">The 'Why': A Note from the Creator</h3>
+                <h3 class="update-title" style="font-size: 1.2rem; color: #fff;">Legal Disclaimer</h3>
             </div>
-            <p class="update-content">
-                Shakzz TV was born from a simple idea: everyone deserves easy access to the channels they love, especially those that connect them to news, culture, and entertainment from home. This project is a labor of love, dedicated to providing a seamless and free service for the community.
+            <p class="update-content" style="color: #aaa; font-style: italic;">
+                Shakzz TV does not host any files on its servers. All content is provided by non-affiliated third parties.
             </p>
         </div>
     `,
     updates: `
         <div class="update-item">
             <div class="update-header">
-                <h3 class="update-title">Server Performance Upgrade</h3>
-                <span class="update-date">2026-01-15</span>
+                <h3 class="update-title">Server Infrastructure Upgrade</h3>
+                <span class="update-date">2026-01-20</span>
             </div>
-            <p class="update-content">We have migrated to a high-speed CDN to reduce buffering during peak hours. Live TV channels now have 99.9% uptime stability.</p>
+            <p class="update-content">Migrated to a decentralized CDN architecture to ensure 99.9% uptime and reduced buffering for international viewers.</p>
         </div>
         <div class="update-item">
             <div class="update-header">
                 <h3 class="update-title">Anime Library Expansion</h3>
-                <span class="update-date">2026-01-02</span>
+                <span class="update-date">2026-01-05</span>
             </div>
-            <p class="update-content">Added over 500+ new Anime titles including Tagalog Dubbed classics. The player now supports multi-server selection for anime content.</p>
+            <p class="update-content">Added 500+ new anime titles, including exclusive Tagalog Dubbed series. Integrated multi-source selection for backup playback.</p>
         </div>
         <div class="update-item">
             <div class="update-header">
-                <h3 class="update-title">Global Live Chat</h3>
+                <h3 class="update-title">Global Live Chat Launch</h3>
                 <span class="update-date">2025-12-08</span>
             </div>
-            <p class="update-content">Connect with other viewers in real-time! We've launched the Shakzz Community chat featuring photo/video sharing, camera support, and custom user profiles.</p>
+            <p class="update-content">Real-time community chat is now live! Features include custom user profiles, photo sharing, and moderation tools.</p>
         </div>
         <div class="update-item">
             <div class="update-header">
-                <h3 class="update-title">Complete UI Overhaul</h3>
+                <h3 class="update-title">UI/UX Overhaul (Glassmorphism)</h3>
                 <span class="update-date">2025-11-22</span>
             </div>
-            <p class="update-content">Experience the new modern <strong>Glassmorphism dark theme</strong>, optimized mobile layout, and glitch-free sidebar.</p>
-        </div>
-        <div class="update-item">
-            <div class="update-header">
-                <h3 class="update-title">Live Notification System</h3>
-                <span class="update-date">2025-11-08</span>
-            </div>
-            <p class="update-content">Notifications can now appear on-screen for important updates regarding server maintenance or new episodes.</p>
+            <p class="update-content">Complete redesign of the interface featuring a modern dark aesthetic, improved mobile responsiveness, and smoother animations.</p>
         </div>
     `,
     faq: `
         <div class="faq-container" style="padding: 10px 0;">
             <div class="faq-item">
-                <h3 class="faq-question"><i class="fa-solid fa-circle-question"></i> Is Shakzz TV really free?</h3>
-                <p class="faq-answer">Yes! Shakzz TV is 100% free. We do not ask for credit cards, subscriptions, or hidden fees. Just click and play.</p>
+                <h3 class="faq-question"><i class="fa-solid fa-circle-question"></i> Is Shakzz TV completely free?</h3>
+                <p class="faq-answer">Yes. We believe in open access to information and entertainment. There are no subscription fees, credit card requirements, or hidden paywalls.</p>
             </div>
             <div class="faq-item">
-                <h3 class="faq-question"><i class="fa-solid fa-triangle-exclamation"></i> Why do I see pop-up ads?</h3>
+                <h3 class="faq-question"><i class="fa-solid fa-triangle-exclamation"></i> Why are there pop-up ads?</h3>
                 <p class="faq-answer">
-                    We use third-party video servers (like VidSrc, SuperStream) to host content. These servers sometimes include their own ads to cover hosting costs. 
-                    <br><strong style="color: #fff">Tip:</strong> Simply close the pop-up and click play again. We try to select servers with the fewest ads possible.
+                    We utilize third-party video hosting providers to stream content. These providers often include ads to cover their significant bandwidth costs. Shakzz TV does not control these ads.
+                    <br><strong style="color:#fff">Tip:</strong> Use the "Server" selector to find a stream with fewer interruptions.
                 </p>
             </div>
             <div class="faq-item">
-                <h3 class="faq-question"><i class="fa-solid fa-wifi"></i> Why is the video buffering?</h3>
+                <h3 class="faq-question"><i class="fa-solid fa-wifi"></i> Troubleshooting Buffering</h3>
                 <p class="faq-answer">
-                    Buffering is usually caused by internet speed or high server traffic.
-                    <br>1. <strong>Switch Servers:</strong> Use the "Server" menu below the player (try Server 2 or 3).
-                    <br>2. Clear your browser cache.
-                    <br>3. Check your internet connection.
+                    If playback stalls:
+                    <br>1. <strong>Switch Servers:</strong> Try Server 2 or 3 below the player.
+                    <br>2. <strong>Quality:</strong> Lower the resolution (e.g., to 720p) via the settings gear icon.
+                    <br>3. <strong>Cache:</strong> Clear your browser cache or try Incognito mode.
                 </p>
             </div>
             <div class="faq-item">
-                <h3 class="faq-question"><i class="fa-solid fa-closed-captioning"></i> How do I turn on subtitles?</h3>
+                <h3 class="faq-question"><i class="fa-solid fa-mobile-screen"></i> How to install on Mobile?</h3>
                 <p class="faq-answer">
-                    Most of our players have a <strong>"CC"</strong> button in the bottom corner of the video player. Click it to enable subtitles or switch languages. If a specific subtitle is missing, try switching to a different Server.
+                    Shakzz TV is a Progressive Web App (PWA).
+                    <br><strong>iOS:</strong> Tap 'Share' > 'Add to Home Screen'.
+                    <br><strong>Android:</strong> Tap 'Menu' (three dots) > 'Install App'.
                 </p>
-            </div>
-            <div class="faq-item">
-                <h3 class="faq-question"><i class="fa-solid fa-mobile-screen"></i> Is there a mobile app?</h3>
-                <p class="faq-answer">
-                    Not on the App Store yet, but you can install Shakzz TV as a <strong>Web App (PWA)</strong>.
-                    <br><strong>iOS:</strong> Tap Share > "Add to Home Screen".
-                    <br><strong>Android:</strong> Tap Menu > "Install App" or "Add to Home Screen".
-                </p>
-            </div>
-            <div class="faq-item">
-                <h3 class="faq-question"><i class="fa-solid fa-video"></i> Can I request a movie or show?</h3>
-                <p class="faq-answer">Yes! Join our Discord community (link in footer) or use the "Contact Us" form to send a request. We usually add requested content within 24-48 hours.</p>
             </div>
         </div>
     `,
     privacy: `
         <div class="privacy-container" style="padding: 10px 0; color: #ccc; line-height: 1.6;">
             <div class="update-item">
-                <h3 class="update-title" style="color: #fff;">1. Introduction</h3>
-                <p class="update-content">Welcome to Shakzz TV. We respect your privacy and are committed to protecting your personal data. This policy explains what we collect and how we use it.</p>
-            </div>
-            <div class="update-item">
-                <h3 class="update-title" style="color: #fff;">2. Information We Collect</h3>
+                <h3 class="update-title" style="color: #fff;">1. Data Collection Policy</h3>
                 <p class="update-content">
-                    <strong>Personal Data:</strong> If you sign in via Google/Github, we store your public profile name and email solely for authentication purposes.
-                    <br><strong>Usage Data:</strong> We track your "Watch History" and "Favorites" locally on your device or linked to your account to provide the "Continue Watching" feature.
+                    We value user anonymity. We do not collect personally identifiable information (PII) unless explicitly provided by you (e.g., via Google Login).
+                    <br><strong>Logged Data:</strong> Includes IP address, browser type, and pages visited, used solely for analytics and abuse prevention.
                 </p>
             </div>
             <div class="update-item">
-                <h3 class="update-title" style="color: #fff;">3. Third-Party Services</h3>
+                <h3 class="update-title" style="color: #fff;">2. Cookie Usage</h3>
                 <p class="update-content">
-                    Our website embeds video players from third-party services (e.g., TMDB, VidSrc). These third parties may use cookies or similar tracking technologies. Shakzz TV does not control these services and is not responsible for their privacy practices.
+                    We use local storage and cookies to remember your preferences (e.g., volume settings, last watched channel, dark mode toggles). These are stored on your device and are not shared with third parties.
                 </p>
             </div>
             <div class="update-item">
-                <h3 class="update-title" style="color: #fff;">4. Data Security</h3>
-                <p class="update-content">We implement standard security measures (SSL encryption, Firebase Authentication) to protect your data. However, no method of transmission over the Internet is 100% secure.</p>
+                <h3 class="update-title" style="color: #fff;">3. Third-Party Embeds</h3>
+                <p class="update-content">
+                    Content on this site may include embedded videos from other services (e.g., YouTube, VidSrc). Embedded content behaves exactly as if the visitor has visited the other website. These websites may collect data about you, use cookies, and monitor your interaction with that embedded content.
+                </p>
             </div>
             <div class="update-item">
-                <h3 class="update-title" style="color: #fff;">5. Your Rights</h3>
-                <p class="update-content">You have the right to request the deletion of your account and data at any time. Simply contact us or use the delete option in your profile settings (coming soon).</p>
+                <h3 class="update-title" style="color: #fff;">4. DMCA / Copyright</h3>
+                <p class="update-content">
+                    Shakzz TV respects the intellectual property rights of others. We do not host copyrighted content. If you believe your work has been copied in a way that constitutes copyright infringement, please contact the third-party host directly or use our contact form for removal of the reference link.
+                </p>
             </div>
         </div>
     `,
     contact: `
         <div style="text-align: center; padding: 20px 0;">
-            <i class="fa-solid fa-paper-plane" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
-            <h2 style="color: #fff; margin-bottom: 10px;">Get in Touch</h2>
-            <p style="color: #aaa; max-width: 500px; margin: 0 auto 30px auto;">Have a request, found a bug, or just want to say hi? Send us a message!</p>
+            <i class="fa-solid fa-envelope-open-text" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+            <h2 style="color: #fff; margin-bottom: 10px;">Contact Support</h2>
+            <p style="color: #aaa; max-width: 500px; margin: 0 auto 30px auto;">
+                Found a broken link? Have a feature request? Or just want to join the team?
+                <br>Fill out the form below and we'll get back to you within 24 hours.
+            </p>
             <form action="https://formspree.io/f/manpwdko" method="POST" style="max-width: 500px; margin: 0 auto; text-align: left;">
                 <div style="margin-bottom: 15px;">
-                    <input class="contact-input" type="email" name="email" placeholder="Your Email" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid #333; color: white; border-radius: 8px;">
+                    <input class="contact-input" type="email" name="email" placeholder="Your Email Address" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid #333; color: white; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <textarea class="contact-input" name="message" rows="4" placeholder="Your Message" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid #333; color: white; border-radius: 8px;"></textarea>
+                    <select class="contact-input" name="subject" style="width: 100%; padding: 12px; background: rgba(30,30,30,1); border: 1px solid #333; color: white; border-radius: 8px;">
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Report Broken Link">Report Broken Link</option>
+                        <option value="Content Request">Request Content</option>
+                        <option value="DMCA">DMCA / Legal</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <textarea class="contact-input" name="message" rows="5" placeholder="How can we help?" required style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid #333; color: white; border-radius: 8px;"></textarea>
                 </div>
                 <button type="submit" class="contact-btn" style="width: 100%; padding: 14px; background: #e50914; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Send Message</button>
             </form>
@@ -164,10 +156,10 @@ const InfoModal = () => {
 
     const titles = {
         about: 'About Us',
-        updates: 'Latest Updates',
-        contact: 'Contact Us',
-        faq: 'FAQs',
-        privacy: 'Privacy Policy',
+        updates: 'Platform Updates',
+        contact: 'Contact Support',
+        faq: 'Frequently Asked Questions',
+        privacy: 'Privacy & Terms',
         history: 'Watch History',
         watchlist: 'My Favorites'
     };
@@ -178,7 +170,7 @@ const InfoModal = () => {
             className="info-modal" 
             style={{ 
                 position: 'fixed',
-                top: '70px', // Below navbar
+                top: '70px',
                 left: 0,
                 width: '100vw',
                 height: 'calc(100vh - 70px)',
@@ -195,7 +187,6 @@ const InfoModal = () => {
                     <span className="close-info" onClick={() => setInfoModal({ ...infoModal, isOpen: false })}>×</span>
                 </div>
                 
-                {/* --- ENABLE SCROLLING HERE --- */}
                 <div 
                     className="info-body" 
                     id="info-body" 
