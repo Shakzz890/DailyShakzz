@@ -4280,3 +4280,28 @@ input:disabled + .slider {
     font-variant-numeric: tabular-nums; /* Prevents numbers from jumping */
   }
 }
+
+/* --- MOBILE FOOTER FIXES (Max Width 768px) --- */
+@media (max-width: 768px) {
+  
+  /* 1. Center the Description Text */
+  .footer-desc {
+    text-align: center;
+    margin: 0 auto; /* Center the container itself */
+    max-width: 90%;
+  }
+
+  /* 2. Adjust AHJIN Text for Mobile */
+  .footer-big-text {
+    /* Scale down font size significantly */
+    font-size: clamp(2.5rem, 12vw, 3.5rem); 
+    
+    /* FORCE CENTER ALIGNMENT */
+    text-align: center;
+    margin: 20px auto 0 auto; /* Auto margins to center horizontally */
+    
+    /* Ensure it doesn't overflow */
+    width: 100%;
+    display: block;
+  }
+}
