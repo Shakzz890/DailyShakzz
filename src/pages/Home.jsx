@@ -1,315 +1,131 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useGlobal } from '../context/GlobalContext';
-import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../api/tmdb';
+import React, { useState, useEffect } from 'react';
+import { useGlobal } from '../../context/GlobalContext';
 
-// --- MEMOIZED LIST ---
-const MovieList = React.memo(({ items, isUpcoming }) => {
-    const { openDetail } = useGlobal();
-
-    return (
-        <div className="list">
-            {items.slice(0, 12).map(item => (
-                <div key={item.id} className="movie-card focusable-element fade-in" onClick={() => openDetail(item)} tabIndex="0">
-                    <div className="card-poster">
-                        {isUpcoming ? <div className="coming-badge">COMING</div> : <div className="badge-overlay">HD</div>}
-                        {!isUpcoming && <div className="rating-badge"><i className="fas fa-star"></i> {item.vote_average?.toFixed(1)}</div>}
-                        <img 
-                            src={item.poster_path ? POSTER_URL + item.poster_path : PLACEHOLDER_IMG} 
-                            loading="lazy" 
-                            onError={(e) => e.target.src = PLACEHOLDER_IMG} 
-                            alt={getDisplayTitle(item)}
-                        />
-                    </div>
-                    <div className="card-info">
-                        <div className="card-title">{getDisplayTitle(item)}</div>
-                        <div className="card-meta">
-                            <span>{(item.release_date || item.first_air_date || 'N/A').split('-')[0]}</span>
-                            <span className="dot-sep"></span>
-                            <span>{item.media_type === 'tv' || item.first_air_date ? 'Series' : 'Movie'}</span>
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-});
-
-const Home = () => {
+const Navbar = () => {
     const { 
-        openDetail, 
-        setDetailItem, 
-        setIsPlayerOpen, 
-        showLoader, 
-        hideLoader, 
-        history, 
-        removeFromHistory, 
-        togglePin,          
+        toggleSidebar, 
+        switchView, 
+        currentView, 
+        searchModal, 
+        setSearchModal, 
+        user, 
+        loginGoogle, 
+        loginGithub, 
+        doLogout, 
+        categoryModal, 
         setCategoryModal,
-        setInfoModal 
+        setInfoModal,
+        isDetailOpen,
+        isPlayerOpen,
+        infoModal 
     } = useGlobal();
 
-    const [sliderItems, setSliderItems] = useState([]);
-    const [lists, setLists] = useState({
-        trending: [], kdrama: [], cdrama: [], filipino: [], movies: [], tv: [], anime: [], upcoming: []
-    });
-    const [slideIndex, setSlideIndex] = useState(0);
-    const [activeMenuId, setActiveMenuId] = useState(null);
-    const sliderInterval = useRef(null);
+    const [authDropdown, setAuthDropdown] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
-    const CATEGORY_ENDPOINTS = {
-        'trending': '/trending/all/week',
-        'kdrama': '/discover/tv?with_original_language=ko&with_origin_country=KR&sort_by=popularity.desc',
-        'cdrama': '/discover/tv?with_original_language=zh&with_origin_country=CN&sort_by=popularity.desc',
-        'filipino': '/discover/tv?with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc',
-        'anime': '/discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc',
-        'movies': '/movie/popular',
-        'tv': '/tv/popular',
-        'upcoming': '/movie/upcoming?region=US'
-    };
-
-    // --- INITIALIZATION ---
     useEffect(() => {
-        const init = async () => {
-            const hasInitialized = sessionStorage.getItem('shakzz_system_ready');
-
-            if (!hasInitialized) {
-                showLoader("Initializing System...");
-                sessionStorage.setItem('shakzz_system_ready', 'true');
-            }
-
-            try {
-                const [day, week, kr, cn, ph, anime, mov, tv, up] = await Promise.all([
-                    fetchData('/trending/all/day'),
-                    fetchData('/trending/all/week'),
-                    fetchData('/discover/tv?with_original_language=ko&with_origin_country=KR&sort_by=popularity.desc'),
-                    fetchData('/discover/tv?with_original_language=zh&with_origin_country=CN&sort_by=popularity.desc'),
-                    fetchData('/discover/tv?with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc'),
-                    fetchData('/discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc'),
-                    fetchData('/movie/popular'),
-                    fetchData('/tv/popular'),
-                    fetchData('/movie/upcoming?region=US')
-                ]);
-
-                const globalHits = (day.results || []).filter(i => i.backdrop_path).slice(0, 5);
-                const kDramaHits = (kr.results || []).filter(i => i.backdrop_path).slice(0, 3);
-                setSliderItems([...globalHits, ...kDramaHits]);
-                
-                setLists({
-                    trending: week.results || [],
-                    kdrama: kr.results || [],
-                    cdrama: cn.results || [],
-                    filipino: ph.results || [],
-                    anime: anime.results || [],
-                    movies: mov.results || [],
-                    tv: tv.results || [],
-                    upcoming: up.results || []
-                });
-            } catch (e) { console.error(e); }
-            
-            hideLoader();
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
         };
-        init();
-
-        const closeMenu = () => setActiveMenuId(null);
-        window.addEventListener('click', closeMenu);
-        return () => window.removeEventListener('click', closeMenu);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // --- SLIDER TIMER ---
-    useEffect(() => {
-        if (sliderItems.length > 0) {
-            sliderInterval.current = setInterval(() => {
-                setSlideIndex(prev => (prev + 1) % sliderItems.length);
-            }, 5000);
-        }
-        return () => clearInterval(sliderInterval.current);
-    }, [sliderItems]);
-
-    const moveSlider = (dir) => {
-        clearInterval(sliderInterval.current);
-        setSlideIndex(prev => (prev + dir + sliderItems.length) % sliderItems.length);
+    const openUserList = (type) => {
+        setCategoryModal({ isOpen: true, title: type === 'watchlist' ? 'My Favorites' : 'Watch History', listType: type });
+        setAuthDropdown(false);
     };
 
-    const openCat = (key, title) => {
-        const endpoint = CATEGORY_ENDPOINTS[key];
-        if (endpoint) setCategoryModal({ isOpen: true, title, endpoint });
-    };
+    const isExploreOpen = searchModal.isOpen && searchModal.mode === 'explore';
+    const isHomeActive = currentView === 'home' && !isExploreOpen;
+    const isLiveActive = currentView === 'live' && !isExploreOpen;
 
-    // --- HANDLERS ---
-    const playHistoryItem = (item) => {
-        setDetailItem(item);    
-        setIsPlayerOpen(true); 
-    };
-
-    const handleMenuClick = (e, id) => {
-        e.preventDefault(); e.stopPropagation();
-        setActiveMenuId(activeMenuId === id ? null : id);
-    };
-
-    const handlePin = (e, item) => {
-        e.stopPropagation();
-        if (togglePin) togglePin(item.id); 
-        setActiveMenuId(null);
-    };
-
-    const handleRemove = (e, item) => {
-        e.stopPropagation();
-        if (removeFromHistory) removeFromHistory(item.id); 
-        setActiveMenuId(null);
-    };
+    const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen || categoryModal.isOpen;
 
     return (
-        <div id="home-view">
-            
-            {/* SLIDER SECTION */}
-            <div className="slider-viewport">
-                <div className="slider-track" style={{ transform: `translateX(-${slideIndex * 100}%)` }}>
-                    {sliderItems.map((item, idx) => (
-                        <div key={`${item.id}-${idx}`} className="slide" style={{ backgroundImage: `url(${IMG_URL + item.backdrop_path})` }}>
-                            <div className="slide-content">
-                                <span className="slide-badge">Trending Now</span>
-                                <h1 className="slide-title">{getDisplayTitle(item)}</h1>
-                                <div className="slide-meta">
-                                    <span>{(item.release_date || item.first_air_date || '').split('-')[0]}</span>
-                                    <span>•</span>
-                                    <span className="slide-rating"><i className="fas fa-star"></i> {item.vote_average?.toFixed(1)}</span>
-                                </div>
-                                <p className="slide-desc">{item.overview}</p>
-                                <div className="slide-actions">
-                                    <button className="slider-btn btn-play-slide" onClick={() => openDetail(item)}><i className="fas fa-play"></i> Play</button>
-                                    <button className="slider-btn btn-info-slide" onClick={() => openDetail(item)}><i className="fas fa-info-circle"></i> Details</button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+        <div className={`navbar ${isSolid ? 'solid-nav' : ''}`}>
+            <div className="nav-left">
+                <div className="hamburger" onClick={toggleSidebar}>
+                    <i className="fa-solid fa-bars"></i>
                 </div>
-                <div className="slider-dots">
-                    {sliderItems.map((_, idx) => (
-                        <div key={idx} className={`dot ${idx === slideIndex ? 'active' : ''}`} onClick={() => setSlideIndex(idx)}></div>
-                    ))}
+                
+                <div className="logo-text" style={{ 
+                    fontFamily: "'Outfit', sans-serif", 
+                    display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' 
+                }} onClick={() => switchView('home')}>
+                    
+                    <div style={{
+                        width: '32px', height: '32px',
+                        background: 'linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%)',
+                        borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 0 15px rgba(168, 85, 247, 0.4)', border: '1px solid rgba(255,255,255,0.1)'
+                    }}>
+                        <i className="fa-solid fa-play" style={{ color: '#fff', fontSize: '12px' }}></i>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
+                        <span style={{ 
+                            color: '#fff', fontWeight: '900', fontSize: '1.3rem', letterSpacing: '1px',
+                            textShadow: '0 0 15px rgba(168, 85, 247, 0.5)' 
+                        }}>SHAKZZ</span>
+                        <span style={{ 
+                            color: 'var(--accent-color)', fontSize: '0.65rem', fontWeight: '700', 
+                            letterSpacing: '2px', textTransform: 'uppercase'
+                        }}>Play</span>
+                    </div>
                 </div>
-                <button className="slider-arrow prev-arrow" onClick={() => moveSlider(-1)}><i className="fas fa-chevron-left"></i></button>
-                <button className="slider-arrow next-arrow" onClick={() => moveSlider(1)}><i className="fas fa-chevron-right"></i></button>
+
+                <ul className="desktop-menu">
+                    <li><a href="#" className={`nav-link ${isHomeActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('home'); }}>Home</a></li>
+                    <li><a href="#" className={`nav-link ${isLiveActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('live'); }}>Live TV</a></li>
+                    
+                    {/* --- CHANGED: 'About' -> 'Explore' --- */}
+                    <li><a href="#" className={`nav-link ${isExploreOpen ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setSearchModal({isOpen: true, mode: 'explore'}); }}>Explore</a></li>
+                    
+                    <li><a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a></li>
+                </ul>
             </div>
 
-            {/* CONTINUE WATCHING */}
-            {history.length > 0 && (
-                <div className="row" id="continue-watching-row">
-                    <h2><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Continue Watching <i className="fa-solid fa-clock-rotate-left"></i></h2>
-                    <div className="list" id="continue-list">
-                        {history.slice(0, 10).map(item => (
-                            <div key={item.id} className="continue-card fade-in" onClick={() => playHistoryItem(item)}>
-                                <div className="continue-image-wrapper">
-                                    <img 
-                                        src={item.backdrop_path ? IMG_URL + item.backdrop_path : POSTER_URL + item.poster_path} 
-                                        onError={(e) => e.target.src = PLACEHOLDER_IMG} 
-                                    />
-                                    <div className="continue-play-icon"><i className="fas fa-play"></i></div>
-                                    <div className="continue-ep-badge">{item.badge_label || 'Resume'}</div>
-                                    {item.pinned && <div className="pinned-badge visible"><i className="fas fa-thumbtack"></i></div>}
-                                    <div className="continue-progress-bg">
-                                        <div className="continue-progress-fill" style={{ width: '0%' }}></div>
-                                    </div>
-                                </div>
-                                <div className="continue-info">
-                                    <div className="continue-title">{item.title}</div>
-                                    <div className="continue-menu-btn" onClick={(e) => handleMenuClick(e, item.id)}>
-                                        <i className="fas fa-ellipsis-vertical"></i>
-                                    </div>
-                                    {activeMenuId === item.id && (
-                                        <div className="card-context-menu show">
-                                            <div className="ctx-item" onClick={(e) => handlePin(e, item)}>
-                                                <i className="fas fa-thumbtack"></i> {item.pinned ? 'Unpin' : 'Pin'}
-                                            </div>
-                                            <div className="ctx-item delete" onClick={(e) => handleRemove(e, item)}>
-                                                <i className="fas fa-trash"></i> Remove
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+            <div className="nav-right">
+                <div className="search-trigger" onClick={() => setSearchModal({isOpen: true, mode: 'search'})}>
+                    <i className="fa-solid fa-magnifying-glass"></i>
                 </div>
-            )}
-
-            {/* CATEGORIES */}
-            <div className="row"><h2 onClick={() => openCat('trending', 'Latest Updates')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Latest Updates <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.trending} /></div>
-            <div className="row"><h2 onClick={() => openCat('kdrama', 'Top K-Drama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top K-Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.kdrama} /></div>
-            <div className="row"><h2 onClick={() => openCat('cdrama', 'Top C-Drama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top C-Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.cdrama} /></div>
-            <div className="row"><h2 onClick={() => openCat('filipino', 'Top Filipino Drama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top Filipino Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.filipino} /></div>
-            <div className="row"><h2 onClick={() => openCat('movies', 'Trending Movies')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Movies <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.movies} /></div>
-            <div className="row"><h2 onClick={() => openCat('tv', 'Trending TV Shows')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending TV Shows <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.tv} /></div>
-            <div className="row"><h2 onClick={() => openCat('anime', 'Trending Anime')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Anime <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.anime} /></div>
-            <div className="row"><h2 onClick={() => openCat('upcoming', 'Upcoming Releases')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Upcoming <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.upcoming} isUpcoming={true} /></div>
-        
-            {/* UPDATED FOOTER LAYOUT (AHJIN BRANDING MOVED) */}
-            <footer className="footer">
-                <div className="footer-content">
-                    <div className="footer-top">
-                        <div className="footer-desc">
-                            <h4>DIVE INTO THE SYSTEM</h4>
-                            <p>Watch your favorite movies, TV shows, and anime in HD. Experience the ultimate entertainment platform.</p>
-                            
-                            {/* MOVED: AHJIN Branding is now here, aligned right */}
-                            <div className="footer-big-text" style={{
-                                background: '-webkit-linear-gradient(#fff, #a855f7)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.4))',
-                                fontFamily: "'Orbitron', sans-serif",
-                                letterSpacing: '-2px'
-                            }}>
-                                AHJIN
-                            </div>
-                        </div>
-                        
-                        <div className="footer-nav-wrapper">
-                            <div className="footer-col">
-                                <span 
-                                    className="col-title" 
-                                    style={{ cursor: 'pointer', color: '#fff', transition: 'color 0.3s' }}
-                                    onClick={() => setInfoModal({isOpen: true, type: 'about'})}
-                                    onMouseEnter={(e) => e.target.style.color = 'var(--accent-color)'}
-                                    onMouseLeave={(e) => e.target.style.color = '#fff'}
-                                >
-                                    ABOUT US
-                                </span>
-
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'faq'}); }}>FAQ</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'privacy'}); }}>Privacy Policy</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'contact'}); }}>Contact Us</a>
-                            </div>
-                            
-                            <div className="footer-col">
-                                <span className="col-title">FOLLOW US</span>
-                                <div className="social-row">
-                                    <a href="https://www.facebook.com/share/1BzwhDsGmT/" target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook-f"></i></a>
-                                    <a href="https://www.instagram.com/shakzzph?igsh=MTR4enRzbjJ4aWh5MQ==" target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram"></i></a>
-                                    <a href="https://www.tiktok.com/@shxkzz05?_r=1&_t=ZS-939s4GLBc28" target="_blank" rel="noreferrer"><i className="fa-brands fa-tiktok"></i></a>
-                                    <a href="https://www.youtube.com/@Shakzz05" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube"></i></a>
+                <div className="auth-wrapper">
+                    {!user ? (
+                        <div id="logged-out-state">
+                            <button className="login-btn" onClick={() => setAuthDropdown(!authDropdown)}>
+                                <i className="fa-regular fa-user"></i> <span>Sign In</span>
+                            </button>
+                            {authDropdown && (
+                                <div className="auth-dropdown show" id="login-dropdown">
+                                    <div className="dropdown-header">Sign in to save your watch history.</div>
+                                    <div className="social-item" onClick={loginGoogle}><i className="fa-brands fa-google" style={{color:'#DB4437'}}></i> Google</div>
+                                    <div className="social-item" onClick={loginGithub}><i className="fa-brands fa-github" style={{color:'#fff'}}></i> Github</div>
+                                    <div style={{borderTop: '1px solid #333', margin: '5px 0'}}></div>
+                                    <div className="dropdown-footer" style={{fontSize: '0.8rem', color: '#aaa', textAlign: 'center', padding: '5px'}}>More coming soon...</div>
                                 </div>
-                                
-                                <span className="col-title" style={{marginTop:'25px'}}>JOIN COMMUNITY</span>
-                                <div className="social-row">
-                                    <a href="https://discord.gg/k8AJ9dWzb" target="_blank" rel="noreferrer" title="Join Discord">
-                                        <i className="fa-brands fa-discord"></i>
-                                    </a>
-                                </div>
-                            </div>
+                            )}
                         </div>
-                    </div>
-                    
-                    <div className="footer-bottom">
-                        <span className="copyright">© 2026 AHJIN GUILD. ALL RIGHTS RESERVED.</span>
-                        <span className="credits">DESIGNED BY SHAKZZ</span>
-                    </div>
+                    ) : (
+                        <div id="logged-in-state">
+                            <img src={user.photoURL || "https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg"} alt="Profile" className="nav-avatar" onClick={() => setAuthDropdown(!authDropdown)} />
+                            {authDropdown && (
+                                <div className="auth-dropdown show" id="profile-dropdown">
+                                    <div className="user-info-box">
+                                        <img src={user.photoURL} className="menu-avatar" alt="User" />
+                                        <div className="user-text"><span className="user-name">{user.displayName}</span></div>
+                                    </div>
+                                    <div className="dropdown-divider"></div>
+                                    <div className="menu-item" onClick={() => openUserList('history')}><i className="fa-solid fa-clock-rotate-left"></i> History list</div>
+                                    <div className="menu-item" onClick={() => openUserList('watchlist')}><i className="fa-regular fa-heart"></i> Favorite list</div>
+                                    <div className="menu-item logout" onClick={doLogout}><i className="fa-solid fa-power-off"></i> Sign out</div>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
-            </footer>
+            </div>
         </div>
-        
     );
 };
-
-export default Home;
+export default Navbar;
