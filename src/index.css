@@ -4250,3 +4250,33 @@ input:disabled + .slider {
         height: 45px;
     }
 }
+/* --- CHANNEL COUNT & CLOCK ROW --- */
+
+/* 1. Default (Mobile) */
+.channel-count-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 15px; /* Matches mobile search bar padding */
+  margin-bottom: 10px;
+  box-sizing: border-box; /* Prevents padding from increasing width */
+}
+
+/* 2. Desktop Adjustment (Min-Width: 1024px) */
+@media (min-width: 1024px) {
+  .channel-count-display {
+    width: auto; /* Let margins dictate width */
+    margin: 0 20px 15px 20px; /* Aligns perfectly with Search Bar */
+    padding: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Fix alignment of the text inside the right container (Clock/Date) */
+  .channel-count-display > div:last-child {
+    text-align: right;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums; /* Prevents numbers from jumping */
+  }
+}
