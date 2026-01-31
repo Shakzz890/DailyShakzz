@@ -40,7 +40,6 @@ const Navbar = () => {
     const isHomeActive = currentView === 'home' && !isExploreOpen;
     const isLiveActive = currentView === 'live' && !isExploreOpen;
 
-    // --- NOW THIS WILL WORK WITHOUT CRASHING ---
     const isSolid = currentView !== 'home' || scrolled || isExploreOpen || isDetailOpen || isPlayerOpen || infoModal.isOpen || categoryModal.isOpen;
 
     return (
@@ -76,10 +75,14 @@ const Navbar = () => {
                     </div>
                 </div>
 
+                {/* --- DESKTOP MENU: Home | Live TV | Explore | Updates --- */}
                 <ul className="desktop-menu">
                     <li><a href="#" className={`nav-link ${isHomeActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('home'); }}>Home</a></li>
                     <li><a href="#" className={`nav-link ${isLiveActive ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); switchView('live'); }}>Live TV</a></li>
-                    <li><a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'about'}); }}>About</a></li>
+                    
+                    {/* EXPLORE BUTTON */}
+                    <li><a href="#" className={`nav-link ${isExploreOpen ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setSearchModal({isOpen: true, mode: 'explore'}); }}>Explore</a></li>
+                    
                     <li><a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a></li>
                 </ul>
             </div>
