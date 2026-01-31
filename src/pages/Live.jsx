@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useGlobal } from '../../context/GlobalContext'; 
+import { useGlobal } from '../context/GlobalContext';
 import { channels, animeData } from '../api/channels'; 
 import { PLACEHOLDER_IMG } from '../api/tmdb';
 
