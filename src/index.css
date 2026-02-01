@@ -40,6 +40,36 @@ body {
   line-height: 1.6;
 }
 
+/* 
+   SOLID NAVBAR FOR SPECIFIC VIEWS 
+   (Detail, Live TV, Explore, Category, Player, Search)
+*/
+body:has(#detail-view:not([style*="none"])) .navbar,
+body:has(#live-view:not([style*="none"])) .navbar,
+body:has(#category-view:not([style*="none"])) .navbar,
+body:has(#explore-view:not([style*="none"])) .navbar,
+body:has(.player-page-view) .navbar,
+body:has(.search-modal[style*="flex"]) .navbar,
+body:has(#info-modal:not([style*="none"])) .navbar {
+  background: #050505 !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid #1a1a1a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* Solid Bottom Nav Bar for these views */
+body:has(#detail-view:not([style*="none"])) .bottom-nav,
+body:has(#live-view:not([style*="none"])) .bottom-nav,
+body:has(#category-view:not([style*="none"])) .bottom-nav,
+body:has(#explore-view:not([style*="none"])) .bottom-nav,
+body:has(.player-page-view) .bottom-nav,
+body:has(.search-modal[style*="flex"]) .bottom-nav,
+body:has(#info-modal:not([style*="none"])) .bottom-nav {
+  background: #000 !important;
+  backdrop-filter: none !important;
+  border-top: 1px solid #1a1a1a;
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -3733,3 +3763,4 @@ input:disabled + .slider {
     gap: 30px;
   }
 }
+
