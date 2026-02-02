@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useGlobal } from '../context/GlobalContext';
 import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../api/tmdb';
 
@@ -47,6 +48,8 @@ const Home = () => {
         setCategoryModal,
         setInfoModal 
     } = useGlobal();
+    
+    const navigate = useNavigate();
 
     const [sliderItems, setSliderItems] = useState([]);
     const [lists, setLists] = useState({
@@ -132,13 +135,17 @@ const Home = () => {
 
     const openCat = (key, title) => {
         const endpoint = CATEGORY_ENDPOINTS[key];
-        if (endpoint) setCategoryModal({ isOpen: true, title, endpoint });
+        if (endpoint) {
+            setCategoryModal({ isOpen: true, title, endpoint });
+            navigate(`/category/${key}`);
+        }
     };
 
     // --- HANDLERS ---
     const playHistoryItem = (item) => {
         setDetailItem(item);    
-        setIsPlayerOpen(true); 
+        setIsPlayerOpen(true);
+        navigate(`/player/${item.id}`);
     };
 
     const handleMenuClick = (e, id) => {
@@ -243,15 +250,13 @@ const Home = () => {
             <div className="row"><h2 onClick={() => openCat('anime', 'Trending Anime')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Anime <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.anime} /></div>
             <div className="row"><h2 onClick={() => openCat('upcoming', 'Upcoming Releases')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Upcoming <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.upcoming} isUpcoming={true} /></div>
         
-            {/* UPDATED FOOTER LAYOUT (AHJIN BRANDING MOVED) */}
+            {/* FOOTER */}
             <footer className="footer">
                 <div className="footer-content">
                     <div className="footer-top">
                         <div className="footer-desc">
                             <h4>DIVE INTO THE SYSTEM</h4>
                             <p>Watch your favorite movies, TV shows, and anime in HD. Experience the ultimate entertainment platform.</p>
-                            
-                            {/* MOVED: AHJIN Branding is now here, aligned right */}
                             <div className="footer-big-text" style={{
                                 background: '-webkit-linear-gradient(#fff, #a855f7)',
                                 WebkitBackgroundClip: 'text',
@@ -266,11 +271,11 @@ const Home = () => {
                         
                         <div className="footer-nav-wrapper">
                             <div className="footer-col">
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'about'}); }}>About Us</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'faq'}); }}>FAQ</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'privacy'}); }}>Privacy Policy</a>
-                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'contact'}); }}>Contact Us</a>
+                                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/about'); }}>About Us</a>
+                                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/updates'); }}>Updates</a>
+                                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/faq'); }}>FAQ</a>
+                                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/privacy'); }}>Privacy Policy</a>
+                                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/contact'); }}>Contact Us</a>
                             </div>
                             
                             <div className="footer-col">
@@ -299,7 +304,6 @@ const Home = () => {
                 </div>
             </footer>
         </div>
-        
     );
 };
 
