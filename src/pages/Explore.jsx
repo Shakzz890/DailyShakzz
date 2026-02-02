@@ -1,12 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGlobal } from '../context/GlobalContext';
-import { POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../api/tmdb';
+import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../api/tmdb';
 
-const API_KEY = '4eea503176528574efd91847b7a302cc';
-const BASE_URL = 'https://api.themoviedb.org/3';
+// --- MEMOIZED LIST ---
+const MovieList = React.memo(({ items, isUpcoming }) => {
+    const { openDetail } = useGlobal();
+
+    return (
+        <div className="list">
+            {items.slice(0, 12).map(item => (
+                <div key={item.id} className="movie-card focusable-element fade-in" onClick={() => openDetail(item)} tabIndex="0">
+                    <div className="card-poster">
+                        {isUpcoming ? <div className="coming-badge">COMING</div> : <div className="badge-overlay">HD</div>}
+                        {!isUpcoming && <div className="rating-badge"><i className="fas fa-star"></i> {item.vote_average?.toFixed(1)}</div>}
+                        <img 
+                            src={item.poster_path ? POSTER_URL + item.poster_path : PLACEHOLDER_IMG} 
+                            loading="lazy" 
+                            onError={(e) => e.target.src = PLACEHOLDER_IMG} 
+                            alt={getDisplayTitle(item)}
+                        />
+                    </div>
+                    <div className="card-info">
+                        <div className="card-title">{getDisplayTitle(item)}</div>
+                        <div className="card-meta">
+                            <span>{(item.release_date || item.first_air_date || 'N/A').split('-')[0]}</span>
+                            <span className="dot-sep"></span>
+                            <span>{item.media_type === 'tv' || item.first_air_date ? 'Series' : 'Movie'}</span>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+});
 
 const Explore = () => {
     const { openDetail } = useGlobal();
+    const navigate = useNavigate();
     
     // --- STATE ---
     const [results, setResults] = useState([]);
@@ -44,22 +75,18 @@ const Explore = () => {
         setIsLoading(true);
 
         try {
-            let endpoint = '/discover/tv'; // Default to TV
+            let endpoint = '/discover/tv';
             let type = currentFilters.type.toLowerCase();
             
-            // A. Base Parameters
             let params = `&page=${pageNum}&sort_by=popularity.desc`;
 
-            // B. Handle Type Switching
             if (type === 'movie') endpoint = '/discover/movie';
             
-            // C. Handle Anime (Genre 16 = Animation)
             if (type === 'anime') {
-                endpoint = '/discover/tv'; // Anime is usually TV
+                endpoint = '/discover/tv';
                 params += `&with_genres=16`; 
             }
 
-            // D. Handle Region / Language (THE FIX)
             const regionMap = { 
                 'South Korea': 'ko', 
                 'China': 'zh', 
@@ -68,23 +95,19 @@ const Explore = () => {
                 'US': 'en' 
             };
 
-            // If a specific region is selected, force that language
             if (currentFilters.region !== 'All Regions' && regionMap[currentFilters.region]) {
                 params += `&with_original_language=${regionMap[currentFilters.region]}`;
-            } 
-            // If "All Regions" is selected BUT type is Anime, default to Japanese
-            else if (type === 'anime') {
+            } else if (type === 'anime') {
                 params += `&with_original_language=ja`;
             }
 
-            // E. Handle Sorting (Optional refinement)
             if (currentFilters.sort === 'Latest') {
                 const dateKey = type === 'movie' ? 'primary_release_date' : 'first_air_date';
                 const today = new Date().toISOString().split('T')[0];
                 params += `&sort_by=${dateKey}.desc&${dateKey}.lte=${today}`;
             }
 
-            const url = `${BASE_URL}${endpoint}?api_key=${API_KEY}${params}`;
+            const url = `https://api.themoviedb.org/3${endpoint}?api_key=4eea503176528574efd91847b7a302cc${params}`;
             const res = await fetch(url);
             const data = await res.json();
 
@@ -156,7 +179,10 @@ const Explore = () => {
                         <div 
                             key={`${item.id}-${idx}`} 
                             className="movie-card fade-in" 
-                            onClick={() => openDetail(item)}
+                            onClick={() => {
+                                openDetail(item);
+                                navigate(`/detail/${item.id}`);
+                            }}
                         >
                             <div className="card-poster">
                                 <div className="badge-overlay">HD</div>
