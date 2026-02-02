@@ -1613,7 +1613,6 @@ img {
   background: var(--accent-color);
   color: #fff;
   border-color: var(--accent-color);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
 
 .results-container {
@@ -3194,7 +3193,6 @@ input:disabled + .slider {
   background: var(--accent-color);
   color: #fff;
   border-color: var(--accent-color);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
 
 .explore-grid {
@@ -3574,10 +3572,10 @@ input:disabled + .slider {
     flex-shrink: 0;
   }
 
-  #explore-view .filter-pill.active {
-    background: #e50914;
-    color: #fff;
-    border-color: #e50914;
+#explore-view .filter-pill.active {
+  background: #e50914;
+  color: #fff;
+  border-color: #e50914;
   }
 
   #explore-view .filter-pill.small {
