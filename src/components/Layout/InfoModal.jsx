@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGlobal } from '../../context/GlobalContext';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // --- EXPANDED PROFESSIONAL CONTENT ---
 const infoContent = {
@@ -150,9 +150,11 @@ const infoContent = {
 };
 
 const InfoModal = () => {
-    const { infoModal, setInfoModal } = useGlobal();
+    const { type } = useParams();
+    const navigate = useNavigate();
 
-    if (!infoModal.isOpen) return null;
+    // If no valid type, don't render
+    if (!type || !infoContent[type]) return null;
 
     const titles = {
         about: 'About Us',
@@ -162,6 +164,10 @@ const InfoModal = () => {
         privacy: 'Privacy & Terms',
         history: 'Watch History',
         watchlist: 'My Favorites'
+    };
+
+    const handleClose = () => {
+        navigate('/home');
     };
 
     return (
@@ -183,14 +189,14 @@ const InfoModal = () => {
         >
             <div className="info-content-wrapper" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <div className="info-header" style={{ flexShrink: 0 }}>
-                    <h2 id="info-title">{titles[infoModal.type] || 'Information'}</h2>
-                    <span className="close-info" onClick={() => setInfoModal({ ...infoModal, isOpen: false })}>×</span>
+                    <h2 id="info-title">{titles[type] || 'Information'}</h2>
+                    <span className="close-info" onClick={handleClose}>×</span>
                 </div>
                 
                 <div 
                     className="info-body" 
                     id="info-body" 
-                    dangerouslySetInnerHTML={{ __html: infoContent[infoModal.type] }}
+                    dangerouslySetInnerHTML={{ __html: infoContent[type] }}
                     style={{ 
                         flex: 1, 
                         overflowY: 'auto', 
