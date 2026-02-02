@@ -1237,16 +1237,15 @@ img {
 }
 
 #detail-backdrop-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 20%;
-  opacity: 0.5;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-  transition: opacity 0.3s ease;
+  object-position: center top !important;
+  height: 50vh !important; /* Limit height so poster sits clearly below */
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%) !important;
 }
 
+.detail-content-wrapper {
+  padding-top: 0 !important; /* Remove extra padding since poster has margin now */
+}
 .detail-overlay-gradient {
   position: absolute;
   inset: 0;
