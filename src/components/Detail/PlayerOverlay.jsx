@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useGlobal } from "../../context/GlobalContext";
 import { fetchData } from "../../api/tmdb";
 
@@ -11,8 +12,11 @@ const servers = [
 ];
 
 export default function PlayerOverlay() {
-  const { isPlayerOpen, setIsPlayerOpen, detailItem, addToHistory } = useGlobal();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { detailItem, setDetailItem, addToHistory } = useGlobal();
 
+  // Determine type from detailItem or default to movie
   const isTv = detailItem?.media_type === "tv" || detailItem?.first_air_date;
   const type = isTv ? "tv" : "movie";
 
@@ -26,7 +30,7 @@ export default function PlayerOverlay() {
   // UI States
   const [showDesc, setShowDesc] = useState(false);
   const [showServerMenu, setShowServerMenu] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = React.useRef(null);
 
   // --- SANDBOX LOGIC ---
   const sandboxKey = useMemo(() => detailItem ? `sandbox_${detailItem.id}_${season}_${episode}_${serverIdx}` : null, [detailItem, season, episode, serverIdx]);
@@ -65,7 +69,29 @@ export default function PlayerOverlay() {
 
   // --- DATA FETCHING ---
   useEffect(() => {
-    if (!isPlayerOpen || !detailItem) return;
+    if (!id) return;
+    
+    // Fetch item details if not in context
+    const fetchItem = async () => {
+      if (!detailItem || detailItem.id.toString() !== id) {
+        try {
+          let data = await fetchData(`/movie/${id}`);
+          if (!data || data.success === false) {
+            data = await fetchData(`/tv/${id}`);
+          }
+          setDetailItem(data);
+        } catch (e) {
+          console.error("Failed to fetch item for player:", e);
+          navigate('/home');
+        }
+      }
+    };
+    
+    fetchItem();
+  }, [id]);
+
+  useEffect(() => {
+    if (!detailItem) return;
     
     let startSeason = 1;
     let startEpisode = 1;
@@ -93,7 +119,7 @@ export default function PlayerOverlay() {
     } else {
         addToHistory(detailItem, null, null);
     }
-  }, [isPlayerOpen, detailItem]);
+  }, [detailItem]);
 
   const handleSeasonChange = async (newSeason) => {
     setSeason(newSeason);
@@ -108,7 +134,11 @@ export default function PlayerOverlay() {
     addToHistory(detailItem, season, newEp);
   };
 
-  if (!isPlayerOpen || !detailItem) return null;
+  const handleClose = () => {
+    navigate(-1); // Go back to previous page
+  };
+
+  if (!detailItem) return null;
 
   const src = servers[serverIdx].getUrl(detailItem.id, type, season, episode);
   
@@ -121,8 +151,6 @@ export default function PlayerOverlay() {
   return (
     <div className="player-page-view">
       
-      {/* HEADER REMOVED HERE - The Navbar will now sit above this via CSS z-index */}
-
       <div className="player-layout">
         
         {/* LEFT: VIDEO */}
