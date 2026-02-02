@@ -1,29 +1,54 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useGlobal } from '../../context/GlobalContext';
 import { POSTER_URL, IMG_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from '../../api/tmdb';
 import BackToTop from '../Layout/BackToTop'; 
 
 const CategoryView = () => {
-    const { categoryModal, setCategoryModal, openDetail, history, watchlist } = useGlobal();
+    const { type } = useParams();
+    const navigate = useNavigate();
+    const { history, watchlist, openDetail, setCategoryModal } = useGlobal();
+    
     const [results, setResults] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [title, setTitle] = useState('');
+    const [endpoint, setEndpoint] = useState('');
     
-    // 3. Create Ref for the scrollable container
     const scrollContainerRef = useRef(null);
-    
-    const isUserList = categoryModal.title === 'Watch History' || categoryModal.title === 'My Favorites';
+
+    // Map type to endpoint and title
+    const CATEGORY_MAP = {
+        'trending': { title: 'Latest Updates', endpoint: '/trending/all/week' },
+        'kdrama': { title: 'Top K-Drama', endpoint: '/discover/tv?with_original_language=ko&with_origin_country=KR&sort_by=popularity.desc' },
+        'cdrama': { title: 'Top C-Drama', endpoint: '/discover/tv?with_original_language=zh&with_origin_country=CN&sort_by=popularity.desc' },
+        'filipino': { title: 'Top Filipino Drama', endpoint: '/discover/tv?with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc' },
+        'movies': { title: 'Trending Movies', endpoint: '/movie/popular' },
+        'tv': { title: 'Trending TV Shows', endpoint: '/tv/popular' },
+        'anime': { title: 'Trending Anime', endpoint: '/discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc' },
+        'upcoming': { title: 'Upcoming Releases', endpoint: '/movie/upcoming?region=US' },
+        'history': { title: 'Watch History', endpoint: null },
+        'favorites': { title: 'My Favorites', endpoint: null }
+    };
 
     useEffect(() => {
-        if (!categoryModal.isOpen) return;
+        const category = CATEGORY_MAP[type];
+        if (!category) {
+            navigate('/home');
+            return;
+        }
 
+        setTitle(category.title);
+        setEndpoint(category.endpoint);
         setResults([]);
         setPage(1);
         setHasMore(true);
 
+        const isUserList = type === 'history' || type === 'favorites';
+
         if (isUserList) {
-            if (categoryModal.title === 'Watch History') {
+            if (type === 'history') {
                 setResults(history || []);
             } else {
                 setResults(watchlist || []);
@@ -31,15 +56,15 @@ const CategoryView = () => {
             setLoading(false);
             setHasMore(false);
         } else {
-            loadApiData(1);
+            loadApiData(1, category.endpoint);
         }
-    }, [categoryModal.isOpen, categoryModal.endpoint, history, watchlist]);
+    }, [type, history, watchlist]);
 
-    const loadApiData = async (pageNum) => {
+    const loadApiData = async (pageNum, ep) => {
         if (loading) return;
         setLoading(true);
         try {
-            const data = await fetchData(categoryModal.endpoint, pageNum);
+            const data = await fetchData(ep, pageNum);
             if (!data.results || data.results.length === 0) setHasMore(false);
             else {
                 setResults(prev => pageNum === 1 ? data.results : [...prev, ...data.results]);
@@ -49,18 +74,25 @@ const CategoryView = () => {
     };
 
     const handleScroll = (e) => {
-        if (isUserList) return;
+        if (type === 'history' || type === 'favorites') return;
         const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 100;
         if (bottom && hasMore && !loading) {
             const next = page + 1;
             setPage(next);
-            loadApiData(next);
+            loadApiData(next, endpoint);
         }
     };
 
-    if (!categoryModal.isOpen) return null;
+    const handleClose = () => {
+        navigate('/home');
+    };
 
-    const isHistory = categoryModal.title === 'Watch History';
+    const handleItemClick = (item) => {
+        openDetail(item);
+        navigate(`/detail/${item.id}`);
+    };
+
+    const isHistory = type === 'history';
 
     return (
         <div 
@@ -81,15 +113,15 @@ const CategoryView = () => {
             <div className="category-header" style={{ flexShrink: 0, padding: '20px 30px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                 <i 
                     className="fa-solid fa-arrow-left" 
-                    onClick={() => setCategoryModal({ ...categoryModal, isOpen: false })}
+                    onClick={handleClose}
                     style={{ fontSize: '1.2rem', cursor: 'pointer', marginRight: '20px', color: '#fff' }}
                 ></i>
-                <h1 id="category-title" style={{ display: 'inline', fontSize: '1.5rem', fontWeight: '700' }}>{categoryModal.title}</h1>
+                <h1 id="category-title" style={{ display: 'inline', fontSize: '1.5rem', fontWeight: '700' }}>{title}</h1>
             </div>
             
             <div 
                 className="category-content" 
-                ref={scrollContainerRef} // 4. Attach Ref Here
+                ref={scrollContainerRef}
                 onScroll={handleScroll} 
                 style={{ 
                     overflowY: 'auto', 
@@ -108,7 +140,7 @@ const CategoryView = () => {
                         const image = isHistory ? (item.backdrop_path ? IMG_URL + item.backdrop_path : POSTER_URL + item.poster_path) : (POSTER_URL + item.poster_path);
 
                         return (
-                            <div key={`${item.id}-${index}`} className={isHistory ? "history-card fade-in" : "movie-card fade-in"} onClick={() => openDetail(item)}>
+                            <div key={`${item.id}-${index}`} className={isHistory ? "history-card fade-in" : "movie-card fade-in"} onClick={() => handleItemClick(item)}>
                                 {isHistory ? (
                                     <>
                                         <div className="history-image-wrapper">
@@ -144,7 +176,6 @@ const CategoryView = () => {
                 </div>
             </div>
 
-            {/* 5. Render BackToTop Component */}
             <BackToTop containerRef={scrollContainerRef} />
         </div>
     );
