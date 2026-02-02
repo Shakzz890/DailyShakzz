@@ -2940,7 +2940,7 @@ input:disabled + .slider {
 }
 
 /* --- FIX 1: Header Alignment --- */
-
+.explore-header-wrapper {
   flex-shrink: 0;
   position: sticky;
   top: 0;
