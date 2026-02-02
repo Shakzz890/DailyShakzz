@@ -266,16 +266,7 @@ const Home = () => {
                         
                         <div className="footer-nav-wrapper">
                             <div className="footer-col">
-                                <span 
-                                    className="col-title" 
-                                    style={{ cursor: 'pointer', color: '#fff', transition: 'color 0.3s' }}
-                                    onClick={() => setInfoModal({isOpen: true, type: 'about'})}
-                                    onMouseEnter={(e) => e.target.style.color = 'var(--accent-color)'}
-                                    onMouseLeave={(e) => e.target.style.color = '#fff'}
-                                >
-                                    ABOUT US
-                                </span>
-
+                                <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'about'}); }}>About US</a>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'updates'}); }}>Updates</a>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'faq'}); }}>FAQ</a>
                                 <a href="#" onClick={(e) => { e.preventDefault(); setInfoModal({isOpen: true, type: 'privacy'}); }}>Privacy Policy</a>
