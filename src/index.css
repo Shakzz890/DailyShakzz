@@ -2939,6 +2939,7 @@ input:disabled + .slider {
   background: var(--accent-color);
 }
 
+/* --- FIX 1: Header Alignment --- */
 .explore-header-wrapper {
   flex-shrink: 0;
   position: sticky;
@@ -2947,7 +2948,10 @@ input:disabled + .slider {
   background: rgba(5, 5, 5, 0.85) !important;
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px);
-  padding: 15px 20px 10px 20px !important;
+  
+  /* Standardize Padding: Top, Right, Bottom, Left */
+  padding: 15px 20px 5px 20px !important; 
+  
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -2968,8 +2972,11 @@ input:disabled + .slider {
   gap: 10px !important;
   overflow-x: auto;
   white-space: nowrap;
-  padding: 0 !important;
+  
+  /* Remove ALL padding here so buttons start at the very edge */
+  padding: 0 !important; 
   margin: 0 !important;
+  
   scrollbar-width: none;
   align-items: center !important;
   min-height: 40px;
@@ -3003,6 +3010,22 @@ input:disabled + .slider {
   border-color: #fff;
   font-weight: 700;
 }
+
+#search-heading, 
+.results-container h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #eee;
+  
+  /* MATCH THE HEADER PADDING (20px) */
+  margin-left: 20px !important; 
+  
+  margin-top: 20px !important;
+  margin-bottom: 10px !important;
+  line-height: 1.2;
+}
+
+/* --- FIX 4: Grid Alignment --- */
 
 .explore-grid {
   display: grid;
