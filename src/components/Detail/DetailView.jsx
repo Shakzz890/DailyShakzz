@@ -9,6 +9,7 @@ const DetailView = () => {
     const { 
         openDetail, 
         closeDetail, 
+         setDetailItem,
         setIsPlayerOpen, 
         watchlist, 
         toggleWatchlist, 
