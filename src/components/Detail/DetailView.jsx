@@ -15,7 +15,6 @@ const DetailView = () => {
         toggleWatchlist, 
         addToHistory,
         detailItem,
-        setDetailItem
     } = useGlobal();
 
     const [fullDetails, setFullDetails] = useState(null);
