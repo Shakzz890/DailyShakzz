@@ -1,5 +1,6 @@
 /* ==========================================================================
    SHAKZZ TV - SHADOW MONARCH THEME (SOLO LEVELING EDITION)
+   Consolidated & Maintainable Version
    ========================================================================== */
 
 /* ========================================================
@@ -126,12 +127,10 @@ img {
   top: 0;
   left: 0;
   width: 100%;
-  /* Fix: Add Safe Area to height so it doesn't look squashed */
   height: calc(var(--header-height) + env(safe-area-inset-top));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Fix: Add Top Padding so text doesn't hide behind the clock */
   padding: env(safe-area-inset-top) 4% 0 4%;
   z-index: 200000 !important;
   background: linear-gradient(to bottom, rgba(5, 5, 5, 0.95) 0%, transparent 100%);
@@ -433,23 +432,17 @@ img {
   border-color: rgba(255,255,255,0.2);
 }
 
-/* --- UPDATED FOOTER BRANDING (Left Aligned) --- */
 .footer-big-text {
   font-size: clamp(3rem, 10vw, 5rem);
   font-weight: 800;
   color: #1a1a1a;
-  
-  /* FORCE LEFT ALIGNMENT */
-  text-align: left; 
-  width: 100%; 
-  
+  text-align: left;
+  width: 100%;
   line-height: 1;
   letter-spacing: -2px;
   white-space: nowrap;
   user-select: none;
-  margin-top: 25px; /* Space between description and logo */
-  
-  /* Gradient & Shadow Effect */
+  margin-top: 25px;
   background: -webkit-linear-gradient(#fff, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -507,6 +500,7 @@ img {
   min-height: calc(100vh - var(--header-height));
   background: var(--bg-color);
   animation: fadeIn 0.5s ease;
+  padding-top: 80px;
 }
 
 #detail-view {
@@ -519,7 +513,7 @@ img {
   animation: fadeIn 0.3s ease;
   scrollbar-width: auto;
   -ms-overflow-style: auto;
-  padding-top: env(safe-area-inset-top); 
+  padding-top: env(safe-area-inset-top);
   padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
 }
 
@@ -610,7 +604,6 @@ img {
 /* ========================================================
    6. HOME PAGE COMPONENTS
    ======================================================== */
-
 .slider-viewport {
   position: relative;
   width: 100%;
@@ -753,6 +746,7 @@ img {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   cursor: pointer;
+  background: #555;
 }
 
 .dot.active {
@@ -864,6 +858,11 @@ img {
   position: relative;
   background: transparent;
   transition: transform 0.2s ease;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  flex-shrink: 0 !important;
 }
 
 .movie-card:hover {
@@ -879,6 +878,8 @@ img {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   background: #222;
+  width: 100% !important;
+  aspect-ratio: 2/3 !important;
 }
 
 .card-poster img {
@@ -886,6 +887,10 @@ img {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
 }
 
 .movie-card:hover .card-poster img {
@@ -967,13 +972,8 @@ img {
    7. LIVE TV VIEW
    ======================================================== */
 #live-view {
-  display: flex;
   flex-direction: column;
-  width: 100%;
-  padding-top: 80px;
   min-height: 100vh;
-  background: var(--bg-color);
-  animation: fadeIn 0.5s ease;
 }
 
 .live-player-container {
@@ -1058,7 +1058,6 @@ img {
 .search-container input:focus {
   border-color: var(--accent-color);
 }
-
 
 .search-icon {
   position: absolute;
@@ -1177,13 +1176,26 @@ img {
 .channel-count-display {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  width: auto;
+  margin: 0 20px 15px 20px;
+  padding: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: #888;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
+  gap: 8px;
   padding-left: 5px;
   margin-bottom: 10px;
+}
+
+.channel-count-display > div:last-child,
+.channel-count-display > span:last-child {
+  text-align: right;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
 #animeSeriesContainer {
@@ -1228,11 +1240,11 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-   object-position: 50% 20%;
+  object-position: 50% 20%;
   opacity: 0.5;
   mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-   transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .detail-overlay-gradient {
@@ -1427,14 +1439,28 @@ img {
 }
 
 .recommendations-grid {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
-  gap: 15px;
-  width: 100%;
+  gap: 15px !important;
+  width: 100% !important;
   margin-top: 10px;
   padding-bottom: 0 !important;
   align-content: start;
   justify-content: center;
+  padding: 10px 15px 100px 15px !important;
+  box-sizing: border-box !important;
+}
+
+.recommendations-grid .rec-card,
+.recommendations-grid .movie-card,
+.recommendations-grid .history-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ========================================================
@@ -1450,6 +1476,8 @@ img {
   background-color: var(--bg-color);
   z-index: 20000 !important;
   padding-top: var(--header-height);
+  padding-bottom: 0;
+  align-items: center;
 }
 
 .search-header-row {
@@ -1463,6 +1491,9 @@ img {
   border-bottom: 1px solid rgba(255,255,255,0.1);
   flex-shrink: 0;
   z-index: 20;
+  padding-top: 30px !important;
+  padding-bottom: 15px !important;
+  gap: 15px !important;
 }
 
 .search-input-row {
@@ -1472,26 +1503,28 @@ img {
   width: 100%;
 }
 
-/* Fix: Force specific height to align input and icon */
 .search-bar-wrapper {
   position: relative;
   flex: 1;
   display: flex;
   align-items: center;
-  height: 45px; 
+  height: 45px;
+  height: 50px;
 }
 
-/* Fix: Add padding-left to make room for the icon */
 #search-input {
   width: 100%;
   height: 100%;
-  padding: 0 15px 0 45px; /* 45px Left Padding protects text from the icon */
+  padding: 0 15px 0 45px;
   background: #1a1a1a;
   border: 1px solid #333;
   border-radius: 50px;
   color: #fff;
   font-size: 1rem;
   outline: none;
+  padding-left: 55px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 #search-input:focus {
@@ -1499,12 +1532,17 @@ img {
   background: #222;
 }
 
-.search-modal-icon {
+.search-modal-icon,
+.search-icon {
   position: absolute;
   left: 15px;
   color: #888;
   font-size: 1.1rem;
   pointer-events: none;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: 20px !important;
+  font-size: 1.1rem !important;
 }
 
 .search-clear-btn {
@@ -1530,6 +1568,13 @@ img {
   gap: 10px;
   padding: 15px;
   padding-bottom: 80px;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+  align-content: start;
+  padding-top: 5px !important;
+  margin-top: 0 !important;
 }
 
 .header-pills-wrapper {
@@ -1576,6 +1621,8 @@ img {
   display: flex;
   flex-direction: column;
   position: relative;
+  padding-top: 5px !important;
+  margin-top: 0 !important;
 }
 
 #search-heading {
@@ -1881,7 +1928,7 @@ img {
 }
 
 /* ========================================================
-   10. PLAYER OVERLAY
+   10. PLAYER OVERLAY (Unified)
    ======================================================== */
 .player-overlay {
   position: fixed;
@@ -1892,20 +1939,29 @@ img {
   flex-direction: column !important;
   height: 100dvh;
   width: 100vw;
+  overflow: hidden;
 }
 
 .player-header {
-  position: relative;
-  width: 100%;
-  height: 70px;
-  background: #000;
-  z-index: 50;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 60px;
+  z-index: 100;
+  pointer-events: none;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 25px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: flex-end;
+  padding: 15px;
+  background: #000;
+  width: 100%;
+  z-index: 50;
   flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  padding-bottom: 10px;
+  height: auto !important;
+  min-height: 70px;
 }
 
 .player-header-info {
@@ -1915,6 +1971,8 @@ img {
   flex: 1;
   margin-right: 20px;
   overflow: hidden;
+  margin-right: 10px;
+  justify-content: center;
 }
 
 .close-player-btn {
@@ -1931,11 +1989,14 @@ img {
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .close-player-btn:hover {
   background: var(--accent-color);
   color: #fff;
+  background: #fff;
+  color: #000;
 }
 
 .iframe-wrapper {
@@ -1947,6 +2008,14 @@ img {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  flex: 1;
 }
 
 #overlay-video {
@@ -1954,6 +2023,8 @@ img {
   height: 100%;
   border: none;
   object-fit: contain;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .player-controls-bar.stacked {
@@ -2093,10 +2164,469 @@ img {
   font-weight: 700;
 }
 
+/* Player Layout Systems (Unified) */
+.player-layout-container,
+.player-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.player-page-view {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: #000;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+  overflow-y: auto;
+  padding-top: var(--header-height);
+}
+
+.video-area,
+.video-section {
+  width: 100%;
+  background: #000;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  aspect-ratio: 16/9;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-sidebar,
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #181818;
+  flex-shrink: 0;
+  min-height: 60vh;
+  width: 420px;
+  height: 100%;
+  overflow-y: auto;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  background: #121212;
+}
+
+.sidebar-content {
+  padding: 25px;
+  padding: 20px;
+}
+
+.sidebar-content h2,
+.sidebar-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.3;
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.sidebar-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 25px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  gap: 10px;
+}
+
+/* Description Components (Unified) */
+.description-container,
+.description-box,
+.desc-header,
+.desc-trigger {
+  background: #202020;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05);
+  background: #222;
+  border: 1px solid #333;
+  margin-bottom: 20px;
+  margin-bottom: 0;
+}
+
+.desc-header,
+.desc-trigger {
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #252525;
+  color: #eee;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  color: #ddd;
+  font-weight: 600;
+}
+
+.desc-header:hover,
+.desc-trigger:hover {
+  background: #333;
+}
+
+.desc-header i,
+.desc-trigger i {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.desc-header i.rotate,
+.desc-trigger i.rotate {
+  transform: rotate(180deg);
+}
+
+.desc-content,
+.desc-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+  background: #1a1a1a;
+  padding: 0 15px;
+}
+
+.desc-content.open,
+.desc-body.open {
+  max-height: 500px;
+  padding: 15px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid #333;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.overview-text,
+.desc-body p {
+  font-size: 0.9rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.genre-tag,
+.tag {
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.1);
+  color: #ddd;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  background: #333;
+  padding: 3px 8px;
+  color: #ccc;
+}
+
+/* Controls & Inputs (Unified) */
+.control-group {
+  margin-bottom: 20px;
+}
+
+.control-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+}
+
+.sidebar-select,
+.dark-select,
+.sidebar-search-input,
+.dark-input {
+  width: 100%;
+  padding: 14px 15px;
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.sidebar-select:focus,
+.dark-select:focus,
+.sidebar-search-input:focus,
+.dark-input:focus {
+  border-color: var(--accent-color);
+  background: #2a2a2a;
+}
+
+/* Episode Grid (Unified) */
+.ep-section-header,
+.episode-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 30px 0 15px 0;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+
+.sidebar-ep-grid,
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  gap: 8px;
+}
+
+.ep-grid-btn,
+.ep-btn {
+  background: #333;
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  height: 45px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.ep-grid-btn:hover,
+.ep-btn:hover {
+  background: #444;
+  border-color: #666;
+  background: #444;
+}
+
+.ep-grid-btn.active,
+.ep-btn.active {
+  background: #eee;
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  font-weight: 800;
+}
+
+/* Sidebar Footer Components */
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 30px 0 20px 0;
+  margin-top: 30px;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  margin: 0;
+  background: none;
+}
+
+.sandbox-toggle-row,
+.sandbox-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #aaa;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Custom Dropdown */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-btn {
+  width: 100%;
+  padding: 12px 15px;
+  background: #252525;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-btn:hover, .dropdown-btn.active {
+  border-color: var(--accent-color);
+  background: #2a2a2a;
+}
+
+.dropdown-btn i {
+  font-size: 0.8rem;
+  transition: transform 0.3s;
+}
+
+.dropdown-btn i.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-header-sandbox {
+  padding: 12px 15px;
+  background: #252525;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sandbox-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ddd;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sandbox-info i {
+  color: var(--accent-color);
+}
+
+.server-list-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.dropdown-item.selected {
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.tag-forced {
+  font-size: 0.65rem;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #999;
+}
+
+/* Flex Controls Row */
+.controls-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.control-group.half-width,
+.control-item {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 15px;
+}
+
+.control-item label {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.controls-grid {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Toggle Switch */
 .switch {
   position: relative;
   width: 40px;
   height: 22px;
+}
+
+.switch.sm {
+  width: 36px;
+  height: 20px;
 }
 
 .switch input {
@@ -2112,6 +2642,8 @@ img {
   border-radius: 20px;
   cursor: pointer;
   transition: .3s;
+  background-color: #444;
+  transition: .4s;
 }
 
 .slider:before {
@@ -2124,14 +2656,36 @@ img {
   background: #fff;
   border-radius: 50%;
   transition: .3s;
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  border-radius: 50%;
+  background-color: white;
+  transition: .4s;
 }
 
 input:checked + .slider {
   background: var(--accent-color);
+  background-color: var(--accent-color);
 }
 
 input:checked + .slider:before {
   transform: translateX(18px);
+  transform: translateX(16px);
+}
+
+input:disabled + .slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Controls Row Height Fix */
+.dropdown-btn, 
+.sidebar-select {
+  height: 45px;
+  display: flex;
+  align-items: center;
 }
 
 /* ========================================================
@@ -2394,7 +2948,6 @@ input:checked + .slider:before {
   flex: 0 0 auto !important;
   width: 260px !important;
   min-width: 260px !important;
-  position: relative !important;
   transition: transform 0.2s ease;
 }
 
@@ -2584,10 +3137,13 @@ input:checked + .slider:before {
   box-shadow: 0 4px 20px rgba(0,0,0,0.9);
   border-bottom: 1px solid rgba(255,255,255,0.1);
   padding: 15px;
-  padding-bottom: 5px;
+  padding-bottom: 5px !important;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-top: 30px !important;
+  gap: 15px !important;
+  border-bottom: none !important;
 }
 
 .explore-filters-container {
@@ -2597,6 +3153,8 @@ input:checked + .slider:before {
   width: 100%;
   padding: 0 !important;
   margin: 0 !important;
+  gap: 8px !important;
+  margin-bottom: 5px !important;
 }
 
 .filter-row {
@@ -2631,6 +3189,10 @@ input:checked + .slider:before {
   color: #000;
   border-color: #fff;
   font-weight: 700;
+  background: var(--accent-color);
+  color: #fff;
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
 
 .explore-grid {
@@ -2639,6 +3201,8 @@ input:checked + .slider:before {
   gap: 15px;
   padding: 15px;
   padding-bottom: 100px;
+  padding-top: 5px !important;
+  margin-top: 0 !important;
 }
 
 .explore-grid .movie-card {
@@ -2686,7 +3250,6 @@ input:checked + .slider:before {
   flex-direction: column;
 }
 
-.recommendations-grid .card-poster,
 #category-grid .card-poster,
 #search-results .card-poster {
   width: 100% !important;
@@ -2695,15 +3258,6 @@ input:checked + .slider:before {
   overflow: hidden;
   background: #1a1a1a;
   border-radius: var(--border-radius);
-}
-
-.recommendations-grid .card-poster img,
-#category-grid .card-poster img,
-#search-results .card-poster img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block;
 }
 
 /* ========================================================
@@ -2731,17 +3285,93 @@ input:checked + .slider:before {
 }
 
 /* ========================================================
-   17. MEDIA QUERIES
+   17. PAGE VIEW SYSTEMS
+   ======================================================== */
+.page-view {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: #000;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+.detail-page {
+  position: fixed !important;
+  top: 70px !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100dvh - 70px) !important;
+  z-index: 5000 !important;
+  background: #141414;
+}
+
+.detail-page .detail-content-wrapper {
+  padding-top: 50px !important;
+}
+
+.detail-page .detail-backdrop-layer {
+  height: 50vh !important;
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5);
+  z-index: 40000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: #fff;
+  color: var(--accent-color);
+  transform: translateY(-5px);
+}
+
+/* ========================================================
+   18. MEDIA QUERIES
    ======================================================== */
 
 /* Desktop (1024px and up) */
 @media (min-width: 1024px) {
   .hamburger { display: none !important; }
-  .desktop-menu { display: flex !important; align-items: center; gap: 30px; margin-left: 50px; }
+  .desktop-menu { 
+    display: flex !important; 
+    align-items: center; 
+    gap: 30px; 
+    margin-left: 50px; 
+    list-style: none;
+    padding: 0;
+  }
+  .desktop-menu li { display: flex; align-items: center; }
   .bottom-nav { display: none !important; }
   
   #live-view {
-    display: flex;
     flex-direction: row;
     padding-top: 80px !important;
     height: 100vh;
@@ -2777,8 +3407,6 @@ input:checked + .slider:before {
     backdrop-filter: blur(20px);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0;
-    display: flex;
-    flex-direction: column;
   }
 
   .search-container {
@@ -2827,20 +3455,6 @@ input:checked + .slider:before {
     border-radius: 10px;
   }
 
-  .desktop-menu {
-    display: flex !important;
-    align-items: center;
-    list-style: none;
-    gap: 30px;
-    margin-left: 50px;
-    padding: 0;
-  }
-
-  .desktop-menu li {
-    display: flex;
-    align-items: center;
-  }
-
   .nav-link {
     text-decoration: none;
     font-size: 1rem;
@@ -2851,15 +3465,8 @@ input:checked + .slider:before {
     position: relative;
   }
 
-  .nav-link:hover {
-    color: #fff;
-  }
-
-  .nav-link.active {
-    color: #ffffff;
-    font-weight: 700;
-  }
-
+  .nav-link:hover { color: #fff; }
+  .nav-link.active { color: #ffffff; font-weight: 700; }
   .nav-link.active::after {
     content: '';
     position: absolute;
@@ -2913,13 +3520,8 @@ input:checked + .slider:before {
     backdrop-filter: blur(10px);
   }
 
-  .episode-search {
-    width: 180px;
-  }
-
-  .pill-menu {
-    bottom: 120%;
-  }
+  .episode-search { width: 180px; }
+  .pill-menu { bottom: 120%; }
 
   .search-modal #search-results {
     grid-template-columns: repeat(6, 1fr);
@@ -2931,19 +3533,15 @@ input:checked + .slider:before {
     align-items: center;
   }
 
-  .search-header-row, .explore-filters-container, .results-container {
+  .search-header-row,
+  .explore-filters-container,
+  .results-container {
     max-width: 1600px;
     padding: 0 40px;
   }
 
-  .filter-row {
-    margin: 0;
-    padding: 5px 0;
-  }
-
-  .search-back-btn {
-    display: none;
-  }
+  .filter-row { margin: 0; padding: 5px 0; }
+  .search-back-btn { display: none; }
 
   .explore-grid {
     grid-template-columns: repeat(6, 1fr) !important;
@@ -2951,9 +3549,7 @@ input:checked + .slider:before {
     padding: 30px;
   }
 
-  #explore-view {
-    padding-bottom: 20px;
-  }
+  #explore-view { padding-bottom: 20px; }
 
   #explore-view .header-pills-wrapper {
     display: flex !important;
@@ -3012,9 +3608,7 @@ input:checked + .slider:before {
     padding: 30px 40px 50px 40px !important;
   }
 
-  #category-view {
-    padding-bottom: 0 !important;
-  }
+  #category-view { padding-bottom: 0 !important; }
 
   .player-controls-bar.stacked {
     display: grid !important;
@@ -3025,10 +3619,7 @@ input:checked + .slider:before {
     align-items: center !important;
   }
 
-  .row-server, .row-nav {
-    display: contents !important;
-  }
-
+  .row-server, .row-nav { display: contents !important; }
   .pill-wrapper, .episode-search {
     width: 100% !important;
     margin: 0 !important;
@@ -3039,17 +3630,50 @@ input:checked + .slider:before {
     height: 55px !important;
     width: 100% !important;
   }
+
+  /* Player Desktop Layout */
+  .player-layout-container,
+  .player-layout {
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .video-area,
+  .video-section {
+    flex: 1;
+    height: 100%;
+    aspect-ratio: auto;
+    position: relative;
+  }
+
+  .player-sidebar,
+  .sidebar-section {
+    width: 420px;
+    height: 100%;
+    overflow-y: auto;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    background: #121212;
+  }
+
+  .player-header {
+    width: auto;
+    right: 440px;
+    top: 10px;
+    position: absolute;
+  }
+  
+  .close-player-btn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .player-page-view { overflow: hidden; }
 }
 
 /* Mobile & Tablet (1023px and below) */
 @media (max-width: 1023px) {
-  .navbar {
-    padding: 0 5%;
-  }
-
-  .logo-text {
-    font-size: 18px;
-  }
+  .navbar { padding: 0 5%; }
+  .logo-text { font-size: 18px; }
 
   .slider-viewport {
     height: 70vh;
@@ -3064,9 +3688,7 @@ input:checked + .slider:before {
     align-items: center;
   }
 
-  .slide-meta, .slide-actions {
-    justify-content: center;
-  }
+  .slide-meta, .slide-actions { justify-content: center; }
 
   .slide-desc {
     margin: 0 auto 25px auto;
@@ -3079,14 +3701,8 @@ input:checked + .slider:before {
     font-size: 1rem;
   }
 
-  .movie-card {
-    width: 120px;
-  }
-
-  .list {
-    gap: 10px;
-    padding-right: 15px;
-  }
+  .movie-card { width: 120px; }
+  .list { gap: 10px; padding-right: 15px; }
 
   .detail-hero-layout {
     flex-direction: column;
@@ -3100,38 +3716,13 @@ input:checked + .slider:before {
     margin-top: -100px;
   }
 
-  .detail-info-box {
-    align-items: center;
-  }
+  .detail-info-box { align-items: center; }
+  .detail-meta-row, .genre-pills-row, .detail-actions { justify-content: center; }
 
-  .detail-meta-row, .genre-pills-row, .detail-actions {
-    justify-content: center;
-  }
+  #detail-title { font-size: 2rem; }
+  #detail-overview { text-align: center; }
 
-  #detail-title {
-    font-size: 2rem;
-  }
-
-  #detail-overview {
-    text-align: center;
-  }
-
-  .player-overlay {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .iframe-wrapper {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-  }
-
-  #overlay-video {
-    width: 100% !important;
-    height: 100% !important;
-  }
+  .player-overlay { padding-left: 0 !important; padding-right: 0 !important; }
 
   .player-header {
     position: relative !important;
@@ -3176,15 +3767,8 @@ input:checked + .slider:before {
     align-items: center;
   }
 
-  .footer-col {
-    align-items: center;
-    width: 100%;
-  }
-
-  .social-row {
-    justify-content: center;
-    width: 100%;
-  }
+  .footer-col { align-items: center; width: 100%; }
+  .social-row { justify-content: center; width: 100%; }
 
   .footer-bottom {
     flex-direction: column;
@@ -3192,30 +3776,14 @@ input:checked + .slider:before {
     text-align: center;
   }
 
-  .bottom-nav {
-    display: flex;
-  }
+  .bottom-nav { display: flex; }
+  .hamburger { display: none !important; }
 
-  .hamburger {
-    display: none !important;
-  }
+  #home-view, #live-view, .category-content, .footer { padding-bottom: 90px !important; }
 
-  #home-view, #live-view, .category-content, .footer {
-    padding-bottom: 90px !important;
-  }
-
-  .channel-button {
-    padding: 15px 20px;
-  }
-
-  .channel-logo {
-    width: 50px;
-    height: 50px;
-  }
-
-  .channel-name {
-    font-size: 1rem;
-  }
+  .channel-button { padding: 15px 20px; }
+  .channel-logo { width: 50px; height: 50px; }
+  .channel-name { font-size: 1rem; }
 
   .explore-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -3223,17 +3791,12 @@ input:checked + .slider:before {
     padding: 15px;
   }
 
-  #detail-view {
-    padding-bottom: 80px;
-  }
+  #detail-view { padding-bottom: 80px; }
 }
 
 /* Large Desktop (1400px and up) */
 @media (min-width: 1400px) {
-  .slider-viewport {
-    max-height: 650px;
-  }
-
+  .slider-viewport { max-height: 650px; }
   #search-results, #category-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
     gap: 30px;
@@ -3269,1038 +3832,34 @@ input:checked + .slider:before {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
   }
 }
-/* Ensure the iframe wrapper is isolated and clickable */
-.iframe-wrapper {
-  position: relative;
-  z-index: 1; /* Lower than controls, but ensures own stacking context */
-  pointer-events: auto; /* Force clicks to work */
-}
 
-/* Ensure controls don't have invisible overflow blocking the video */
-.player-controls-bar.stacked {
-  z-index: 50;
-  /* pointer-events: none;  <-- DO NOT DO THIS globally, or buttons won't work */
-}
-
-/* ========================================================
-   PLAYER OVERLAY & SIDEBAR (FINAL WIDE LAYOUT)
-   ======================================================== */
-
-/* --- 1. BASE OVERLAY (Fixed Fullscreen) --- */
-.player-overlay {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 90000 !important;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100dvh;
-  overflow: hidden; /* Prevent body scroll */
-}
-
-/* --- 2. MAIN LAYOUT CONTAINER --- */
-.player-layout-container {
-  display: flex;
-  flex-direction: column; /* Default: Mobile (Stacked) */
-  width: 100%;
-  height: 100%;
-  overflow-y: auto; /* Scroll the whole page on mobile */
-}
-
-/* --- 3. VIDEO AREA --- */
-.video-area {
-  width: 100%;
-  background: #000;
-  position: sticky; /* Stick to top on mobile */
-  top: 0;
-  z-index: 20;
-  aspect-ratio: 16/9; /* Keep video aspect ratio on mobile */
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.iframe-wrapper {
-  width: 100%;
-  height: 100%;
-}
-
-#overlay-video {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* --- 4. SIDEBAR (CONTROLS) --- */
-.player-sidebar {
-  display: flex;
-  flex-direction: column;
-  width: 100%; /* Full width on mobile */
-  background: #181818;
-  flex-shrink: 0;
-  min-height: 60vh; /* Ensure enough space for scrolling */
-}
-
-.sidebar-content {
-  padding: 25px; /* Comfortable padding */
-}
-
-/* --- SIDEBAR COMPONENTS --- */
-
-/* Title & Meta */
-.sidebar-content h2 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 10px;
-  line-height: 1.3;
-}
-
-.sidebar-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-bottom: 25px;
-  font-weight: 500;
-}
-
-.sidebar-meta .dot {
-  width: 4px;
-  height: 4px;
-  background: #555;
-  border-radius: 50%;
-}
-
-/* --- DESCRIPTION DROPDOWN (Slide Animation) --- */
-.description-container {
-  background: #202020;
-  border-radius: 8px;
-  margin-bottom: 25px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-.desc-header {
-  padding: 12px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  background: #252525;
-  color: #eee;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.desc-header:hover {
-  background: #333;
-}
-
-.desc-header i {
-  transition: transform 0.3s ease;
-  font-size: 0.8rem;
-  color: #aaa;
-}
-
-.desc-header i.rotate {
-  transform: rotate(180deg);
-}
-
-.desc-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
-  background: #1a1a1a;
-}
-
-.desc-content.open {
-  max-height: 500px; /* Large enough to fit content */
-  padding: 15px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  transition: max-height 0.4s ease-in-out;
-}
-
-.overview-text {
-  font-size: 0.9rem;
-  color: #ccc;
-  line-height: 1.6;
-  margin-bottom: 15px;
-}
-
-.genre-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.genre-tag {
-  font-size: 0.75rem;
-  background: rgba(255,255,255,0.1);
-  color: #ddd;
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-
-/* --- CONTROLS (Selects & Inputs) --- */
-.control-group {
-  margin-bottom: 20px;
-}
-
-.control-group label {
-  display: block;
-  font-size: 0.8rem;
-  color: #999;
-  margin-bottom: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.sidebar-select, .sidebar-search-input {
-  width: 100%;
-  padding: 14px 15px;
-  background: #252525;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s;
-  cursor: pointer;
-}
-
-.sidebar-select:focus, .sidebar-search-input:focus {
-  border-color: var(--accent-color);
-  background: #2a2a2a;
-}
-
-/* --- EPISODE GRID --- */
-.ep-section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin: 30px 0 15px 0;
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: 8px;
-}
-
-.sidebar-ep-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 Columns like KISSKH */
-  gap: 10px;
-}
-
-.ep-grid-btn {
-  background: #333;
-  color: #fff;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  height: 45px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ep-grid-btn:hover {
-  background: #444;
-  border-color: #666;
-}
-
-.ep-grid-btn.active {
-  background: #eee;
-  color: #000;
-  font-weight: 800;
-  box-shadow: 0 0 10px rgba(255,255,255,0.2);
-}
-
-/* --- SANDBOX TOGGLE FOOTER --- */
-.sidebar-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  margin: 30px 0 20px 0;
-}
-
-.sandbox-toggle-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #aaa;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-/* --- CLOSE BUTTON (Floating Header) --- */
-.player-header {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 60px;
-  z-index: 100;
-  pointer-events: none; /* Let clicks pass through */
-  display: flex;
-  justify-content: flex-end;
-  padding: 15px;
-}
-
-.close-player-btn {
-  pointer-events: auto; /* Re-enable clicks */
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: transform 0.2s;
-}
-
-.close-player-btn:hover {
-  background: #fff;
-  color: #000;
-  transform: scale(1.1);
-}
-
-/* ========================================================
-   DESKTOP LAYOUT (Min-Width: 1024px)
-   ======================================================== */
-@media (min-width: 1024px) {
-  
-  /* 1. Container: Split Row */
-  .player-layout-container {
-    flex-direction: row; /* Video Left | Sidebar Right */
-    overflow: hidden; /* Lock main scroll */
-  }
-
-  /* 2. Video Area: Fill Left */
-  .video-area {
-    flex: 1;
-    height: 100%;
-    aspect-ratio: auto; /* Remove mobile aspect ratio */
-    position: relative;
-  }
-
-  /* 3. Sidebar: Fixed Right (WIDER NOW) */
-  .player-sidebar {
-    width: 420px; /* Increased from 380px */
-    height: 100%;
-    overflow-y: auto; /* Independent scroll */
-    border-left: 1px solid rgba(255,255,255,0.1);
-    background: #121212;
-  }
-
-  /* 4. Header: Adjust Close Button */
-  .player-header {
-    width: auto;
-    top: 15px;
-    right: 440px; /* Shift left of sidebar (420px + padding) */
-  }
-  
-  .close-player-btn {
+/* Mobile Specific Overrides (768px and below) */
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 80px;
+    right: 20px;
     width: 45px;
     height: 45px;
   }
-}
-/* ========================================================
-   CUSTOM DROPDOWN & SANDBOX STYLES
-   ======================================================== */
 
-.custom-dropdown {
-  position: relative;
-  width: 100%;
-}
-
-/* Dropdown Trigger Button */
-.dropdown-btn {
-  width: 100%;
-  padding: 12px 15px;
-  background: #252525;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.95rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.dropdown-btn:hover, .dropdown-btn.active {
-  border-color: var(--accent-color);
-  background: #2a2a2a;
-}
-
-.dropdown-btn i {
-  font-size: 0.8rem;
-  transition: transform 0.3s;
-}
-
-.dropdown-btn i.rotate {
-  transform: rotate(180deg);
-}
-
-/* Dropdown Menu Container */
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 5px);
-  left: 0;
-  width: 100%;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: hidden;
-}
-
-.dropdown-menu.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-/* --- SANDBOX HEADER (Always on Top) --- */
-.dropdown-header-sandbox {
-  padding: 12px 15px;
-  background: #252525;
-  border-bottom: 1px solid #333;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sandbox-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #ddd;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.sandbox-info i {
-  color: var(--accent-color);
-}
-
-/* --- SERVER LIST --- */
-.server-list-scroll {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.dropdown-item {
-  padding: 12px 15px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #ccc;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.2s;
-}
-
-.dropdown-item:hover {
-  background: rgba(255,255,255,0.05);
-  color: #fff;
-}
-
-.dropdown-item.selected {
-  background: rgba(168, 85, 247, 0.1);
-  color: var(--accent-color);
-  font-weight: 700;
-}
-
-.tag-forced {
-  font-size: 0.65rem;
-  background: #333;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #999;
-}
-
-/* --- TOGGLE SWITCH (Small Version) --- */
-.switch.sm {
-  position: relative;
-  display: inline-block;
-  width: 36px;
-  height: 20px;
-}
-
-.switch.sm input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #444;
-  transition: .4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: var(--accent-color);
-}
-
-input:checked + .slider:before {
-  transform: translateX(16px);
-}
-
-input:disabled + .slider {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-/* --- FLEX ROW FOR SELECTORS --- */
-.controls-row {
-  display: flex;
-  gap: 12px; /* Space between Server and Season */
-  width: 100%;
-  margin-bottom: 5px;
-}
-
-.control-group.half-width {
-  flex: 1; /* Both take equal space (50%) */
-  min-width: 0; /* Prevents overflow issues */
-}
-
-/* Ensure dropdowns inside the row match heights */
-.dropdown-btn, 
-.sidebar-select {
-  height: 45px; /* Fixed height for alignment */
-  display: flex;
-  align-items: center;
-}
-
-/* Remove margin-bottom from groups inside row to keep tight layout */
-.control-group.half-width {
-  margin-bottom: 15px;
-}
-/* ========================================================
-   UNIFIED PAGE SYSTEM (Player, Detail, Category)
-   ======================================================== */
-
-/* 1. Base Page Class - Acts like a full page */
-.page-view, 
-.player-page-view {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  background: #000;
-  z-index: 100000; /* Highest priority */
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto; /* Scrollable by default */
-  animation: fadeIn 0.3s ease;
-}
-
-/* ========================================================
-   PLAYER SPECIFIC STYLES (KISSKH LAYOUT)
-   ======================================================== */
-
-/* Prevent scroll on the main wrapper for Player to handle internal scroll */
-.player-page-view {
-  overflow: hidden; 
-}
-
-.player-layout {
-  display: flex;
-  flex-direction: column; /* Mobile: Stacked */
-  width: 100%;
-  height: 100%;
-  overflow-y: auto; /* Allow scroll on mobile */
-}
-
-/* Video Section */
-.video-section {
-  width: 100%;
-  background: #000;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  aspect-ratio: 16/9; /* Maintain aspect ratio on mobile */
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.iframe-wrapper, #overlay-video {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Sidebar Section */
-.sidebar-section {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background: #181818;
-  flex-shrink: 0;
-  min-height: 60vh;
-}
-
-.sidebar-content {
-  padding: 20px;
-}
-
-.sidebar-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 5px;
-  line-height: 1.2;
-}
-
-.sidebar-meta {
-  color: #aaa;
-  font-size: 0.85rem;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Description Accordion */
-.description-box {
-  background: #222;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 1px solid #333;
-}
-
-.desc-trigger {
-  padding: 12px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  color: #ddd;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.desc-trigger i { transition: transform 0.3s; }
-.desc-trigger i.rotate { transform: rotate(180deg); }
-
-.desc-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  padding: 0 15px;
-  background: #1a1a1a;
-}
-
-.desc-body.open {
-  max-height: 500px;
-  padding: 15px;
-  border-top: 1px solid #333;
-}
-
-.desc-body p {
-  font-size: 0.85rem;
-  color: #ccc;
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-.genre-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-.tag { font-size: 0.7rem; background: #333; padding: 3px 8px; border-radius: 4px; color: #ccc; }
-
-/* Inputs & Grid */
-.controls-grid {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.control-item {
-  flex: 1;
-  margin-bottom: 15px;
-}
-
-.control-item label {
-  display: block;
-  font-size: 0.75rem;
-  color: #888;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.dark-select, .dark-input {
-  width: 100%;
-  padding: 12px;
-  background: #252525;
-  border: 1px solid #333;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 0.9rem;
-  outline: none;
-}
-
-.dark-select:focus, .dark-input:focus { border-color: var(--accent-color); }
-
-.episode-header {
-  margin: 10px 0;
-  font-weight: 700;
-  color: #fff;
-  font-size: 1rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 5px;
-}
-
-.episode-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-.ep-btn {
-  background: #333;
-  border: none;
-  color: #fff;
-  height: 40px;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ep-btn:hover { background: #444; }
-.ep-btn.active { background: #eee; color: #000; font-weight: 800; }
-
-.sidebar-footer {
-  margin-top: 30px;
-  border-top: 1px solid #333;
-  padding-top: 15px;
-}
-
-.sandbox-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
-/* Close Button (Floating) */
-.player-header {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 100;
-  padding: 15px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  pointer-events: none;
-}
-
-.close-player-btn {
-  pointer-events: auto;
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-}
-
-/* ========================================================
-   DESKTOP RESPONSIVE (The "Page" Look)
-   ======================================================== */
-@media (min-width: 1024px) {
-  
-  /* Player Split Layout */
-  .player-layout {
-    flex-direction: row; /* Video Left | Sidebar Right */
-    overflow: hidden;
-  }
-
-  .video-section {
-    flex: 1; /* Fill remaining space */
-    height: 100%;
-    aspect-ratio: auto;
-    position: relative;
-  }
-
-  .sidebar-section {
-    width: 420px; /* Fixed Wide Sidebar */
-    height: 100%;
-    overflow-y: auto; /* Sidebar scrolls independently */
-    border-left: 1px solid rgba(255,255,255,0.1);
-  }
-.channel-count-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Pushes Count to Left, Clock to Right */
-  width: auto;
-  margin: 0 20px 15px 20px; /* Aligns with the Search Bar margins */
-  padding: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Optional: Adds a subtle divider line */
-  padding-bottom: 10px;
-}
-
-/* Specific styling for the Clock/Date text to ensure it aligns right */
-.channel-count-display > div:last-child, 
-.channel-count-display > span:last-child {
-  text-align: right;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums; /* Prevents numbers from jumping as seconds tick */
-}
-  .player-header {
-    width: auto;
-    right: 440px; /* Position left of sidebar */
-    top: 10px;
-  }
-}
-.player-page-view {
-    padding-top: var(--header-height); /* Adds 70px top space */
-}
-
-/* ========================================================
-   FIX: DETAIL VIEW AS PAGE (BELOW NAVBAR)
-   ======================================================== */
-
-.detail-page {
-    position: fixed !important;
-    top: 70px !important;       /* Starts exactly below the Navbar */
-    left: 0 !important;
-    width: 100vw !important;
-    height: calc(100dvh - 70px) !important; /* Fills the rest of the screen */
-    z-index: 5000 !important;   /* Lower than Navbar (200000) */
-    background: #141414;        /* Ensure background color is consistent */
-}
-
-/* Adjust the internal padding so the content doesn't sit too low */
-/* Since the header no longer overlaps the content, we can reduce the top padding */
-.detail-content-wrapper {
-    padding-top: 50px !important; /* Reduced from 200px */
-}
-
-/* Ensure the backdrop image stays contained within this new view area */
-.detail-backdrop-layer {
-    height: 50vh !important; /* Adjust height relative to the new view */
-}
-/* ========================================================
-   FIX: EXPLORE & SEARCH SPACING
-   ======================================================== */
-
-/* 1. Fix Search Bar being "too slick" (Cramped at top) */
-/* Adds breathing room between the Navbar and the Search Bar */
-.explore-header-wrapper, 
-.search-header-row {
-    padding-top: 30px !important;  /* Increased from 15px */
-    padding-bottom: 15px !important; /* Adds space below search bar before filters */
-    gap: 15px !important;
-}
-
-/* 2. Fix Search Icon Alignment */
-/* Ensures the icon stays perfectly centered vertically */
-.search-bar-wrapper {
-    height: 50px; /* Enforce consistent height */
-}
-
-#search-input {
-    height: 100% !important;
-    padding-left: 55px !important; /* Give text more room so it doesn't hit the icon */
-    padding-top: 0 !important;     /* Let flexbox handle vertical centering */
-    padding-bottom: 0 !important;
-}
-
-.search-icon, 
-.search-modal-icon {
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    left: 20px !important; /* Move icon slightly right for better balance */
-    font-size: 1.1rem !important;
-}
-
-/* 3. Remove "Unwanted Space" above "Popular Searches" */
-/* This removes the gap between the Filters and the Grid */
-.explore-grid, 
-#search-results,
-.results-container {
-    padding-top: 5px !important; /* Drastically reduced from default */
-    margin-top: 0 !important;
-}
-
-/* Pull the heading text up closer */
-#search-heading,
-.explore-grid > h2:first-child,
-.results-container > h2:first-child {
-    margin-top: 5px !important; 
-    margin-bottom: 15px !important;
-    line-height: 1.2;
-}
-
-/* 4. Tighten the Filter Rows */
-.explore-filters-container {
-    gap: 8px !important;
-    margin-bottom: 5px !important; /* Reduces space below the last filter row */
-}
-
-/* --- BACK TO TOP BUTTON --- */
-.back-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5);
-    z-index: 40000; /* Above most things, below Modals */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.back-to-top.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.back-to-top:hover {
-    background: #fff;
-    color: var(--accent-color);
-    transform: translateY(-5px);
-}
-
-/* Adjust for Mobile so it doesn't cover content */
-@media (max-width: 768px) {
-    .back-to-top {
-        bottom: 80px; /* Moves up to avoid Bottom Nav */
-        right: 20px;
-        width: 45px;
-        height: 45px;
-    }
-}
-/* --- CHANNEL COUNT & CLOCK ROW --- */
-
-/* 1. Default (Mobile) */
-.channel-count-display {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0 15px; /* Matches mobile search bar padding */
-  margin-bottom: 10px;
-  box-sizing: border-box; /* Prevents padding from increasing width */
-}
-
-/* 2. Desktop Adjustment (Min-Width: 1024px) */
-@media (min-width: 1024px) {
   .channel-count-display {
-    width: auto; /* Let margins dictate width */
-    margin: 0 20px 15px 20px; /* Aligns perfectly with Search Bar */
-    padding: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    padding: 0 15px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
   }
-  
-  /* Fix alignment of the text inside the right container (Clock/Date) */
-  .channel-count-display > div:last-child {
-    text-align: right;
-    line-height: 1.2;
-    font-variant-numeric: tabular-nums; /* Prevents numbers from jumping */
-  }
-}
 
-/* --- MOBILE FOOTER FIXES (Max Width 768px) --- */
-@media (max-width: 768px) {
-  
-  /* 1. Center the Description Text */
   .footer-desc {
     text-align: center;
-    margin: 0 auto; /* Center the container itself */
+    margin: 0 auto;
     max-width: 90%;
   }
 
-  /* 2. Adjust AHJIN Text for Mobile */
   .footer-big-text {
-    /* Scale down font size significantly */
-    font-size: clamp(2.5rem, 12vw, 3.5rem); 
-    
-    /* FORCE CENTER ALIGNMENT */
-    text-align: center;
-    margin: 20px auto 0 auto; /* Auto margins to center horizontally */
-    
-    /* Ensure it doesn't overflow */
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
+    text-align: center !important;
+    margin: 20px auto 0 auto;
     width: 100%;
     display: block;
   }
-}
-/* 1. Tighten the Sticky Header bottom */
-.explore-header-wrapper {
-  /* ... keep your existing properties ... */
-  padding-bottom: 5px !important; /* Reduce to 5px or 0px */
-  gap: 10px !important; 
-  border-bottom: none !important; /* Optional: Remove border if you want a cleaner look */
-}
-
-/* 2. Remove Top Padding from the Grid */
-.explore-grid, 
-#search-results,
-.results-container {
-  /* Keep left/right/bottom padding, but kill the TOP padding */
-  padding-top: 5px !important; 
-  margin-top: 0 !important;
-}
-
-/* 3. Pull the "Popular Searches" Title Up */
-#search-heading, 
-.explore-grid h2, 
-.results-container h2 {
-  /* Remove default browser margins pushing it down */
-  margin-top: 0 !important;
-  padding-top: 5px !important;
-  margin-bottom: 10px !important;
-  margin-left: 15px !important; /* Ensure it aligns with cards */
 }
