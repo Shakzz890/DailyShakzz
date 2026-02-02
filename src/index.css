@@ -2940,7 +2940,7 @@ input:disabled + .slider {
 }
 
 /* --- FIX 1: Header Alignment --- */
-.explore-header-wrapper {
+
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -3745,17 +3745,22 @@ input:disabled + .slider {
     width: 45px;
     height: 45px;
   }
-
-  .explore-header-wrapper {
-    padding: 20px 40px !important;
+  
+.explore-header-wrapper {
+    padding: 30px 40px 10px 40px !important;
   }
 
-  #search-heading {
-    margin-left: 40px !important;
-  }
-
+#search-heading, 
   .results-container h2 {
     margin-left: 40px !important;
+  }
+
+  .explore-grid, 
+  #search-results,
+  .results-container {
+    padding: 0 40px 80px 40px !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 25px !important;
   }
 }
 
