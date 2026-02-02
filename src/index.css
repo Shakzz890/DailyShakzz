@@ -3731,7 +3731,7 @@ input:disabled + .slider {
 
   .detail-poster-card {
     width: 180px;
-    margin-top: -30px;
+    margin-top: -50px;
   }
 
   .detail-info-box { align-items: center; }
@@ -3817,11 +3817,11 @@ input:disabled + .slider {
 
   #detail-view { padding-bottom: 80px; }
 
-  /* Mobile Detail View Fixes */
+  /* FIXED: Mobile Detail View - Remove gap between navbar and content */
   .detail-backdrop-layer {
     position: relative;
-    margin-top: var(--header-height);
-    height: 40vh;
+    margin-top: 0; /* Removed margin-top */
+    height: 45vh; /* Slightly reduced height */
   }
 
   #detail-backdrop-img {
@@ -3830,12 +3830,19 @@ input:disabled + .slider {
   }
 
   .detail-content-wrapper {
-    padding-top: 20px !important;
+    padding-top: 0 !important; /* Removed padding-top */
   }
 
   .detail-poster-card {
-    margin-top: -50px;
+    margin-top: -80px; /* Pull poster up to overlap backdrop */
     width: 150px;
+    z-index: 10;
+  }
+
+  /* Adjust close button position */
+  .close-detail-btn {
+    top: 15px;
+    right: 15px;
   }
 }
 
