@@ -1585,13 +1585,23 @@ img {
 }
 
 #search-heading {
-  margin: 5px 0 10px 15px;
   font-size: 1.1rem;
-  color: #eee;
   font-weight: 700;
+  color: #eee;
+  margin-left: 20px !important; 
+  margin-top: 15px !important;
+  margin-bottom: 5px !important;
   flex-shrink: 0;
-  padding-top: 5px;
   line-height: 1.2;
+}
+
+.results-container h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #eee;
+  margin-left: 20px !important; 
+  margin-top: 15px !important;
+  margin-bottom: 5px !important;
 }
 
 #categoryModal {
@@ -2937,21 +2947,20 @@ input:disabled + .slider {
   background: rgba(5, 5, 5, 0.85) !important;
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px);
-  padding: calc(10px + env(safe-area-inset-top)) 15px 10px !important;
+  padding: 15px 20px 10px 20px !important;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .explore-filters-container {
   display: flex;
   flex-direction: column;
-  /* CHANGE: This controls the gap between "Type", "Region", and "Status" rows */
-  gap: 15px !important; 
+  gap: 12px !important;
   width: 100%;
   padding: 0 !important;
-  margin-bottom: 20px !important; /* Space before "Popular Searches" starts */
+  margin: 0 !important;
 }
 
 .filter-row {
@@ -2959,14 +2968,13 @@ input:disabled + .slider {
   gap: 10px !important;
   overflow-x: auto;
   white-space: nowrap;
-  padding-bottom: 5px !important; 
+  padding: 0 !important;
   margin: 0 !important;
   scrollbar-width: none;
-  align-items: center !important; /* Ensure pills align vertically */
-  min-height: 40px; /* Prevent row collapse */
+  align-items: center !important;
+  min-height: 40px;
 }
 
-/* Hide scrollbar for Chrome/Safari */
 .filter-row::-webkit-scrollbar {
   display: none;
 }
@@ -2982,10 +2990,10 @@ input:disabled + .slider {
   cursor: pointer;
   flex-shrink: 0;
   transition: all 0.2s;
-  display: flex;           /* Added for better alignment */
-  align-items: center;     /* Vertically center text */
-  justify-content: center; /* Horizontally center text */
-  height: 38px;           /* Consistent height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
   line-height: 1;
 }
 
@@ -2999,9 +3007,11 @@ input:disabled + .slider {
 .explore-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr) !important;
-  gap: 15px;
-  padding: 5px 15px 100px;
+  gap: 15px !important;
+  padding: 5px 20px 100px 20px !important;
   margin-top: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .explore-grid .movie-card {
@@ -3167,7 +3177,7 @@ input:disabled + .slider {
   width: 160px !important;
   height: auto !important;
   aspect-ratio: 2/3 !important;
-  margin-top: 20px !important;  /* Changed from -80px to 20px */
+  margin-top: 20px !important;
   flex-shrink: 0;
 }
 
@@ -3176,10 +3186,10 @@ input:disabled + .slider {
     height: 100% !important;
     object-fit: cover !important;
   }
-/* 2. Fix the Background Cover (Backdrop) */
+
 #detail-backdrop-img {
   object-position: center top !important;
-  height: 50vh !important; /* Limit height so poster sits clearly below */
+  height: 50vh !important;
   mask-image: linear-gradient(to bottom, black 60%, transparent 100%) !important;
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%) !important;
 }
@@ -3519,7 +3529,7 @@ input:disabled + .slider {
     gap: 25px;
     display: grid;
     width: 100%;
-    padding: 10px 40px 50px;
+    padding: 10px 40px 80px 40px !important;
     align-content: start;
   }
 
@@ -3575,8 +3585,8 @@ input:disabled + .slider {
 
   .explore-grid {
     grid-template-columns: repeat(6, 1fr) !important;
-    gap: 25px;
-    padding: 30px;
+    gap: 25px !important;
+    padding: 10px 40px 80px 40px !important;
   }
 
   #explore-view {
@@ -3712,6 +3722,18 @@ input:disabled + .slider {
     width: 45px;
     height: 45px;
   }
+
+  .explore-header-wrapper {
+    padding: 20px 40px !important;
+  }
+
+  #search-heading {
+    margin-left: 40px !important;
+  }
+
+  .results-container h2 {
+    margin-left: 40px !important;
+  }
 }
 
 @media (min-width: 1025px) {
@@ -3734,4 +3756,3 @@ input:disabled + .slider {
     gap: 30px;
   }
 }
-
