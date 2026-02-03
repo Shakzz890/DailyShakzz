@@ -9,12 +9,12 @@ const DetailView = () => {
     const { 
         openDetail, 
         closeDetail, 
-         setDetailItem,
         setIsPlayerOpen, 
         watchlist, 
         toggleWatchlist, 
         addToHistory,
         detailItem,
+        setDetailItem
     } = useGlobal();
 
     const [fullDetails, setFullDetails] = useState(null);
