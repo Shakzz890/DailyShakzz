@@ -4,91 +4,81 @@ import { useGlobal } from '../../context/GlobalContext';
 import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../../api/tmdb';
 
 const DetailView = () => {
-    const { id } = useParams(); // Get ID from URL
+    const { id } = useParams();
     const navigate = useNavigate();
     const { 
+        openDetail, 
+        closeDetail, 
+        setIsPlayerOpen, 
         watchlist, 
         toggleWatchlist, 
         addToHistory,
         detailItem,
-        setDetailItem,
-        showLoader, 
-        hideLoader 
+        setDetailItem
     } = useGlobal();
 
     const [fullDetails, setFullDetails] = useState(null);
     const [similar, setSimilar] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Fetch item details based on ID from URL
         const fetchDetails = async () => {
             if (!id) return;
-            setLoading(true);
-            showLoader("Loading Details..."); // Optional use of global loader
             
-            try {
-                // 1. Fetch Basic Data (Movie vs TV)
-                // We try movie first, then TV if movie fails, or rely on existing context if ID matches
-                let type = 'movie';
-                let basicData = null;
-
-                if (detailItem && detailItem.id.toString() === id) {
-                    basicData = detailItem;
-                    type = detailItem.media_type || (detailItem.first_air_date ? 'tv' : 'movie');
-                } else {
-                    // Try fetching as movie
-                    let res = await fetchData(`/movie/${id}`);
-                    if (res && res.id) {
-                        type = 'movie';
-                        basicData = res;
-                    } else {
-                        // If not movie, assume TV
-                        res = await fetchData(`/tv/${id}`);
-                        type = 'tv';
-                        basicData = res;
-                    }
-                    // Update global state so Player can use it later
-                    setDetailItem({ ...basicData, media_type: type });
-                }
-
-                // 2. Fetch Full Details & Recommendations
+            // Try to get from context first, otherwise fetch
+            if (detailItem && detailItem.id.toString() === id) {
+                // Use existing detailItem
+                const type = detailItem.media_type === 'tv' || detailItem.first_air_date ? 'tv' : 'movie';
                 const [detailsRes, similarRes] = await Promise.all([
                     fetchData(`/${type}/${id}`),
                     fetchData(`/${type}/${id}/recommendations`)
                 ]);
-
                 setFullDetails(detailsRes);
                 setSimilar(similarRes.results || []);
-
-            } catch (e) {
-                console.error("Detail Fetch Error:", e);
-            } finally {
-                setLoading(false);
-                hideLoader();
+            } else {
+                // Fetch fresh data if not in context
+                try {
+                    // Try movie first, then tv
+                    let data = await fetchData(`/movie/${id}`);
+                    let type = 'movie';
+                    if (!data || data.success === false) {
+                        data = await fetchData(`/tv/${id}`);
+                        type = 'tv';
+                    }
+                    setDetailItem(data);
+                    const [detailsRes, similarRes] = await Promise.all([
+                        fetchData(`/${type}/${id}`),
+                        fetchData(`/${type}/${id}/recommendations`)
+                    ]);
+                    setFullDetails(detailsRes);
+                    setSimilar(similarRes.results || []);
+                } catch (e) {
+                    console.error("Failed to fetch item:", e);
+                    navigate('/home');
+                }
             }
         };
         
         fetchDetails();
     }, [id]);
 
-    if (loading) return <div style={{height: '100vh', background: '#050505'}}></div>; // Or return null, the Global Loader covers it
     if (!fullDetails) return null;
 
-    const handleClose = () => navigate('/home');
+    const handleClose = () => {
+        navigate('/home');
+    };
 
     const handlePlay = () => {
-        // Save to history and navigate
+        setIsPlayerOpen(true);
         addToHistory(fullDetails);
         navigate(`/player/${id}`);
     };
 
     const handleRecClick = (item) => {
         const type = item.media_type || (item.title ? 'movie' : 'tv');
-        setDetailItem({ ...item, media_type: type });
-        // Navigate to new ID
+        const newItem = { ...item, media_type: type };
+        setDetailItem(newItem);
         navigate(`/detail/${item.id}`);
-        // Scroll top
-        window.scrollTo(0, 0);
     };
 
     const isAdded = watchlist.some(i => i.id === fullDetails.id);
@@ -96,6 +86,8 @@ const DetailView = () => {
 
     return (
         <div className="page-view detail-page">
+            
+            {/* BACKDROP IMAGE */}
             <div className="detail-backdrop-layer">
                 <img 
                     id="detail-backdrop-img" 
@@ -106,6 +98,7 @@ const DetailView = () => {
                 <div className="detail-overlay-gradient"></div>
             </div>
 
+            {/* CLOSE BUTTON */}
             <button className="close-detail-btn" onClick={handleClose}>
                 <i className="fa-solid fa-arrow-left"></i>
             </button>

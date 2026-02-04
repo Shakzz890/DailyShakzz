@@ -5,9 +5,9 @@ import { POSTER_URL, IMG_URL, PLACEHOLDER_IMG, getDisplayTitle, fetchData } from
 import BackToTop from '../Layout/BackToTop'; 
 
 const CategoryView = () => {
-    const { type } = useParams(); // Retrieves "trending", "kdrama", etc.
+    const { type } = useParams();
     const navigate = useNavigate();
-    const { history, watchlist, setDetailItem } = useGlobal();
+    const { history, watchlist, openDetail, setCategoryModal } = useGlobal();
     
     const [results, setResults] = useState([]);
     const [page, setPage] = useState(1);
@@ -18,6 +18,7 @@ const CategoryView = () => {
     
     const scrollContainerRef = useRef(null);
 
+    // Map type to endpoint and title
     const CATEGORY_MAP = {
         'trending': { title: 'Latest Updates', endpoint: '/trending/all/week' },
         'kdrama': { title: 'Top K-Drama', endpoint: '/discover/tv?with_original_language=ko&with_origin_country=KR&sort_by=popularity.desc' },
@@ -33,8 +34,6 @@ const CategoryView = () => {
 
     useEffect(() => {
         const category = CATEGORY_MAP[type];
-        
-        // If invalid category, redirect home
         if (!category) {
             navigate('/home');
             return;
@@ -57,7 +56,6 @@ const CategoryView = () => {
             setLoading(false);
             setHasMore(false);
         } else {
-            // Initiate API fetch
             loadApiData(1, category.endpoint);
         }
     }, [type, history, watchlist]);
@@ -85,8 +83,12 @@ const CategoryView = () => {
         }
     };
 
+    const handleClose = () => {
+        navigate('/home');
+    };
+
     const handleItemClick = (item) => {
-        setDetailItem(item);
+        openDetail(item);
         navigate(`/detail/${item.id}`);
     };
 
@@ -111,7 +113,7 @@ const CategoryView = () => {
             <div className="category-header" style={{ flexShrink: 0, padding: '20px 30px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                 <i 
                     className="fa-solid fa-arrow-left" 
-                    onClick={() => navigate(-1)}
+                    onClick={handleClose}
                     style={{ fontSize: '1.2rem', cursor: 'pointer', marginRight: '20px', color: '#fff' }}
                 ></i>
                 <h1 id="category-title" style={{ display: 'inline', fontSize: '1.5rem', fontWeight: '700' }}>{title}</h1>

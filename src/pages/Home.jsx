@@ -1,22 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useGlobal } from '../context/GlobalContext';
 import { fetchData, IMG_URL, POSTER_URL, PLACEHOLDER_IMG, getDisplayTitle } from '../api/tmdb';
 
-// --- MEMOIZED LIST (Updated to use Navigation) ---
+// --- MEMOIZED LIST ---
 const MovieList = React.memo(({ items, isUpcoming }) => {
-    const navigate = useNavigate(); // Hook for navigation
-    const { setDetailItem } = useGlobal();
-
-    const handleClick = (item) => {
-        setDetailItem(item); // Optional: Set data for smooth transition
-        navigate(`/detail/${item.id}`); // GO TO ROUTE
-    };
+    const { openDetail } = useGlobal();
 
     return (
         <div className="list">
             {items.slice(0, 12).map(item => (
-                <div key={item.id} className="movie-card focusable-element fade-in" onClick={() => handleClick(item)} tabIndex="0">
+                <div key={item.id} className="movie-card focusable-element fade-in" onClick={() => openDetail(item)} tabIndex="0">
                     <div className="card-poster">
                         {isUpcoming ? <div className="coming-badge">COMING</div> : <div className="badge-overlay">HD</div>}
                         {!isUpcoming && <div className="rating-badge"><i className="fas fa-star"></i> {item.vote_average?.toFixed(1)}</div>}
@@ -43,12 +37,16 @@ const MovieList = React.memo(({ items, isUpcoming }) => {
 
 const Home = () => {
     const { 
+        openDetail, 
         setDetailItem, 
+        setIsPlayerOpen, 
         showLoader, 
         hideLoader, 
         history, 
         removeFromHistory, 
-        togglePin 
+        togglePin,          
+        setCategoryModal,
+        setInfoModal 
     } = useGlobal();
     
     const navigate = useNavigate();
@@ -61,12 +59,28 @@ const Home = () => {
     const [activeMenuId, setActiveMenuId] = useState(null);
     const sliderInterval = useRef(null);
 
-    // --- INITIALIZATION (Kept same as your code) ---
+    const CATEGORY_ENDPOINTS = {
+        'trending': '/trending/all/week',
+        'kdrama': '/discover/tv?with_original_language=ko&with_origin_country=KR&sort_by=popularity.desc',
+        'cdrama': '/discover/tv?with_original_language=zh&with_origin_country=CN&sort_by=popularity.desc',
+        'filipino': '/discover/tv?with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc',
+        'anime': '/discover/tv?with_genres=16&with_original_language=ja&sort_by=popularity.desc',
+        'movies': '/movie/popular',
+        'tv': '/tv/popular',
+        'upcoming': '/movie/upcoming?region=US'
+    };
+
+    // --- INITIALIZATION ---
     useEffect(() => {
         const init = async () => {
-            // ... (Your existing init logic here is fine, keeping it brief for the solution)
-            // Assuming fetchData is working correctly
-             try {
+            const hasInitialized = sessionStorage.getItem('shakzz_system_ready');
+
+            if (!hasInitialized) {
+                showLoader("Initializing System...");
+                sessionStorage.setItem('shakzz_system_ready', 'true');
+            }
+
+            try {
                 const [day, week, kr, cn, ph, anime, mov, tv, up] = await Promise.all([
                     fetchData('/trending/all/day'),
                     fetchData('/trending/all/week'),
@@ -94,6 +108,7 @@ const Home = () => {
                     upcoming: up.results || []
                 });
             } catch (e) { console.error(e); }
+            
             hideLoader();
         };
         init();
@@ -118,27 +133,21 @@ const Home = () => {
         setSlideIndex(prev => (prev + dir + sliderItems.length) % sliderItems.length);
     };
 
-    // --- UPDATED NAVIGATION HANDLERS ---
-
-    // 1. Open Category Page
-    const openCat = (key) => {
-        // Navigate to the Route defined in App.jsx: /category/:type
-        navigate(`/category/${key}`);
+    const openCat = (key, title) => {
+        const endpoint = CATEGORY_ENDPOINTS[key];
+        if (endpoint) {
+            setCategoryModal({ isOpen: true, title, endpoint });
+            navigate(`/category/${key}`);
+        }
     };
 
-    // 2. Play History Item
+    // --- HANDLERS ---
     const playHistoryItem = (item) => {
         setDetailItem(item);    
+        setIsPlayerOpen(true);
         navigate(`/player/${item.id}`);
     };
 
-    // 3. Open Detail from Slider
-    const openSliderDetail = (item) => {
-        setDetailItem(item);
-        navigate(`/detail/${item.id}`);
-    }
-
-    // --- Menu Handlers ---
     const handleMenuClick = (e, id) => {
         e.preventDefault(); e.stopPropagation();
         setActiveMenuId(activeMenuId === id ? null : id);
@@ -174,15 +183,13 @@ const Home = () => {
                                 </div>
                                 <p className="slide-desc">{item.overview}</p>
                                 <div className="slide-actions">
-                                    {/* UPDATED CLICK HANDLERS */}
-                                    <button className="slider-btn btn-play-slide" onClick={() => playHistoryItem(item)}><i className="fas fa-play"></i> Play</button>
-                                    <button className="slider-btn btn-info-slide" onClick={() => openSliderDetail(item)}><i className="fas fa-info-circle"></i> Details</button>
+                                    <button className="slider-btn btn-play-slide" onClick={() => openDetail(item)}><i className="fas fa-play"></i> Play</button>
+                                    <button className="slider-btn btn-info-slide" onClick={() => openDetail(item)}><i className="fas fa-info-circle"></i> Details</button>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-                {/* Dots & Arrows... (Kept same) */}
                 <div className="slider-dots">
                     {sliderItems.map((_, idx) => (
                         <div key={idx} className={`dot ${idx === slideIndex ? 'active' : ''}`} onClick={() => setSlideIndex(idx)}></div>
@@ -199,7 +206,6 @@ const Home = () => {
                     <div className="list" id="continue-list">
                         {history.slice(0, 10).map(item => (
                             <div key={item.id} className="continue-card fade-in" onClick={() => playHistoryItem(item)}>
-                                {/* Image Wrapper */}
                                 <div className="continue-image-wrapper">
                                     <img 
                                         src={item.backdrop_path ? IMG_URL + item.backdrop_path : POSTER_URL + item.poster_path} 
@@ -212,13 +218,11 @@ const Home = () => {
                                         <div className="continue-progress-fill" style={{ width: '0%' }}></div>
                                     </div>
                                 </div>
-                                {/* Info */}
                                 <div className="continue-info">
                                     <div className="continue-title">{item.title}</div>
                                     <div className="continue-menu-btn" onClick={(e) => handleMenuClick(e, item.id)}>
                                         <i className="fas fa-ellipsis-vertical"></i>
                                     </div>
-                                    {/* Context Menu */}
                                     {activeMenuId === item.id && (
                                         <div className="card-context-menu show">
                                             <div className="ctx-item" onClick={(e) => handlePin(e, item)}>
@@ -236,17 +240,17 @@ const Home = () => {
                 </div>
             )}
 
-            {/* CATEGORIES - Updated onClick to pass the key string */}
-            <div className="row"><h2 onClick={() => openCat('trending')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Latest Updates <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.trending} /></div>
-            <div className="row"><h2 onClick={() => openCat('kdrama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top K-Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.kdrama} /></div>
-            <div className="row"><h2 onClick={() => openCat('cdrama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top C-Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.cdrama} /></div>
-            <div className="row"><h2 onClick={() => openCat('filipino')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top Filipino Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.filipino} /></div>
-            <div className="row"><h2 onClick={() => openCat('movies')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Movies <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.movies} /></div>
-            <div className="row"><h2 onClick={() => openCat('tv')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending TV Shows <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.tv} /></div>
-            <div className="row"><h2 onClick={() => openCat('anime')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Anime <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.anime} /></div>
-            <div className="row"><h2 onClick={() => openCat('upcoming')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Upcoming <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.upcoming} isUpcoming={true} /></div>
+            {/* CATEGORIES */}
+            <div className="row"><h2 onClick={() => openCat('trending', 'Latest Updates')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Latest Updates <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.trending} /></div>
+            <div className="row"><h2 onClick={() => openCat('kdrama', 'Top K-Drama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top K-Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.kdrama} /></div>
+            <div className="row"><h2 onClick={() => openCat('cdrama', 'Top C-Drama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top C-Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.cdrama} /></div>
+            <div className="row"><h2 onClick={() => openCat('filipino', 'Top Filipino Drama')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Top Filipino Drama <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.filipino} /></div>
+            <div className="row"><h2 onClick={() => openCat('movies', 'Trending Movies')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Movies <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.movies} /></div>
+            <div className="row"><h2 onClick={() => openCat('tv', 'Trending TV Shows')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending TV Shows <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.tv} /></div>
+            <div className="row"><h2 onClick={() => openCat('anime', 'Trending Anime')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Trending Anime <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.anime} /></div>
+            <div className="row"><h2 onClick={() => openCat('upcoming', 'Upcoming Releases')}><span className="section-indicator" style={{ background: 'var(--accent-color)' }}></span> Upcoming <i className="fa-solid fa-chevron-right"></i></h2><MovieList items={lists.upcoming} isUpcoming={true} /></div>
         
-            {/* FOOTER - Kept the same */}
+            {/* FOOTER */}
             <footer className="footer">
                 <div className="footer-content">
                     <div className="footer-top">
@@ -264,6 +268,7 @@ const Home = () => {
                                 AHJIN
                             </div>
                         </div>
+                        
                         <div className="footer-nav-wrapper">
                             <div className="footer-col">
                                 <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/about'); }}>About Us</a>
@@ -272,6 +277,7 @@ const Home = () => {
                                 <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/privacy'); }}>Privacy Policy</a>
                                 <a href="#" onClick={(e) => { e.preventDefault(); navigate('/info/contact'); }}>Contact Us</a>
                             </div>
+                            
                             <div className="footer-col">
                                 <span className="col-title">FOLLOW US</span>
                                 <div className="social-row">
@@ -280,6 +286,7 @@ const Home = () => {
                                     <a href="https://www.tiktok.com/@shxkzz05?_r=1&_t=ZS-939s4GLBc28" target="_blank" rel="noreferrer"><i className="fa-brands fa-tiktok"></i></a>
                                     <a href="https://www.youtube.com/@Shakzz05" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube"></i></a>
                                 </div>
+                                
                                 <span className="col-title" style={{marginTop:'25px'}}>JOIN COMMUNITY</span>
                                 <div className="social-row">
                                     <a href="https://discord.gg/k8AJ9dWzb" target="_blank" rel="noreferrer" title="Join Discord">
@@ -289,6 +296,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
+                    
                     <div className="footer-bottom">
                         <span className="copyright">© 2026 AHJIN GUILD. ALL RIGHTS RESERVED.</span>
                         <span className="credits">DESIGNED BY SHAKZZ</span>
